@@ -1,66 +1,69 @@
-# Password Generator  
+# Password Generator
 
-A simple and customizable password generator built to create secure passwords for your accounts. This project is designed to be user-friendly and efficient, allowing you to generate passwords with specific criteria.  
+A modern, interactive password generator built with React, TypeScript, and Tailwind CSS. Create secure passwords with customizable options and real-time strength visualization.
 
-## Features  
+## Features
 
-- Generate strong, random passwords.  
-- Customize password length.  
-- Include or exclude specific character types:  
-  - Uppercase letters  
-  - Lowercase letters  
-  - Numbers  
-  - Special characters  
-- Easy-to-use interface.  
+- **Customizable Length**: Adjust password length from 8 to 32 characters
+- **Character Options**: Toggle uppercase, lowercase, numbers, and symbols
+- **Strength Indicator**: Real-time visual feedback on password strength
+- **Copy to Clipboard**: One-click copy functionality with visual confirmation
+- **Dark/Light Mode**: Toggle between dark and light themes
 
-## Demo  
+## Tech Stack
 
-Check out the live demo of the password generator: [Password Generator Demo](https://github.com/liviu-b/password_generator)  
+- React 18
+- TypeScript
+- Vite
+- Tailwindide React (icons CSS
+- Luc)
 
-## Installation  
+## Getting Started
 
-1. Clone the repository:
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+```bash
+npm install
 ```
-bash
-git clone https://github.com/liviu-b/password_generator.git
+
+### Development
+
+```bash
+npm run dev
 ```
-2. Navigate to the project directory:
+
+### Build
+
+```bash
+npm run build
 ```
-bash
-cd password_generator
+
+### Preview Production Build
+
+```bash
+npm run preview
 ```
-  
-3. Open the `index.html` file in your browser to use the password generator.  
 
-## Usage  
+## Project Structure
 
-1. Open the application in your browser.  
-2. Select the desired password length.  
-3. Choose the character types to include in the password.  
-4. Click the "Generate Password" button to create a secure password.  
-5. Copy the generated password for use.  
+```
+src/
+├── components/
+│   ├── PasswordGenerator.tsx   # Main component
+│   ├── PasswordOptions.tsx    # Password configuration options
+│   └── StrengthIndicator.tsx  # Password strength visualization
+├── utils/
+│   ├── passwordUtils.ts       # Password generation logic
+│   └── strengthUtils.ts       # Strength calculation logic
+├── App.tsx                    # Root component
+└── main.tsx                   # Application entry point
+```
 
-## Technologies Used  
+## License
 
-- **HTML**: Structure of the application.  
-- **CSS**: Styling for the user interface.  
-- **JavaScript**: Logic for generating passwords.  
-
-## Contributing  
-
-Contributions are welcome! If you'd like to improve this project, please follow these steps:
---- 
-## License  
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.  
-
-## Contact  
-
-For any questions or feedback, feel free to reach out:  
-
-- **GitHub**: [liviu-b](https://github.com/liviu-b)  
-- **Email**: [your-email@example.com](mailto:your-email@example.com)  
-
----  
-
-Thank you for checking out the Password Generator project! If you find it useful, please consider giving it a ⭐ on GitHub.  
+MIT
