@@ -1,11 +1,11 @@
 /**
  * Cloud authentication component.
- * Handles Supabase login, register, and social auth.
+ * Handles Supabase login and register with email/password.
  * Shown only when cloud features are enabled (env vars configured).
  */
 
 import { useState, useCallback } from 'react';
-import { Mail, Lock, LogIn, UserPlus, Chrome, Github, Eye, EyeOff, Cloud, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, LogIn, UserPlus, Eye, EyeOff, Cloud, AlertCircle, ArrowLeft } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useTranslation } from '../../contexts/LanguageContext';
 
@@ -67,27 +67,6 @@ export default function CloudAuth({ darkMode, onAuthenticated, onSkip }: CloudAu
       setLoading(false);
     }
   }, [email, password, confirmPassword, mode, onAuthenticated, t]);
-
-  const handleSocialAuth = useCallback(async (provider: 'google' | 'github') => {
-    if (!supabase) return;
-
-    setLoading(true);
-    setError('');
-
-    try {
-      const { error: authError } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: window.location.origin,
-        },
-      });
-      if (authError) throw authError;
-      // OAuth redirects — no need to call onAuthenticated here
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t.cloudAuthError);
-      setLoading(false);
-    }
-  }, [t]);
 
   const inputClass = `w-full rounded-xl px-4 py-3 text-sm border transition-all duration-200 focus:outline-none focus:ring-2 ${
     darkMode
@@ -207,43 +186,6 @@ export default function CloudAuth({ darkMode, onAuthenticated, onSkip }: CloudAu
             className="w-full py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-blue-500/25"
           >
             {loading ? t.cloudLoading : mode === 'login' ? t.cloudLoginButton : t.cloudRegisterButton}
-          </button>
-        </div>
-
-        {/* Divider */}
-        <div className="flex items-center gap-3">
-          <div className={`flex-1 h-px ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`} />
-          <span className={`text-[10px] uppercase tracking-wider font-medium ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
-            {t.cloudOr}
-          </span>
-          <div className={`flex-1 h-px ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`} />
-        </div>
-
-        {/* Social auth */}
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            onClick={() => void handleSocialAuth('google')}
-            disabled={loading}
-            className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold border transition-all ${
-              darkMode
-                ? 'border-gray-700 text-gray-300 hover:bg-gray-800 hover:border-gray-600'
-                : 'border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300'
-            }`}
-          >
-            <Chrome size={16} />
-            Google
-          </button>
-          <button
-            onClick={() => void handleSocialAuth('github')}
-            disabled={loading}
-            className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold border transition-all ${
-              darkMode
-                ? 'border-gray-700 text-gray-300 hover:bg-gray-800 hover:border-gray-600'
-                : 'border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300'
-            }`}
-          >
-            <Github size={16} />
-            GitHub
           </button>
         </div>
 
