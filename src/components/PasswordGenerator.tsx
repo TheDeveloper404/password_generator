@@ -17,6 +17,7 @@ import PolicyIndicator from './PolicyIndicator';
 import UsernameGenerator from './UsernameGenerator';
 import PasswordHealthCheck from './PasswordHealthCheck';
 import SecurityTips from './SecurityTips';
+import WiFiQrCode from './WiFiQrCode';
 import VaultView from './vault/VaultView';
 import HealthDashboard from './vault/HealthDashboard';
 import MasterPasswordSetup from './auth/MasterPasswordSetup';
@@ -485,6 +486,11 @@ export default function PasswordGenerator({
             {/* Security Tips card */}
             <div className={`rounded-2xl p-4 flex-1 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
               <SecurityTips darkMode={darkMode} />
+            </div>
+
+            {/* WiFi QR Code card */}
+            <div className={`rounded-2xl p-4 flex-1 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+              <WiFiQrCode darkMode={darkMode} generatedPassword={password} />
             </div>
           </div>
 

@@ -223,6 +223,22 @@ export interface Translations {
   sessionHour: string;
   sessionActive: string;
   sessionExpires: string;
+
+  // WiFi QR Code
+  wifiTitle: string;
+  wifiDesc: string;
+  wifiSSID: string;
+  wifiSSIDPlaceholder: string;
+  wifiEncryption: string;
+  wifiNoPassword: string;
+  wifiPassword: string;
+  wifiPasswordPlaceholder: string;
+  wifiUseGenerated: string;
+  wifiHidden: string;
+  wifiDownload: string;
+  wifiCopyString: string;
+  wifiEnterBoth: string;
+  wifiEnterSSID: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -450,6 +466,22 @@ export const translations: Record<Language, Translations> = {
     sessionActive: 'Sesiune activă',
     sessionExpires: 'Expiră la',
 
+    // WiFi QR Code
+    wifiTitle: 'QR Code WiFi',
+    wifiDesc: 'Generează un cod QR scanabil pentru conectarea rapidă la rețeaua WiFi.',
+    wifiSSID: 'Numele rețelei (SSID)',
+    wifiSSIDPlaceholder: 'ex: Casa_Mea_WiFi',
+    wifiEncryption: 'Securitate',
+    wifiNoPassword: 'Fără parolă',
+    wifiPassword: 'Parola WiFi',
+    wifiPasswordPlaceholder: 'Introdu parola rețelei',
+    wifiUseGenerated: 'Folosește parola generată',
+    wifiHidden: 'Rețea ascunsă',
+    wifiDownload: 'Descarcă PNG',
+    wifiCopyString: 'Copiază',
+    wifiEnterBoth: 'Completează numele rețelei și parola pentru a genera codul QR.',
+    wifiEnterSSID: 'Completează numele rețelei pentru a genera codul QR.',
+
   },
 
   en: {
@@ -675,6 +707,22 @@ export const translations: Record<Language, Translations> = {
     sessionHour: '1 hour',
     sessionActive: 'Session active',
     sessionExpires: 'Expires at',
+
+    // WiFi QR Code
+    wifiTitle: 'WiFi QR Code',
+    wifiDesc: 'Generate a scannable QR code to quickly connect to your WiFi network.',
+    wifiSSID: 'Network Name (SSID)',
+    wifiSSIDPlaceholder: 'e.g. My_Home_WiFi',
+    wifiEncryption: 'Security',
+    wifiNoPassword: 'No password',
+    wifiPassword: 'WiFi Password',
+    wifiPasswordPlaceholder: 'Enter network password',
+    wifiUseGenerated: 'Use generated password',
+    wifiHidden: 'Hidden network',
+    wifiDownload: 'Download PNG',
+    wifiCopyString: 'Copy',
+    wifiEnterBoth: 'Enter network name and password to generate QR code.',
+    wifiEnterSSID: 'Enter network name to generate QR code.',
 
   },
 };

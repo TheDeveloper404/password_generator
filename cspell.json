@@ -1,0 +1,15 @@
+{
+  "version": "0.2",
+  "language": "en,ro",
+  "words": [
+    "André",
+    "Müller",
+    "nopass",
+    "passgen",
+    "passphrase"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    "dist"
+  ]
+}
