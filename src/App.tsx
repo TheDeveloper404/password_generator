@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, useRef } from 'react';
 import PasswordGenerator from './components/PasswordGenerator';
 import WelcomePage from './components/WelcomePage';
+import CloudAuth from './components/auth/CloudAuth';
 import type { AppScreen, VaultData } from './types/vault';
 import {
   setupMasterPassword,
@@ -22,6 +23,8 @@ import {
   downloadExport,
   readFileAsText,
 } from './services/exportService';
+import { uploadVault } from './services/cloudService';
+import { supabase, isCloudEnabled } from './lib/supabase';
 import { wipeAllData } from './db/indexedDB';
 import { AUTO_LOCK_TIMEOUT_MS } from './crypto/constants';
 import { Language, translations } from './utils/i18n';
@@ -32,6 +35,7 @@ import {
   clearSession,
   refreshSession,
 } from './services/sessionService';
+import type { User } from '@supabase/supabase-js';
 
 function getStoredLang(): Language {
   try {
@@ -60,9 +64,30 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [lang, setLang] = useState<Language>(getStoredLang);
   const [darkMode, setDarkMode] = useState(getStoredDarkMode);
+  const [cloudUser, setCloudUser] = useState<User | null>(null);
+  const [showCloudAuth, setShowCloudAuth] = useState(false);
   const autoLockTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const t = translations[lang];
+
+  // ─── Supabase Auth Listener ─────────────────────────────────────────
+  useEffect(() => {
+    if (!isCloudEnabled || !supabase) return;
+
+    // Check initial session
+    void supabase.auth.getSession().then(({ data: { session } }) => {
+      setCloudUser(session?.user ?? null);
+    });
+
+    // Listen for auth changes (login, logout, token refresh)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setCloudUser(session?.user ?? null);
+      },
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   // Persist lang & darkMode to localStorage
   useEffect(() => {
@@ -148,12 +173,19 @@ function App() {
     };
   }, [vault, resetAutoLock]);
 
-  // Persist vault whenever it changes
+  // Persist vault whenever it changes (local + cloud)
   useEffect(() => {
     if (vault && masterPassword && vaultSalt) {
       void encryptAndSaveVault(vault, masterPassword, vaultSalt);
+
+      // Auto-sync to cloud if authenticated
+      if (isCloudEnabled && cloudUser) {
+        void uploadVault(vault, masterPassword).catch(() => {
+          // Silent fail — cloud sync is best-effort
+        });
+      }
     }
-  }, [vault, masterPassword, vaultSalt]);
+  }, [vault, masterPassword, vaultSalt, cloudUser]);
 
   // ─── Screen Transitions ────────────────────────────────────────────
 
@@ -163,9 +195,33 @@ function App() {
     setTransitioning(true);
     setWelcomeVisible(false);
 
-    setTimeout(() => {
-      setScreen('main');
-    }, 700);
+    // If cloud is enabled but user is not logged in, show cloud auth
+    if (isCloudEnabled && !cloudUser) {
+      setTimeout(() => {
+        setShowCloudAuth(true);
+        setScreen('main');
+      }, 700);
+    } else {
+      setTimeout(() => {
+        setScreen('main');
+      }, 700);
+    }
+  }, [cloudUser]);
+
+  const handleCloudAuthenticated = useCallback(() => {
+    setShowCloudAuth(false);
+  }, []);
+
+  const handleCloudSkip = useCallback(() => {
+    setShowCloudAuth(false);
+  }, []);
+
+  const handleCloudLogout = useCallback(() => {
+    setCloudUser(null);
+  }, []);
+
+  const handleVaultDownloaded = useCallback((downloadedVault: VaultData) => {
+    setVault(downloadedVault);
   }, []);
 
   const handleLogout = useCallback(() => {
@@ -177,6 +233,7 @@ function App() {
     setWelcomeVisible(true);
     setTransitioning(false);
     setScreen('welcome');
+    setShowCloudAuth(false);
   }, [handleLock]);
 
   useEffect(() => {
@@ -324,8 +381,19 @@ function App() {
         </div>
       )}
 
+      {/* Cloud auth screen — shown when cloud is enabled but user not logged in */}
+      {showCloudAuth && !cloudUser && (
+        <div className="fixed inset-0 z-40 animate-fadeIn">
+          <CloudAuth
+            darkMode={darkMode}
+            onAuthenticated={handleCloudAuthenticated}
+            onSkip={handleCloudSkip}
+          />
+        </div>
+      )}
+
       {/* Main app — always rendered when screen is 'main' */}
-      {screen === 'main' && (
+      {screen === 'main' && !showCloudAuth && (
         <div className="animate-fadeIn">
           <PasswordGenerator
             vault={vault}
@@ -333,6 +401,9 @@ function App() {
             masterPassword={masterPassword}
             darkMode={darkMode}
             setDarkMode={setDarkMode}
+            cloudUser={cloudUser}
+            onCloudLogout={handleCloudLogout}
+            onVaultDownloaded={handleVaultDownloaded}
             onAddEntry={handleAddEntry}
             onUpdateEntry={handleUpdateEntry}
             onDeleteEntry={handleDeleteEntry}

@@ -365,6 +365,36 @@ export interface Translations {
   audioVolume: string;
   audioVisualizer: string;
   audioExplain: string;
+
+  // Cloud Auth & Sync
+  cloudTitle: string;
+  cloudDesc: string;
+  cloudLogin: string;
+  cloudRegister: string;
+  cloudEmail: string;
+  cloudPassword: string;
+  cloudConfirmPassword: string;
+  cloudLoginButton: string;
+  cloudRegisterButton: string;
+  cloudLoading: string;
+  cloudOr: string;
+  cloudSkip: string;
+  cloudCheckEmail: string;
+  cloudAuthError: string;
+  cloudPasswordMismatch: string;
+  cloudPasswordTooShort: string;
+  cloudZeroKnowledge: string;
+  cloudSyncTitle: string;
+  cloudUpload: string;
+  cloudDownload: string;
+  cloudLogout: string;
+  cloudNoVault: string;
+  cloudOffline: string;
+  cloudOfflineDesc: string;
+  cloudAutoSync: string;
+  cloudLastSync: string;
+  cloudSynced: string;
+  cloudSyncError: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -734,6 +764,36 @@ export const translations: Record<Language, Translations> = {
     audioVisualizer: 'Vizualizator',
     audioExplain: 'Fiecare caracter produce o notă unică bazată pe codul ASCII. O parolă diversă generează o melodie variată, în timp ce una simplă sună repetitiv și monoton.',
 
+    // Cloud Auth & Sync
+    cloudTitle: 'PassGen Cloud',
+    cloudDesc: 'Sincronizează-ți seiful criptat între dispozitive. Zero-knowledge — serverul nu vede niciodată parolele tale.',
+    cloudLogin: 'Autentificare',
+    cloudRegister: 'Înregistrare',
+    cloudEmail: 'Adresă email',
+    cloudPassword: 'Parolă cont cloud',
+    cloudConfirmPassword: 'Confirmă parola',
+    cloudLoginButton: 'Autentifică-te',
+    cloudRegisterButton: 'Creează cont',
+    cloudLoading: 'Se procesează...',
+    cloudOr: 'sau',
+    cloudSkip: 'Continuă fără cont cloud (mod offline)',
+    cloudCheckEmail: 'Verifică email-ul pentru confirmarea contului.',
+    cloudAuthError: 'Eroare de autentificare. Verifică datele introduse.',
+    cloudPasswordMismatch: 'Parolele nu se potrivesc.',
+    cloudPasswordTooShort: 'Parola trebuie să aibă minimum 6 caractere.',
+    cloudZeroKnowledge: 'Criptare end-to-end: toate parolele sunt criptate local cu AES-256-GCM înainte de a fi trimise în cloud. Serverul stochează doar blob-uri criptate.',
+    cloudSyncTitle: 'Sincronizare Cloud',
+    cloudUpload: 'Încarcă seiful în cloud',
+    cloudDownload: 'Descarcă seiful din cloud',
+    cloudLogout: 'Deconectare cloud',
+    cloudNoVault: 'Nu există un seif salvat în cloud.',
+    cloudOffline: 'Offline',
+    cloudOfflineDesc: 'Modul offline — datele sunt stocate doar local. Configurează Supabase pentru sincronizare cloud.',
+    cloudAutoSync: 'Sincronizare automată',
+    cloudLastSync: 'Ultima sincronizare',
+    cloudSynced: 'Sincronizat',
+    cloudSyncError: 'Eroare la sincronizare',
+
   },
 
   en: {
@@ -1101,6 +1161,36 @@ export const translations: Record<Language, Translations> = {
     audioVolume: 'Volume',
     audioVisualizer: 'Visualizer',
     audioExplain: 'Each character produces a unique note based on its ASCII code. A diverse password generates a varied melody, while a simple one sounds repetitive and monotone.',
+
+    // Cloud Auth & Sync
+    cloudTitle: 'PassGen Cloud',
+    cloudDesc: 'Sync your encrypted vault across devices. Zero-knowledge — the server never sees your passwords.',
+    cloudLogin: 'Login',
+    cloudRegister: 'Register',
+    cloudEmail: 'Email address',
+    cloudPassword: 'Cloud account password',
+    cloudConfirmPassword: 'Confirm password',
+    cloudLoginButton: 'Sign In',
+    cloudRegisterButton: 'Create Account',
+    cloudLoading: 'Processing...',
+    cloudOr: 'or',
+    cloudSkip: 'Continue without cloud (offline mode)',
+    cloudCheckEmail: 'Check your email to confirm your account.',
+    cloudAuthError: 'Authentication error. Please check your credentials.',
+    cloudPasswordMismatch: 'Passwords do not match.',
+    cloudPasswordTooShort: 'Password must be at least 6 characters.',
+    cloudZeroKnowledge: 'End-to-end encryption: all passwords are encrypted locally with AES-256-GCM before being sent to the cloud. The server only stores encrypted blobs.',
+    cloudSyncTitle: 'Cloud Sync',
+    cloudUpload: 'Upload vault to cloud',
+    cloudDownload: 'Download vault from cloud',
+    cloudLogout: 'Cloud logout',
+    cloudNoVault: 'No vault found in the cloud.',
+    cloudOffline: 'Offline',
+    cloudOfflineDesc: 'Offline mode — data is stored locally only. Configure Supabase for cloud sync.',
+    cloudAutoSync: 'Auto-sync',
+    cloudLastSync: 'Last synced',
+    cloudSynced: 'Synced',
+    cloudSyncError: 'Sync error',
 
   },
 };

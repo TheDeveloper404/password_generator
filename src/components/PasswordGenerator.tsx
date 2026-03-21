@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Copy, RefreshCw, Sun, Moon, Star, Trash2, Globe, KeyRound, Shield, Zap, Wifi, LogOut, Hash, Brain, Music, Map } from 'lucide-react';
+import type { User } from '@supabase/supabase-js';
 import {
   generatePassphrase,
   generatePassword,
@@ -22,6 +23,7 @@ import HashGenerator from './HashGenerator';
 import PasswordAnalyzer from './PasswordAnalyzer';
 import AudioPassphrase from './AudioPassphrase';
 import PasswordMap from './PasswordMap';
+import CloudSyncIndicator, { OfflineIndicator } from './auth/CloudSyncIndicator';
 import VaultView from './vault/VaultView';
 import HealthDashboard from './vault/HealthDashboard';
 import MasterPasswordSetup from './auth/MasterPasswordSetup';
@@ -72,6 +74,9 @@ interface PasswordGeneratorProps {
   masterPassword: string;
   darkMode: boolean;
   setDarkMode: (v: boolean | ((prev: boolean) => boolean)) => void;
+  cloudUser: User | null;
+  onCloudLogout: () => void;
+  onVaultDownloaded: (vault: VaultData) => void;
   onAddEntry: (entry: Partial<VaultEntry>) => void;
   onUpdateEntry: (id: string, updates: Partial<VaultEntry>) => void;
   onDeleteEntry: (id: string) => void;
@@ -92,6 +97,9 @@ export default function PasswordGenerator({
   masterPassword: masterPw,
   darkMode,
   setDarkMode,
+  cloudUser,
+  onCloudLogout,
+  onVaultDownloaded,
   onAddEntry,
   onUpdateEntry,
   onDeleteEntry,
@@ -388,6 +396,15 @@ export default function PasswordGenerator({
               {darkMode ? <Sun size={16} /> : <Moon size={16} />}
             </button>
             <div className={`h-5 w-px mx-0.5 hidden sm:block ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`} />
+            <CloudSyncIndicator
+              darkMode={darkMode}
+              vault={vault}
+              masterPassword={masterPw}
+              cloudUser={cloudUser}
+              onVaultDownloaded={onVaultDownloaded}
+              onCloudLogout={onCloudLogout}
+            />
+            <OfflineIndicator darkMode={darkMode} />
             <button
               onClick={() => { sessionStorage.removeItem('passgen_active_tab'); onLogout(); }}
               className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${darkMode ? 'hover:bg-red-500/10 text-gray-400 hover:text-red-400' : 'hover:bg-red-50 text-gray-500 hover:text-red-500'}`}
