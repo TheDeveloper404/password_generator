@@ -117,7 +117,7 @@ export interface Translations {
 export const translations: Record<Language, Translations> = {
   ro: {
     // PasswordGenerator
-    appTitle: 'Generator de Parole',
+    appTitle: 'PassGen',
     placeholderPassword: 'Apasă generate pentru a crea o parolă',
     placeholderPassphrase: 'Apasă generate pentru a crea o frază-parolă',
     copiedToClipboard: 'Copiat în clipboard!',
@@ -232,7 +232,7 @@ export const translations: Record<Language, Translations> = {
 
   en: {
     // PasswordGenerator
-    appTitle: 'Password Generator',
+    appTitle: 'PassGen',
     placeholderPassword: 'Click generate to create password',
     placeholderPassphrase: 'Click generate to create passphrase',
     copiedToClipboard: 'Copied to clipboard!',

@@ -375,7 +375,7 @@ export default function PasswordGenerator() {
         <div className="grid gap-4 lg:grid-cols-3 lg:flex-1 lg:min-h-0">
 
           {/* Column 1: Options + Strength + Generate */}
-          <div className="space-y-4 lg:overflow-y-auto lg:max-h-full">
+          <div className="flex flex-col gap-4 lg:overflow-y-auto lg:max-h-full">
             <div className={`rounded-2xl p-4 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
               <PasswordOptions
                 mode={mode}
@@ -415,25 +415,25 @@ export default function PasswordGenerator() {
           </div>
 
           {/* Column 2: Username Generator + Health Check */}
-          <div className="space-y-4 lg:overflow-y-auto lg:max-h-full">
+          <div className="flex flex-col gap-4 lg:overflow-y-auto lg:max-h-full">
             {/* Username Generator card */}
-            <div className={`rounded-2xl p-4 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+            <div className={`rounded-2xl p-4 flex-1 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
               <UsernameGenerator darkMode={darkMode} />
             </div>
 
             {/* Password Health Check card */}
-            <div className={`rounded-2xl p-4 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+            <div className={`rounded-2xl p-4 flex-1 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
               <PasswordHealthCheck darkMode={darkMode} generatedPassword={password} />
             </div>
 
             {/* Security Tips card */}
-            <div className={`rounded-2xl p-4 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+            <div className={`rounded-2xl p-4 flex-1 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
               <SecurityTips darkMode={darkMode} />
             </div>
           </div>
 
           {/* Column 3: History */}
-          <div className={`rounded-2xl p-4 lg:overflow-y-auto lg:max-h-full transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+          <div className={`rounded-2xl p-4 lg:overflow-y-auto lg:max-h-full lg:flex-1 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
             {copiedHistory.length === 0 && favorites.length === 0 && history.length === 0 ? (
               <div className={`flex flex-col items-center justify-center py-10 text-center ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
                 <Star size={28} className="mb-2 opacity-30" />
