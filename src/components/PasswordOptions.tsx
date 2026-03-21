@@ -25,7 +25,7 @@ interface PasswordOptionsProps {
 
 const PRESET_LABEL_KEYS: Record<string, keyof ReturnType<typeof import('../contexts/LanguageContext').useTranslation>['t']> = {
   wifi: 'presetWifi',
-  bank: 'presetBank',
+  banking: 'presetBank',
   social: 'presetSocial',
   pin: 'presetPin',
   memorable: 'presetMemorable',
