@@ -1,6 +1,6 @@
 # Password Generator
 
-A modern, interactive password generator built with React, TypeScript, and Tailwind CSS. Create secure passwords with customizable options and real-time strength visualization.
+A modern, interactive password generator built with React, TypeScript, and Tailwind CSS. Create secure passwords or passphrases with strong defaults, live analysis, and privacy-aware security checks.
 
 ## Features
 
@@ -9,8 +9,13 @@ A modern, interactive password generator built with React, TypeScript, and Tailw
 - **Dual Generation Modes**: Standard password mode + memorable passphrase mode
 - **Quick Presets**: Ready-made profiles (Wi-Fi, Banking, Social, PIN, Memorabil)
 - **Strength Insights**: Real-time strength label, entropy (bits), and crack-time estimate
+- **Entropy Targeting**: Re-generates candidates until entropy target is met (or best result is chosen)
 - **Policy Compliance Meter**: Checklist + percentage for enterprise-style requirements (length, uppercase, lowercase, number, symbol)
-- **History & Favorites**: Save, reuse, copy, and star generated values (stored locally)
+- **Password Health Check**: Analyze any entered/generated password with local security metrics
+- **Breach Check (k-anonymity)**: Checks if password appears in known leaks without sending full password
+- **Security Tips Live**: Dynamic recommendations based on strength, policy, entropy, and breach result
+- **History, Copied History & Favorites**: Save, reuse, copy, and star generated values (stored locally)
+- **Privacy Mode**: Clears and disables local history persistence for safer sessions
 - **Persistent Preferences**: Mode, options, theme, and history survive page reloads
 - **Keyboard Shortcuts**: `Space` to generate, `Ctrl/Cmd + C` to copy current output
 - **Dark/Light Mode**: Toggle between dark and light themes
@@ -59,15 +64,27 @@ npm run preview
 ```
 src/
 ├── components/
-│   ├── PasswordGenerator.tsx   # Main component
-│   ├── PasswordOptions.tsx    # Password configuration options
-│   └── StrengthIndicator.tsx  # Password strength visualization
+│   ├── PasswordGenerator.tsx    # Main orchestration component
+│   ├── PasswordHealthCheck.tsx  # Local health check + breach check UI
+│   ├── PasswordOptions.tsx      # Generator configuration options
+│   ├── PolicyIndicator.tsx      # Policy compliance meter
+│   ├── SecurityTips.tsx         # Live security recommendations
+│   └── StrengthIndicator.tsx    # Strength visualization
 ├── utils/
-│   ├── passwordUtils.ts       # Password generation logic
-│   └── strengthUtils.ts       # Strength calculation logic
-├── App.tsx                    # Root component
-└── main.tsx                   # Application entry point
+│   ├── breachUtils.ts          # HIBP k-anonymity breach checks
+│   ├── passwordUtils.ts        # Password/passphrase generation logic
+│   ├── policyUtils.ts          # Policy evaluation logic
+│   ├── securityTips.ts         # Live tips engine
+│   └── strengthUtils.ts        # Strength & entropy calculation logic
+├── App.tsx                     # Root component
+└── main.tsx                    # Application entry point
 ```
+
+## Security Notes
+
+- Breach checks use the Have I Been Pwned range API with SHA-1 hash prefix (k-anonymity model).
+- The full plaintext password is not sent during breach verification.
+- Health and policy checks run locally in the browser.
 
 ## License
 

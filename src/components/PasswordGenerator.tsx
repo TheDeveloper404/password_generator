@@ -13,6 +13,7 @@ import { DEFAULT_POLICY, evaluatePolicy } from '../utils/policyUtils';
 import StrengthIndicator from './StrengthIndicator';
 import PasswordOptions from './PasswordOptions';
 import PolicyIndicator from './PolicyIndicator';
+import PasswordHealthCheck from './PasswordHealthCheck';
 
 const STORAGE_KEYS = {
   darkMode: 'pg_dark_mode',
@@ -376,6 +377,12 @@ export default function PasswordGenerator() {
               >
                 {mode === 'password' ? 'Generate Password' : 'Generate Passphrase'}
               </button>
+
+              <PasswordHealthCheck
+                darkMode={darkMode}
+                minEntropy={minEntropy}
+                generatedPassword={password}
+              />
 
               {copiedHistory.length === 0 && favorites.length === 0 && history.length === 0 ? (
                 <div

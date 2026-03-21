@@ -1,4 +1,4 @@
-interface StrengthResult {
+export interface StrengthResult {
   score: number;
   label: string;
   entropy: number;
