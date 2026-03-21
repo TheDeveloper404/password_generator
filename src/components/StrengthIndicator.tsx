@@ -4,6 +4,8 @@ interface StrengthIndicatorProps {
   strength: {
     score: number;
     label: string;
+    entropy: number;
+    crackTime: string;
   };
   darkMode: boolean;
 }
@@ -39,6 +41,14 @@ export default function StrengthIndicator({ strength, darkMode }: StrengthIndica
           className={`h-full ${getColorClass(strength.score)} transition-all duration-300`}
           style={{ width: `${(strength.score + 1) * 20}%` }}
         />
+      </div>
+      <div className="grid grid-cols-2 gap-2 text-xs">
+        <div className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+          Entropy: <span className="font-semibold">{strength.entropy} bits</span>
+        </div>
+        <div className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} text-right`}>
+          Crack time: <span className="font-semibold">{strength.crackTime}</span>
+        </div>
       </div>
     </div>
   );
