@@ -8,6 +8,13 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // Apply dark mode immediately to prevent white flash
+      try {
+        var dm = JSON.parse(localStorage.getItem('pg_dark_mode'));
+        if (dm !== false) document.documentElement.classList.add('dark');
+      } catch(e) { document.documentElement.classList.add('dark'); }
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -29,6 +29,16 @@
   color-scheme: dark;
 }
 
+/* Prevent white flash between transitions */
+body {
+  background-color: #030712;
+}
+
+.dark body,
+html.dark body {
+  background-color: #030712;
+}
+
 @media (min-width: 1024px) {
   html,
   body,
