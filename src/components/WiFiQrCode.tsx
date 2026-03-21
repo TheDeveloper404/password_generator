@@ -56,7 +56,7 @@ export default function WiFiQrCode({ darkMode, generatedPassword }: WiFiQrCodePr
     } catch {
       setGenerated(false);
     }
-  }, [ssid, password, encryption, hidden, darkMode, buildWifiString]);
+  }, [ssid, password, encryption, darkMode, buildWifiString]);
 
   // Regenerate when inputs change and both fields are filled
   useEffect(() => {
