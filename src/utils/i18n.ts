@@ -112,6 +112,108 @@ export interface Translations {
   crackDays: (n: number) => string;
   crackYears: (n: number) => string;
   crackOver1000: string;
+
+  // Tabs
+  tabGenerator: string;
+  tabVault: string;
+  tabHealth: string;
+
+  // WelcomePage
+  welcomeSubtitle: string;
+  welcomeFeatureStrong: string;
+  welcomeFeatureSecurity: string;
+  welcomeFeatureUsername: string;
+  welcomeFeatureVault: string;
+  welcomeStart: string;
+  welcomeKeyboardHint: string;
+
+  // MasterPasswordSetup
+  setupTitle: string;
+  setupSubtitle: string;
+  setupWarning: string;
+  setupMasterPassword: string;
+  setupConfirm: string;
+  setupReqLength: string;
+  setupReqUppercase: string;
+  setupReqLowercase: string;
+  setupReqNumber: string;
+  setupReqSymbol: string;
+  setupMismatch: string;
+  setupButton: string;
+  setupLoading: string;
+  setupError: string;
+
+  // UnlockScreen
+  unlockSubtitle: string;
+  unlockMasterPassword: string;
+  unlockButton: string;
+  unlockLoading: string;
+  unlockWrongPassword: string;
+  unlockLockedOut: string;
+  unlockLockedOutTimer: (seconds: number) => string;
+  unlockError: string;
+  unlockForgot: string;
+  unlockResetWarning: string;
+  unlockResetConfirm: string;
+  unlockResetCancel: string;
+
+  // VaultView
+  vaultTitle: string;
+  vaultAdd: string;
+  vaultSearchPlaceholder: string;
+  vaultAllFolders: string;
+  vaultFavorites: string;
+  vaultEmpty: string;
+  vaultEmptyHint: string;
+  vaultNoResults: string;
+  vaultTryDifferentSearch: string;
+  vaultConfirmDelete: string;
+  vaultNewFolder: string;
+  vaultFolderPlaceholder: string;
+  vaultExport: string;
+  vaultImport: string;
+  vaultLock: string;
+  vaultExportPasswordPrompt: string;
+  vaultExportError: string;
+  vaultImportPasswordPrompt: string;
+  vaultImportSuccess: (count: number) => string;
+  vaultImportError: string;
+
+  // VaultEntryForm
+  vaultFormAddTitle: string;
+  vaultFormEditTitle: string;
+  vaultFormTitle: string;
+  vaultFormTitlePlaceholder: string;
+  vaultFormTitleRequired: string;
+  vaultFormUrl: string;
+  vaultFormUsername: string;
+  vaultFormUsernamePlaceholder: string;
+  vaultFormPassword: string;
+  vaultFormGenerate: string;
+  vaultFormFolder: string;
+  vaultFormTags: string;
+  vaultFormTagsPlaceholder: string;
+  vaultFormNotes: string;
+  vaultFormNotesPlaceholder: string;
+  vaultFormSave: string;
+  vaultFormUpdate: string;
+  vaultFormCancel: string;
+
+  // HealthDashboard
+  healthTitle: string;
+  healthNoEntries: string;
+  healthNoEntriesHint: string;
+  healthWeakPasswords: string;
+  healthReusedPasswords: string;
+  healthOldPasswords: string;
+  healthEmptyPasswords: string;
+  healthGroups: string;
+  healthScoreDesc: (totalEntries: number) => string;
+  healthRecommendations: string;
+  healthRecWeak: string;
+  healthRecReused: string;
+  healthRecOld: string;
+  healthRecEmpty: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -121,7 +223,7 @@ export const translations: Record<Language, Translations> = {
     placeholderPassword: 'Apasă generate pentru a crea o parolă',
     placeholderPassphrase: 'Apasă generate pentru a crea o frază-parolă',
     copiedToClipboard: 'Copiat în clipboard!',
-    shortcutHint: 'Shortcut: Space generează · Ctrl/Cmd+C copiază',
+    shortcutHint: 'Scurtătură: Space generează · Ctrl/Cmd+C copiază',
     switchToEn: 'Switch to English',
     switchToRo: 'Schimbă în Română',
     privacyMode: 'Mod privat',
@@ -146,7 +248,7 @@ export const translations: Record<Language, Translations> = {
     password: 'Parolă',
     passphrase: 'Frază',
     quickPresets: 'Preset-uri rapide',
-    minEntropyTarget: 'Entropy minimă țintă',
+    minEntropyTarget: 'Entropie minimă țintă',
     passwordLength: 'Lungime parolă',
     passwordOptions: 'Opțiuni parolă',
     includeUppercase: 'Include litere mari',
@@ -227,6 +329,108 @@ export const translations: Record<Language, Translations> = {
     crackDays: (n) => `${n} zile`,
     crackYears: (n) => `${n} ani`,
     crackOver1000: 'peste 1000 ani',
+
+    // Tabs
+    tabGenerator: 'Generator',
+    tabVault: 'Seif',
+    tabHealth: 'Sănătate',
+
+    // WelcomePage
+    welcomeSubtitle: 'Generează parole sigure, rapid și simplu',
+    welcomeFeatureStrong: 'Parole puternice',
+    welcomeFeatureSecurity: 'Analiza securității',
+    welcomeFeatureUsername: 'Generator username',
+    welcomeFeatureVault: 'Seif criptat',
+    welcomeStart: 'Începe',
+    welcomeKeyboardHint: 'sau apasă',
+
+    // MasterPasswordSetup
+    setupTitle: 'Creează Parola Principală',
+    setupSubtitle: 'Configurează parola principală pentru a-ți proteja seiful.',
+    setupWarning: 'Această parolă nu poate fi recuperată. Dacă o uiți, vei pierde accesul la toate datele din seif.',
+    setupMasterPassword: 'Parola principală',
+    setupConfirm: 'Confirmă parola',
+    setupReqLength: 'Minim 12 caractere',
+    setupReqUppercase: 'Cel puțin o literă mare',
+    setupReqLowercase: 'Cel puțin o literă mică',
+    setupReqNumber: 'Cel puțin o cifră',
+    setupReqSymbol: 'Cel puțin un simbol',
+    setupMismatch: 'Parolele nu se potrivesc',
+    setupButton: 'Creează Seiful',
+    setupLoading: 'Se creează...',
+    setupError: 'Eroare la crearea seifului. Încearcă din nou.',
+
+    // UnlockScreen
+    unlockSubtitle: 'Introdu parola principală pentru a debloca seiful.',
+    unlockMasterPassword: 'Parola principală',
+    unlockButton: 'Deblochează',
+    unlockLoading: 'Se deblochează...',
+    unlockWrongPassword: 'Parolă incorectă',
+    unlockLockedOut: 'Prea multe încercări. Cont blocat temporar.',
+    unlockLockedOutTimer: (s) => `Blocat. Reîncearcă în ${s}s`,
+    unlockError: 'Eroare la deblocare. Încearcă din nou.',
+    unlockForgot: 'Ai uitat parola?',
+    unlockResetWarning: 'Resetarea va șterge toate datele din seif definitiv!',
+    unlockResetConfirm: 'Resetează',
+    unlockResetCancel: 'Anulează',
+
+    // VaultView
+    vaultTitle: 'Seiful Meu',
+    vaultAdd: 'Adaugă',
+    vaultSearchPlaceholder: 'Caută în seif...',
+    vaultAllFolders: 'Toate',
+    vaultFavorites: 'Favorite',
+    vaultEmpty: 'Seiful este gol',
+    vaultEmptyHint: 'Adaugă prima ta intrare apăsând butonul +',
+    vaultNoResults: 'Niciun rezultat găsit',
+    vaultTryDifferentSearch: 'Încearcă un alt termen de căutare',
+    vaultConfirmDelete: 'Confirmă',
+    vaultNewFolder: 'Folder nou',
+    vaultFolderPlaceholder: 'Numele folderului...',
+    vaultExport: 'Exportă seiful',
+    vaultImport: 'Importă backup',
+    vaultLock: 'Blochează seiful',
+    vaultExportPasswordPrompt: 'Introdu o parolă pentru a cripta exportul:',
+    vaultExportError: 'Eroare la exportul seifului.',
+    vaultImportPasswordPrompt: 'Introdu parola de decriptare a backup-ului:',
+    vaultImportSuccess: (n) => `${n} intrări importate cu succes!`,
+    vaultImportError: 'Eroare la importul seifului.',
+
+    // VaultEntryForm
+    vaultFormAddTitle: 'Adaugă Intrare',
+    vaultFormEditTitle: 'Editează Intrare',
+    vaultFormTitle: 'Titlu',
+    vaultFormTitlePlaceholder: 'ex. Gmail, Facebook...',
+    vaultFormTitleRequired: 'Titlul este obligatoriu',
+    vaultFormUrl: 'URL',
+    vaultFormUsername: 'Username / Email',
+    vaultFormUsernamePlaceholder: 'utilizator@exemplu.com',
+    vaultFormPassword: 'Parolă',
+    vaultFormGenerate: 'Generează',
+    vaultFormFolder: 'Folder',
+    vaultFormTags: 'Etichete',
+    vaultFormTagsPlaceholder: 'email, social, muncă (separate prin virgulă)',
+    vaultFormNotes: 'Notițe',
+    vaultFormNotesPlaceholder: 'Notițe adiționale...',
+    vaultFormSave: 'Salvează',
+    vaultFormUpdate: 'Actualizează',
+    vaultFormCancel: 'Anulează',
+
+    // HealthDashboard
+    healthTitle: 'Sănătatea Seifului',
+    healthNoEntries: 'Nicio intrare în seif',
+    healthNoEntriesHint: 'Adaugă intrări în seif pentru a analiza securitatea.',
+    healthWeakPasswords: 'Parole slabe',
+    healthReusedPasswords: 'Parole reutilizate',
+    healthOldPasswords: 'Parole vechi',
+    healthEmptyPasswords: 'Parole lipsă',
+    healthGroups: 'grupuri',
+    healthScoreDesc: (n) => `Bazat pe analiza a ${n} intrări`,
+    healthRecommendations: 'Recomandări',
+    healthRecWeak: 'Schimbă parolele slabe cu altele generate de PassGen.',
+    healthRecReused: 'Folosește parole unice pentru fiecare cont.',
+    healthRecOld: 'Actualizează parolele mai vechi de 90 de zile.',
+    healthRecEmpty: 'Adaugă parole pentru intrările fără parolă.',
 
   },
 
@@ -342,6 +546,108 @@ export const translations: Record<Language, Translations> = {
     crackDays: (n) => `${n} days`,
     crackYears: (n) => `${n} years`,
     crackOver1000: 'over 1000 years',
+
+    // Tabs
+    tabGenerator: 'Generator',
+    tabVault: 'Vault',
+    tabHealth: 'Health',
+
+    // WelcomePage
+    welcomeSubtitle: 'Generate secure passwords, quickly and easily',
+    welcomeFeatureStrong: 'Strong passwords',
+    welcomeFeatureSecurity: 'Security analysis',
+    welcomeFeatureUsername: 'Username generator',
+    welcomeFeatureVault: 'Encrypted vault',
+    welcomeStart: 'Start',
+    welcomeKeyboardHint: 'or press',
+
+    // MasterPasswordSetup
+    setupTitle: 'Create Master Password',
+    setupSubtitle: 'Set up your master password to protect your vault.',
+    setupWarning: 'This password cannot be recovered. If you forget it, you will lose access to all vault data.',
+    setupMasterPassword: 'Master password',
+    setupConfirm: 'Confirm password',
+    setupReqLength: 'At least 12 characters',
+    setupReqUppercase: 'At least one uppercase letter',
+    setupReqLowercase: 'At least one lowercase letter',
+    setupReqNumber: 'At least one digit',
+    setupReqSymbol: 'At least one symbol',
+    setupMismatch: 'Passwords do not match',
+    setupButton: 'Create Vault',
+    setupLoading: 'Creating...',
+    setupError: 'Error creating vault. Please try again.',
+
+    // UnlockScreen
+    unlockSubtitle: 'Enter your master password to unlock the vault.',
+    unlockMasterPassword: 'Master password',
+    unlockButton: 'Unlock',
+    unlockLoading: 'Unlocking...',
+    unlockWrongPassword: 'Wrong password',
+    unlockLockedOut: 'Too many attempts. Temporarily locked.',
+    unlockLockedOutTimer: (s) => `Locked. Retry in ${s}s`,
+    unlockError: 'Error unlocking. Please try again.',
+    unlockForgot: 'Forgot password?',
+    unlockResetWarning: 'Resetting will permanently delete all vault data!',
+    unlockResetConfirm: 'Reset',
+    unlockResetCancel: 'Cancel',
+
+    // VaultView
+    vaultTitle: 'My Vault',
+    vaultAdd: 'Add',
+    vaultSearchPlaceholder: 'Search vault...',
+    vaultAllFolders: 'All',
+    vaultFavorites: 'Favorites',
+    vaultEmpty: 'Vault is empty',
+    vaultEmptyHint: 'Add your first entry using the + button',
+    vaultNoResults: 'No results found',
+    vaultTryDifferentSearch: 'Try a different search term',
+    vaultConfirmDelete: 'Confirm',
+    vaultNewFolder: 'New folder',
+    vaultFolderPlaceholder: 'Folder name...',
+    vaultExport: 'Export vault',
+    vaultImport: 'Import backup',
+    vaultLock: 'Lock vault',
+    vaultExportPasswordPrompt: 'Enter a password to encrypt the export:',
+    vaultExportError: 'Error exporting vault.',
+    vaultImportPasswordPrompt: 'Enter the backup decryption password:',
+    vaultImportSuccess: (n) => `${n} entries imported successfully!`,
+    vaultImportError: 'Error importing vault.',
+
+    // VaultEntryForm
+    vaultFormAddTitle: 'Add Entry',
+    vaultFormEditTitle: 'Edit Entry',
+    vaultFormTitle: 'Title',
+    vaultFormTitlePlaceholder: 'e.g. Gmail, Facebook...',
+    vaultFormTitleRequired: 'Title is required',
+    vaultFormUrl: 'URL',
+    vaultFormUsername: 'Username / Email',
+    vaultFormUsernamePlaceholder: 'user@example.com',
+    vaultFormPassword: 'Password',
+    vaultFormGenerate: 'Generate',
+    vaultFormFolder: 'Folder',
+    vaultFormTags: 'Tags',
+    vaultFormTagsPlaceholder: 'email, social, work (comma separated)',
+    vaultFormNotes: 'Notes',
+    vaultFormNotesPlaceholder: 'Additional notes...',
+    vaultFormSave: 'Save',
+    vaultFormUpdate: 'Update',
+    vaultFormCancel: 'Cancel',
+
+    // HealthDashboard
+    healthTitle: 'Vault Health',
+    healthNoEntries: 'No entries in vault',
+    healthNoEntriesHint: 'Add entries to your vault to analyze security.',
+    healthWeakPasswords: 'Weak passwords',
+    healthReusedPasswords: 'Reused passwords',
+    healthOldPasswords: 'Old passwords',
+    healthEmptyPasswords: 'Missing passwords',
+    healthGroups: 'groups',
+    healthScoreDesc: (n) => `Based on analysis of ${n} entries`,
+    healthRecommendations: 'Recommendations',
+    healthRecWeak: 'Replace weak passwords with ones generated by PassGen.',
+    healthRecReused: 'Use unique passwords for each account.',
+    healthRecOld: 'Update passwords older than 90 days.',
+    healthRecEmpty: 'Add passwords for entries without one.',
 
   },
 };

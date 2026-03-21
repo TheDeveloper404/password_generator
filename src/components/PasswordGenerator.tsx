@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Copy, RefreshCw, Sun, Moon, Star, Trash2, Globe } from 'lucide-react';
+import { Copy, RefreshCw, Sun, Moon, Star, Trash2, Globe, KeyRound, Shield, Zap } from 'lucide-react';
 import {
   generatePassphrase,
   generatePassword,
@@ -10,27 +10,26 @@ import {
 } from '../utils/passwordUtils';
 import { calculateStrength } from '../utils/strengthUtils';
 import { DEFAULT_POLICY, evaluatePolicy } from '../utils/policyUtils';
-import { Language, translations } from '../utils/i18n';
-import { LanguageContext } from '../contexts/LanguageContext';
+import { useTranslation } from '../contexts/LanguageContext';
 import StrengthIndicator from './StrengthIndicator';
 import PasswordOptions from './PasswordOptions';
 import PolicyIndicator from './PolicyIndicator';
 import UsernameGenerator from './UsernameGenerator';
 import PasswordHealthCheck from './PasswordHealthCheck';
 import SecurityTips from './SecurityTips';
+import VaultView from './vault/VaultView';
+import HealthDashboard from './vault/HealthDashboard';
+import type { VaultData, VaultEntry, MainTab } from '../types/vault';
 
 const STORAGE_KEYS = {
-  darkMode: 'pg_dark_mode',
   privacyMode: 'pg_privacy_mode',
   mode: 'pg_mode',
   minEntropy: 'pg_min_entropy',
   length: 'pg_length',
   options: 'pg_options',
   passphraseOptions: 'pg_passphrase_options',
-  history: 'pg_history',
   copiedHistory: 'pg_copied_history',
   favorites: 'pg_favorites',
-  lang: 'pg_lang',
 };
 
 const DEFAULT_OPTIONS: PasswordCharacterOptions = {
@@ -60,7 +59,33 @@ function getStoredValue<T>(key: string, fallback: T): T {
   }
 }
 
-export default function PasswordGenerator() {
+interface PasswordGeneratorProps {
+  vault: VaultData;
+  darkMode: boolean;
+  setDarkMode: (v: boolean | ((prev: boolean) => boolean)) => void;
+  onAddEntry: (entry: Partial<VaultEntry>) => void;
+  onUpdateEntry: (id: string, updates: Partial<VaultEntry>) => void;
+  onDeleteEntry: (id: string) => void;
+  onToggleFavorite: (id: string) => void;
+  onAddFolder: (name: string) => void;
+  onExport: () => void;
+  onImport: () => void;
+  onLock: () => void;
+}
+
+export default function PasswordGenerator({
+  vault,
+  darkMode,
+  setDarkMode,
+  onAddEntry,
+  onUpdateEntry,
+  onDeleteEntry,
+  onToggleFavorite,
+  onAddFolder,
+  onExport,
+  onImport,
+  onLock,
+}: PasswordGeneratorProps) {
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState<GeneratorMode>(() =>
     getStoredValue<GeneratorMode>(STORAGE_KEYS.mode, 'password')
@@ -73,11 +98,9 @@ export default function PasswordGenerator() {
   const [passphraseOptions, setPassphraseOptions] = useState<PassphraseOptions>(() =>
     getStoredValue<PassphraseOptions>(STORAGE_KEYS.passphraseOptions, DEFAULT_PASSPHRASE_OPTIONS)
   );
-  const [darkMode, setDarkMode] = useState(() => getStoredValue<boolean>(STORAGE_KEYS.darkMode, false));
   const [privacyMode, setPrivacyMode] = useState(() =>
     getStoredValue<boolean>(STORAGE_KEYS.privacyMode, false)
   );
-  const [history, setHistory] = useState<string[]>(() => getStoredValue<string[]>(STORAGE_KEYS.history, []));
   const [copiedHistory, setCopiedHistory] = useState<string[]>(() =>
     getStoredValue<string[]>(STORAGE_KEYS.copiedHistory, [])
   );
@@ -85,20 +108,9 @@ export default function PasswordGenerator() {
     getStoredValue<string[]>(STORAGE_KEYS.favorites, [])
   );
   const [copied, setCopied] = useState(false);
-  const [lang, setLang] = useState<Language>(() =>
-    getStoredValue<Language>(STORAGE_KEYS.lang, 'ro')
-  );
+  const [activeTab, setActiveTab] = useState<MainTab>('generator');
 
-  const t = translations[lang];
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', darkMode);
-    localStorage.setItem(STORAGE_KEYS.darkMode, JSON.stringify(darkMode));
-  }, [darkMode]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.lang, JSON.stringify(lang));
-  }, [lang]);
+  const { t, lang, setLang } = useTranslation();
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.mode, JSON.stringify(mode));
@@ -126,15 +138,6 @@ export default function PasswordGenerator() {
 
   useEffect(() => {
     if (privacyMode) {
-      localStorage.removeItem(STORAGE_KEYS.history);
-      return;
-    }
-
-    localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(history));
-  }, [history, privacyMode]);
-
-  useEffect(() => {
-    if (privacyMode) {
       localStorage.removeItem(STORAGE_KEYS.copiedHistory);
       return;
     }
@@ -156,10 +159,8 @@ export default function PasswordGenerator() {
       return;
     }
 
-    setHistory([]);
     setCopiedHistory([]);
     setFavorites([]);
-    localStorage.removeItem(STORAGE_KEYS.history);
     localStorage.removeItem(STORAGE_KEYS.copiedHistory);
     localStorage.removeItem(STORAGE_KEYS.favorites);
   }, [privacyMode]);
@@ -198,7 +199,6 @@ export default function PasswordGenerator() {
     const newPassword = selectedOutput || bestCandidate;
 
     setPassword(newPassword);
-    setHistory((previous) => [newPassword, ...previous.filter((item) => item !== newPassword)].slice(0, 50));
     setCopied(false);
   }, [length, minEntropy, mode, options, passphraseOptions]);
 
@@ -240,10 +240,6 @@ export default function PasswordGenerator() {
     setFavorites((previous) =>
       previous.includes(value) ? previous.filter((item) => item !== value) : [value, ...previous].slice(0, 20)
     );
-  };
-
-  const removeFromHistory = (value: string) => {
-    setHistory((previous) => previous.filter((item) => item !== value));
   };
 
   const removeFromCopiedHistory = (value: string) => {
@@ -293,7 +289,6 @@ export default function PasswordGenerator() {
   const policyResult = useMemo(() => evaluatePolicy(password, DEFAULT_POLICY, t), [password, t]);
 
   return (
-    <LanguageContext.Provider value={{ lang, t, setLang }}>
     <div className={`min-h-screen lg:h-screen lg:overflow-hidden transition-colors duration-300 ${darkMode ? 'dark bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950' : 'bg-gradient-to-br from-slate-50 via-white to-blue-50'}`}>
 
       {/* Top accent bar */}
@@ -305,11 +300,35 @@ export default function PasswordGenerator() {
         <header className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg shadow-blue-500/20">
-              <RefreshCw size={18} className="text-white" />
+              <Shield size={18} className="text-white" />
             </div>
             <h1 className={`text-lg lg:text-xl font-bold tracking-tight ${darkMode ? 'text-white' : 'text-gray-900'}`}>
               {t.appTitle}
             </h1>
+
+            {/* Tab navigation */}
+            <nav className={`hidden sm:flex items-center ml-4 gap-1 p-1 rounded-xl ${darkMode ? 'bg-gray-800/50' : 'bg-gray-100'}`}>
+              {([
+                { id: 'generator' as MainTab, icon: Zap, label: t.tabGenerator },
+                { id: 'vault' as MainTab, icon: KeyRound, label: t.tabVault },
+                { id: 'health' as MainTab, icon: Shield, label: t.tabHealth },
+              ]).map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    activeTab === tab.id
+                      ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-sm'
+                      : darkMode
+                        ? 'text-gray-400 hover:text-white hover:bg-white/5'
+                        : 'text-gray-500 hover:text-gray-700 hover:bg-white'
+                  }`}
+                >
+                  <tab.icon size={13} />
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
           </div>
           <div className="flex items-center gap-2">
             <label className={`hidden sm:flex items-center gap-1.5 text-xs cursor-pointer select-none ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
@@ -331,7 +350,7 @@ export default function PasswordGenerator() {
               {lang === 'ro' ? 'EN' : 'RO'}
             </button>
             <button
-              onClick={() => setDarkMode((current) => !current)}
+              onClick={() => setDarkMode((current: boolean) => !current)}
               className={`p-2 rounded-lg transition-all ${darkMode ? 'hover:bg-white/5 text-gray-400' : 'hover:bg-gray-100 text-gray-500'}`}
             >
               {darkMode ? <Sun size={16} /> : <Moon size={16} />}
@@ -339,6 +358,33 @@ export default function PasswordGenerator() {
           </div>
         </header>
 
+        {/* Mobile tab navigation */}
+        <nav className={`flex sm:hidden items-center gap-1 p-1 rounded-xl mb-4 ${darkMode ? 'bg-gray-800/50' : 'bg-gray-100'}`}>
+          {([
+            { id: 'generator' as MainTab, icon: Zap, label: t.tabGenerator },
+            { id: 'vault' as MainTab, icon: KeyRound, label: t.tabVault },
+            { id: 'health' as MainTab, icon: Shield, label: t.tabHealth },
+          ]).map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-xs font-medium transition-all ${
+                activeTab === tab.id
+                  ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-sm'
+                  : darkMode
+                    ? 'text-gray-400 hover:text-white'
+                    : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <tab.icon size={13} />
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+
+        {/* Tab Content */}
+        {activeTab === 'generator' && (
+          <div className="lg:flex lg:flex-col lg:flex-1 lg:min-h-0">
         {/* Password output bar */}
         <div className={`relative flex items-center rounded-xl mb-4 transition-all ${darkMode ? 'bg-gray-800/80 border border-gray-700/60 shadow-lg shadow-black/20' : 'bg-white border border-gray-200 shadow-sm'}`}>
           <div className="flex-1 px-5 py-3.5">
@@ -434,7 +480,7 @@ export default function PasswordGenerator() {
 
           {/* Column 3: History */}
           <div className={`rounded-2xl p-4 lg:overflow-y-auto lg:max-h-full lg:flex-1 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
-            {copiedHistory.length === 0 && favorites.length === 0 && history.length === 0 ? (
+            {copiedHistory.length === 0 && favorites.length === 0 ? (
               <div className={`flex flex-col items-center justify-center py-10 text-center ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
                 <Star size={28} className="mb-2 opacity-30" />
                 <p className="text-sm">{t.historyEmpty}</p>
@@ -516,63 +562,43 @@ export default function PasswordGenerator() {
                     </div>
                   </div>
                 )}
-
-                {history.length > 0 && (
-                  <div className="space-y-2">
-                    <h2 className={`text-xs font-semibold uppercase tracking-wider ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                      {t.historyRecent}
-                    </h2>
-                    <div className="space-y-1">
-                      {history.map((item) => (
-                        <div
-                          key={`history-${item}`}
-                          className={`group flex items-center justify-between rounded-lg px-3 py-2 transition-all ${
-                            darkMode ? 'hover:bg-gray-700/50 text-gray-200' : 'hover:bg-gray-50 text-gray-700'
-                          }`}
-                        >
-                          <button className="truncate text-left font-mono text-xs" onClick={() => setPassword(item)}>
-                            {item}
-                          </button>
-                          <div className="ml-2 flex items-center gap-0.5">
-                            <button
-                              className={`p-1 rounded-md ${darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`}
-                              onClick={() => void handleCopy(item)}
-                              title={t.copy}
-                            >
-                              <Copy size={12} />
-                            </button>
-                            <button
-                              className={`p-1 rounded-md ${
-                                favorites.includes(item)
-                                  ? 'text-amber-400'
-                                  : darkMode
-                                    ? 'text-gray-500'
-                                    : 'text-gray-400'
-                              } ${darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`}
-                              onClick={() => toggleFavorite(item)}
-                              title={t.toggleFavorite}
-                            >
-                              <Star size={12} fill={favorites.includes(item) ? 'currentColor' : 'none'} />
-                            </button>
-                            <button
-                              className={`p-1 rounded-md text-red-400 ${darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`}
-                              onClick={() => removeFromHistory(item)}
-                              title={t.removeFromHistory}
-                            >
-                              <Trash2 size={12} />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             )}
           </div>
         </div>
+          </div>
+        )}
+
+        {/* Vault Tab */}
+        {activeTab === 'vault' && (
+          <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto">
+            <div className={`rounded-2xl p-5 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+              <VaultView
+                darkMode={darkMode}
+                vault={vault}
+                onAddEntry={onAddEntry}
+                onUpdateEntry={onUpdateEntry}
+                onDeleteEntry={onDeleteEntry}
+                onToggleFavorite={onToggleFavorite}
+                onAddFolder={onAddFolder}
+                onExport={onExport}
+                onImport={onImport}
+                onLock={onLock}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Health Tab */}
+        {activeTab === 'health' && (
+          <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto">
+            <div className={`rounded-2xl p-5 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+              <HealthDashboard darkMode={darkMode} vault={vault} />
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
-    </LanguageContext.Provider>
   );
 }

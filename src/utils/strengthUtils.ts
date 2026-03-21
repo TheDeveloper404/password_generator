@@ -19,17 +19,17 @@ interface CrackTimeStrings {
 
 function formatCrackTime(seconds: number, t?: CrackTimeStrings): string {
   if (!t) {
-    if (seconds < 1) return '< 1 secundă';
-    if (seconds < 60) return `${Math.round(seconds)} secunde`;
+    if (seconds < 1) return '< 1 second';
+    if (seconds < 60) return `${Math.round(seconds)} seconds`;
     const minutes = seconds / 60;
-    if (minutes < 60) return `${Math.round(minutes)} minute`;
+    if (minutes < 60) return `${Math.round(minutes)} minutes`;
     const hours = minutes / 60;
-    if (hours < 24) return `${Math.round(hours)} ore`;
+    if (hours < 24) return `${Math.round(hours)} hours`;
     const days = hours / 24;
-    if (days < 365) return `${Math.round(days)} zile`;
+    if (days < 365) return `${Math.round(days)} days`;
     const years = days / 365;
-    if (years < 1000) return `${Math.round(years)} ani`;
-    return 'peste 1000 ani';
+    if (years < 1000) return `${Math.round(years)} years`;
+    return 'over 1000 years';
   }
 
   if (seconds < 1) return t.crackLessThan1s;
@@ -66,7 +66,7 @@ export function calculateStrength(
     : ['Very Weak', 'Weak', 'Medium', 'Strong', 'Very Strong'];
 
   if (!password) {
-    return { score: 0, label: strengthLabels[0], entropy: 0, crackTime: t ? t.crackLessThan1s : '< 1 secundă' };
+    return { score: 0, label: strengthLabels[0], entropy: 0, crackTime: t ? t.crackLessThan1s : '< 1 second' };
   }
 
   const poolSize = getCharacterPoolSize(password);

@@ -34,7 +34,7 @@ export function evaluatePolicy(password: string, policy: PasswordPolicy, t?: Tra
   const checks: PolicyCheck[] = [
     {
       key: 'length',
-      label: t ? t.policyMinLength(policy.minLength) : `Minim ${policy.minLength} caractere`,
+      label: t ? t.policyMinLength(policy.minLength) : `Minimum ${policy.minLength} characters`,
       passed: password.length >= policy.minLength,
     },
   ];
@@ -42,7 +42,7 @@ export function evaluatePolicy(password: string, policy: PasswordPolicy, t?: Tra
   if (policy.requireUppercase) {
     checks.push({
       key: 'uppercase',
-      label: t ? t.policyUppercase : 'Cel puțin o literă mare',
+      label: t ? t.policyUppercase : 'At least one uppercase letter',
       passed: /[A-Z]/.test(password),
     });
   }
@@ -50,7 +50,7 @@ export function evaluatePolicy(password: string, policy: PasswordPolicy, t?: Tra
   if (policy.requireLowercase) {
     checks.push({
       key: 'lowercase',
-      label: t ? t.policyLowercase : 'Cel puțin o literă mică',
+      label: t ? t.policyLowercase : 'At least one lowercase letter',
       passed: /[a-z]/.test(password),
     });
   }
@@ -58,7 +58,7 @@ export function evaluatePolicy(password: string, policy: PasswordPolicy, t?: Tra
   if (policy.requireNumbers) {
     checks.push({
       key: 'numbers',
-      label: t ? t.policyDigit : 'Cel puțin o cifră',
+      label: t ? t.policyDigit : 'At least one digit',
       passed: /[0-9]/.test(password),
     });
   }
@@ -66,7 +66,7 @@ export function evaluatePolicy(password: string, policy: PasswordPolicy, t?: Tra
   if (policy.requireSymbols) {
     checks.push({
       key: 'symbols',
-      label: t ? t.policySymbol : 'Cel puțin un simbol',
+      label: t ? t.policySymbol : 'At least one symbol',
       passed: /[^A-Za-z0-9]/.test(password),
     });
   }

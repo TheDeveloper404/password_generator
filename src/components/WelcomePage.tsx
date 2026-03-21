@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Shield, ArrowRight, Lock, Key, Fingerprint } from 'lucide-react';
+import { useTranslation } from '../contexts/LanguageContext';
 
 interface WelcomePageProps {
   onEnter: () => void;
@@ -7,6 +8,7 @@ interface WelcomePageProps {
 
 export default function WelcomePage({ onEnter }: WelcomePageProps) {
   const [mounted, setMounted] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 50);
@@ -49,13 +51,13 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
             PassGen
           </h1>
           <p className="max-w-md text-lg font-light text-gray-400 sm:text-xl">
-            Generează parole sigure, rapid și simplu
+            {t.welcomeSubtitle}
           </p>
         </div>
 
         {/* Features */}
         <div className={`flex flex-wrap justify-center gap-3 transition-all duration-1000 delay-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-          {['Parole puternice', 'Analiza securității', 'Generator username'].map((feature) => (
+          {[t.welcomeFeatureStrong, t.welcomeFeatureSecurity, t.welcomeFeatureUsername, t.welcomeFeatureVault].map((feature) => (
             <span
               key={feature}
               className="px-4 py-1.5 rounded-full text-xs font-medium bg-white/5 text-gray-300 border border-white/10"
@@ -70,13 +72,13 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
           onClick={onEnter}
           className={`group flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold text-lg transition-all duration-500 delay-700 shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/40 hover:scale-105 active:scale-[0.98] ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
         >
-          Începe
+          {t.welcomeStart}
           <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
         </button>
 
         {/* Keyboard hint */}
         <p className={`text-xs text-gray-600 transition-all duration-1000 delay-1000 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
-          sau apasă <kbd className="px-2 py-0.5 rounded bg-white/5 border border-white/10 font-mono text-gray-400">Enter</kbd>
+          {t.welcomeKeyboardHint} <kbd className="px-2 py-0.5 rounded bg-white/5 border border-white/10 font-mono text-gray-400">Enter</kbd>
         </p>
       </div>
 
