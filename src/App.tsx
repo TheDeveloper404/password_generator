@@ -158,6 +158,8 @@ function App() {
   // ─── Screen Transitions ────────────────────────────────────────────
 
   const handleWelcomeEnter = useCallback(async () => {
+    // Welcome page is always dark-themed, so ensure main app starts dark too
+    setDarkMode(true);
     setTransitioning(true);
     setWelcomeVisible(false);
 
