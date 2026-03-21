@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState, useRef } from 'react';
 import PasswordGenerator from './components/PasswordGenerator';
 import WelcomePage from './components/WelcomePage';
-import MasterPasswordSetup from './components/auth/MasterPasswordSetup';
-import UnlockScreen from './components/auth/UnlockScreen';
 import type { AppScreen, VaultData } from './types/vault';
 import {
   setupMasterPassword,
@@ -58,6 +56,7 @@ function App() {
   const [vault, setVault] = useState<VaultData | null>(null);
   const [masterPassword, setMasterPassword] = useState<string>('');
   const [vaultSalt, setVaultSalt] = useState<Uint8Array<ArrayBuffer> | null>(null);
+  const [vaultConfigured, setVaultConfigured] = useState(false);
   const [loading, setLoading] = useState(true);
   const [lang, setLang] = useState<Language>(getStoredLang);
   const [darkMode, setDarkMode] = useState(getStoredDarkMode);
@@ -79,6 +78,7 @@ function App() {
     void (async () => {
       try {
         const hasVault = await isVaultSetUp();
+        setVaultConfigured(hasVault);
         if (hasVault) {
           // Try to restore session (survives refresh)
           const session = restoreSession();
@@ -88,15 +88,10 @@ function App() {
               setMasterPassword(session.masterPassword);
               setVaultSalt(result.salt);
               setVault(result.vault);
-              setScreen('main');
-              setWelcomeVisible(false);
-              setTransitioning(true);
-              setLoading(false);
-              return;
             }
           }
-          // Vault exists but no active session → go to unlock
-          setScreen('unlock');
+          // Skip welcome, go straight to main
+          setScreen('main');
           setWelcomeVisible(false);
           setTransitioning(true);
         } else {
@@ -120,8 +115,8 @@ function App() {
     setVault(null);
     setMasterPassword('');
     setVaultSalt(null);
-    setScreen('unlock');
     clearSession();
+    // Stay on main screen — generator still works, vault/health show unlock
   }, []);
 
   // Auto-lock on inactivity
@@ -166,10 +161,8 @@ function App() {
     setTransitioning(true);
     setWelcomeVisible(false);
 
-    const hasVault = await isVaultSetUp();
-
     setTimeout(() => {
-      setScreen(hasVault ? 'unlock' : 'setup');
+      setScreen('main');
     }, 700);
   }, []);
 
@@ -190,12 +183,12 @@ function App() {
     const { salt } = await setupMasterPassword(password);
     setMasterPassword(password);
     setVaultSalt(salt);
+    setVaultConfigured(true);
 
     // Load the newly created empty vault
     const result = await verifyAndUnlock(password);
     if (result) {
       setVault(result.vault);
-      setScreen('main');
       saveSession(password, salt);
     }
   };
@@ -207,7 +200,6 @@ function App() {
     setMasterPassword(password);
     setVaultSalt(result.salt);
     setVault(result.vault);
-    setScreen('main');
     saveSession(password, result.salt);
     return true;
   };
@@ -217,8 +209,8 @@ function App() {
     setVault(null);
     setMasterPassword('');
     setVaultSalt(null);
+    setVaultConfigured(false);
     clearSession();
-    setScreen('setup');
   };
 
   // ─── Vault CRUD Handlers ────────────────────────────────────────────
@@ -319,32 +311,12 @@ function App() {
         </div>
       )}
 
-      {/* Setup screen */}
-      {screen === 'setup' && (
-        <div className="animate-fadeIn">
-          <MasterPasswordSetup
-            darkMode={darkMode}
-            onSetup={(pw) => handleSetup(pw)}
-          />
-        </div>
-      )}
-
-      {/* Unlock screen */}
-      {screen === 'unlock' && (
-        <div className="animate-fadeIn">
-          <UnlockScreen
-            darkMode={darkMode}
-            onUnlock={handleUnlock}
-            onReset={() => void handleReset()}
-          />
-        </div>
-      )}
-
-      {/* Main app */}
-      {screen === 'main' && vault && (
+      {/* Main app — always rendered when screen is 'main' */}
+      {screen === 'main' && (
         <div className="animate-fadeIn">
           <PasswordGenerator
             vault={vault}
+            vaultConfigured={vaultConfigured}
             darkMode={darkMode}
             setDarkMode={setDarkMode}
             onAddEntry={handleAddEntry}
@@ -355,6 +327,9 @@ function App() {
             onExport={() => void handleExport()}
             onImport={handleImport}
             onLock={handleLock}
+            onSetup={(pw) => handleSetup(pw)}
+            onUnlock={handleUnlock}
+            onReset={() => void handleReset()}
           />
         </div>
       )}

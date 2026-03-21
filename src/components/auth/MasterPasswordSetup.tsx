@@ -5,9 +5,10 @@ import { useTranslation } from '../../contexts/LanguageContext';
 interface MasterPasswordSetupProps {
   darkMode: boolean;
   onSetup: (password: string) => Promise<void>;
+  inline?: boolean;
 }
 
-export default function MasterPasswordSetup({ darkMode, onSetup }: MasterPasswordSetupProps) {
+export default function MasterPasswordSetup({ darkMode, onSetup, inline }: MasterPasswordSetupProps) {
   const { t } = useTranslation();
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -44,7 +45,7 @@ export default function MasterPasswordSetup({ darkMode, onSetup }: MasterPasswor
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${darkMode ? 'bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950' : 'bg-gradient-to-br from-slate-50 via-white to-blue-50'}`}>
+    <div className={inline ? 'flex items-center justify-center py-8' : `min-h-screen flex items-center justify-center transition-colors duration-300 ${darkMode ? 'bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950' : 'bg-gradient-to-br from-slate-50 via-white to-blue-50'}`}>
       <div className="w-full max-w-md px-6">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">

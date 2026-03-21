@@ -69,8 +69,6 @@ export interface VaultExport {
 /** Application state machine */
 export type AppScreen =
   | 'welcome'
-  | 'setup'
-  | 'unlock'
   | 'main';
 
 /** Main app tabs */

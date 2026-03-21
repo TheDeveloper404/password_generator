@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Shield, Eye, EyeOff, AlertTriangle, Lock } from 'lucide-react';
+import { Shield, Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import { useTranslation } from '../../contexts/LanguageContext';
 import { isLockedOut, getRemainingLockoutMs, getFailedAttempts } from '../../services/authService';
 import { MAX_UNLOCK_ATTEMPTS } from '../../crypto/constants';
@@ -8,9 +8,10 @@ interface UnlockScreenProps {
   darkMode: boolean;
   onUnlock: (password: string) => Promise<boolean>;
   onReset: () => void;
+  inline?: boolean;
 }
 
-export default function UnlockScreen({ darkMode, onUnlock, onReset }: UnlockScreenProps) {
+export default function UnlockScreen({ darkMode, onUnlock, onReset, inline }: UnlockScreenProps) {
   const { t } = useTranslation();
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -59,17 +60,12 @@ export default function UnlockScreen({ darkMode, onUnlock, onReset }: UnlockScre
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${darkMode ? 'bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950' : 'bg-gradient-to-br from-slate-50 via-white to-blue-50'}`}>
+    <div className={inline ? 'flex items-center justify-center py-8' : `min-h-screen flex items-center justify-center transition-colors duration-300 ${darkMode ? 'bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950' : 'bg-gradient-to-br from-slate-50 via-white to-blue-50'}`}>
       <div className="w-full max-w-md px-6">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="relative">
-            <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-xl shadow-blue-500/25 mb-4">
-              <Shield size={32} className="text-white" />
-            </div>
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center shadow-lg">
-              <Lock size={12} className="text-white" />
-            </div>
+          <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-xl shadow-blue-500/25 mb-4">
+            <Shield size={32} className="text-white" />
           </div>
           <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mt-2">
             PassGen

@@ -19,6 +19,8 @@ import PasswordHealthCheck from './PasswordHealthCheck';
 import SecurityTips from './SecurityTips';
 import VaultView from './vault/VaultView';
 import HealthDashboard from './vault/HealthDashboard';
+import MasterPasswordSetup from './auth/MasterPasswordSetup';
+import UnlockScreen from './auth/UnlockScreen';
 import type { VaultData, VaultEntry, MainTab } from '../types/vault';
 
 const STORAGE_KEYS = {
@@ -60,7 +62,8 @@ function getStoredValue<T>(key: string, fallback: T): T {
 }
 
 interface PasswordGeneratorProps {
-  vault: VaultData;
+  vault: VaultData | null;
+  vaultConfigured: boolean;
   darkMode: boolean;
   setDarkMode: (v: boolean | ((prev: boolean) => boolean)) => void;
   onAddEntry: (entry: Partial<VaultEntry>) => void;
@@ -71,10 +74,14 @@ interface PasswordGeneratorProps {
   onExport: () => void;
   onImport: () => void;
   onLock: () => void;
+  onSetup: (password: string) => Promise<void>;
+  onUnlock: (password: string) => Promise<boolean>;
+  onReset: () => void;
 }
 
 export default function PasswordGenerator({
   vault,
+  vaultConfigured,
   darkMode,
   setDarkMode,
   onAddEntry,
@@ -85,6 +92,9 @@ export default function PasswordGenerator({
   onExport,
   onImport,
   onLock,
+  onSetup,
+  onUnlock,
+  onReset,
 }: PasswordGeneratorProps) {
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState<GeneratorMode>(() =>
@@ -572,29 +582,59 @@ export default function PasswordGenerator({
         {/* Vault Tab */}
         {activeTab === 'vault' && (
           <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto">
-            <div className={`rounded-2xl p-5 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
-              <VaultView
+            {vault ? (
+              <div className={`rounded-2xl p-5 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+                <VaultView
+                  darkMode={darkMode}
+                  vault={vault}
+                  onAddEntry={onAddEntry}
+                  onUpdateEntry={onUpdateEntry}
+                  onDeleteEntry={onDeleteEntry}
+                  onToggleFavorite={onToggleFavorite}
+                  onAddFolder={onAddFolder}
+                  onExport={onExport}
+                  onImport={onImport}
+                  onLock={onLock}
+                />
+              </div>
+            ) : vaultConfigured ? (
+              <UnlockScreen
                 darkMode={darkMode}
-                vault={vault}
-                onAddEntry={onAddEntry}
-                onUpdateEntry={onUpdateEntry}
-                onDeleteEntry={onDeleteEntry}
-                onToggleFavorite={onToggleFavorite}
-                onAddFolder={onAddFolder}
-                onExport={onExport}
-                onImport={onImport}
-                onLock={onLock}
+                onUnlock={onUnlock}
+                onReset={onReset}
+                inline
               />
-            </div>
+            ) : (
+              <MasterPasswordSetup
+                darkMode={darkMode}
+                onSetup={onSetup}
+                inline
+              />
+            )}
           </div>
         )}
 
         {/* Health Tab */}
         {activeTab === 'health' && (
           <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto">
-            <div className={`rounded-2xl p-5 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
-              <HealthDashboard darkMode={darkMode} vault={vault} />
-            </div>
+            {vault ? (
+              <div className={`rounded-2xl p-5 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+                <HealthDashboard darkMode={darkMode} vault={vault} />
+              </div>
+            ) : vaultConfigured ? (
+              <UnlockScreen
+                darkMode={darkMode}
+                onUnlock={onUnlock}
+                onReset={onReset}
+                inline
+              />
+            ) : (
+              <MasterPasswordSetup
+                darkMode={darkMode}
+                onSetup={onSetup}
+                inline
+              />
+            )}
           </div>
         )}
 
