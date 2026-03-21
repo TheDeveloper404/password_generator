@@ -116,6 +116,7 @@ function App() {
     setMasterPassword('');
     setVaultSalt(null);
     clearSession();
+    sessionStorage.removeItem('passgen_active_tab');
     // Stay on main screen — generator still works, vault/health show unlock
   }, []);
 
