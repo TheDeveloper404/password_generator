@@ -151,8 +151,8 @@ export default function PasswordHealthCheck({ darkMode, minEntropy, generatedPas
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <h3 className={`text-base font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Password Health Check</h3>
-          <p className={`text-xs mt-0.5 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-            Analiză locală + breach check prin k-anonymity.
+          <p className={`text-xs mt-0.5 leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+            Verifică securitatea unei parole: puterea, conformitatea cu politica și dacă a apărut în breșe de date cunoscute (via <span className="font-medium">Have I Been Pwned</span>, k-anonymity — parola nu este trimisă).
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -241,8 +241,11 @@ export default function PasswordHealthCheck({ darkMode, minEntropy, generatedPas
         <div className={`rounded-md px-3 py-2 ${darkMode ? 'bg-gray-700 text-gray-200' : 'bg-gray-100 text-gray-700'}`}>
           Strength: <span className="font-semibold">{effectiveLabel}</span>
         </div>
-        <div className={`rounded-md px-3 py-2 ${darkMode ? 'bg-gray-700 text-gray-200' : 'bg-gray-100 text-gray-700'}`}>
+        <div className={`rounded-md px-3 py-2 group relative ${darkMode ? 'bg-gray-700 text-gray-200' : 'bg-gray-100 text-gray-700'}`}>
           Entropy: <span className="font-semibold">{strength.entropy} bits</span>
+          <div className={`absolute bottom-full left-0 mb-1.5 z-10 w-56 rounded-md border p-2.5 text-[11px] leading-relaxed shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity ${darkMode ? 'bg-gray-800 border-gray-600 text-gray-300' : 'bg-white border-gray-200 text-gray-600'}`}>
+            <span className="font-semibold">Entropy</span> măsoară imprevizibilitatea parolei în biți. Cu cât valoarea e mai mare, cu atât parola e mai greu de spart. Minim recomandat: 60 biți.
+          </div>
         </div>
         <div className={`rounded-md px-3 py-2 ${darkMode ? 'bg-gray-700 text-gray-200' : 'bg-gray-100 text-gray-700'}`}>
           Policy: <span className="font-semibold">{policy.compliancePercent}%</span>

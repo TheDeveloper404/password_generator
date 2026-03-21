@@ -344,7 +344,7 @@ export default function PasswordGenerator() {
           </div>
 
           <div className="grid gap-4 lg:grid-cols-2 lg:items-start lg:gap-6 lg:flex-1 lg:min-h-0">
-            <div className={`space-y-4 rounded-xl border p-4 lg:overflow-hidden lg:pr-1 ${darkMode ? 'border-gray-700 bg-gray-800/40' : 'border-gray-200 bg-gray-50/70'}`}>
+            <div className={`space-y-4 rounded-xl border p-4 lg:overflow-y-auto lg:pr-1 ${darkMode ? 'border-gray-700 bg-gray-800/40' : 'border-gray-200 bg-gray-50/70'}`}>
               <PasswordOptions
                 mode={mode}
                 setMode={setMode}
@@ -360,9 +360,15 @@ export default function PasswordGenerator() {
                 onApplyPreset={handleApplyPreset}
                 darkMode={darkMode}
               />
+
+              <PasswordHealthCheck
+                darkMode={darkMode}
+                minEntropy={minEntropy}
+                generatedPassword={password}
+              />
             </div>
 
-            <div className={`space-y-4 rounded-xl border p-4 lg:overflow-hidden lg:pl-1 ${darkMode ? 'border-gray-700 bg-gray-800/40' : 'border-gray-200 bg-gray-50/70'}`}>
+            <div className={`space-y-4 rounded-xl border p-4 lg:overflow-y-auto lg:pl-1 ${darkMode ? 'border-gray-700 bg-gray-800/40' : 'border-gray-200 bg-gray-50/70'}`}>
               <div className={`rounded-lg border p-3 space-y-3 ${darkMode ? 'border-gray-700 bg-gray-800/60' : 'border-gray-200 bg-white'}`}>
                 <StrengthIndicator strength={strength} darkMode={darkMode} />
                 <div className="text-xs">
@@ -379,12 +385,6 @@ export default function PasswordGenerator() {
               >
                 {mode === 'password' ? 'Generate Password' : 'Generate Passphrase'}
               </button>
-
-              <PasswordHealthCheck
-                darkMode={darkMode}
-                minEntropy={minEntropy}
-                generatedPassword={password}
-              />
 
               {copiedHistory.length === 0 && favorites.length === 0 && history.length === 0 ? (
                 <div
