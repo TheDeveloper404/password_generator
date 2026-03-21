@@ -89,6 +89,14 @@ export interface Translations {
   usernameGenerate: string;
   usernameCopy: string;
 
+  // SecurityTips
+  securityTipsTitle: string;
+  tipUniquePasswords: string;
+  tipMinLength: string;
+  tipNoPersonalInfo: string;
+  tipUseManager: string;
+  tipEnable2FA: string;
+
   // Strength labels
   veryWeak: string;
   weak: string;
@@ -196,6 +204,14 @@ export const translations: Record<Language, Translations> = {
     usernameGenerate: 'Generează Username-uri',
     usernameCopy: 'Copiază',
 
+    // SecurityTips
+    securityTipsTitle: 'Sfaturi de Securitate',
+    tipUniquePasswords: 'Folosește o parolă unică pentru fiecare cont. Reutilizarea parolelor compromite toate conturile.',
+    tipMinLength: 'Parolele de minim 16 caractere sunt mult mai greu de spart. Cu cât mai lungă, cu atât mai sigură.',
+    tipNoPersonalInfo: 'Nu include date personale (nume, dată naștere, email). Acestea sunt primele încercate de atacatori.',
+    tipUseManager: 'Folosește un manager de parole pentru a stoca și genera parole complexe în siguranță.',
+    tipEnable2FA: 'Activează autentificarea în doi pași (2FA) oriunde este posibil pentru protecție suplimentară.',
+
     // Strength labels
     veryWeak: 'Foarte Slabă',
     weak: 'Slabă',
@@ -302,6 +318,14 @@ export const translations: Record<Language, Translations> = {
     usernameLastName: 'Last name',
     usernameGenerate: 'Generate Usernames',
     usernameCopy: 'Copy',
+
+    // SecurityTips
+    securityTipsTitle: 'Security Tips',
+    tipUniquePasswords: 'Use a unique password for each account. Reusing passwords compromises all your accounts.',
+    tipMinLength: 'Passwords with at least 16 characters are much harder to crack. The longer, the safer.',
+    tipNoPersonalInfo: 'Don\'t include personal info (name, birthdate, email). These are the first things attackers try.',
+    tipUseManager: 'Use a password manager to securely store and generate complex passwords.',
+    tipEnable2FA: 'Enable two-factor authentication (2FA) wherever possible for extra protection.',
 
     // Strength labels
     veryWeak: 'Very Weak',

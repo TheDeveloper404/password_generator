@@ -17,6 +17,7 @@ import PasswordOptions from './PasswordOptions';
 import PolicyIndicator from './PolicyIndicator';
 import UsernameGenerator from './UsernameGenerator';
 import PasswordHealthCheck from './PasswordHealthCheck';
+import SecurityTips from './SecurityTips';
 
 const STORAGE_KEYS = {
   darkMode: 'pg_dark_mode',
@@ -197,7 +198,7 @@ export default function PasswordGenerator() {
     const newPassword = selectedOutput || bestCandidate;
 
     setPassword(newPassword);
-    setHistory((previous) => [newPassword, ...previous.filter((item) => item !== newPassword)].slice(0, 10));
+    setHistory((previous) => [newPassword, ...previous.filter((item) => item !== newPassword)].slice(0, 50));
     setCopied(false);
   }, [length, minEntropy, mode, options, passphraseOptions]);
 
@@ -207,7 +208,7 @@ export default function PasswordGenerator() {
     }
 
     await navigator.clipboard.writeText(value);
-    setCopiedHistory((previous) => [value, ...previous.filter((item) => item !== value)].slice(0, 15));
+    setCopiedHistory((previous) => [value, ...previous.filter((item) => item !== value)].slice(0, 30));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }, [password]);
@@ -424,6 +425,11 @@ export default function PasswordGenerator() {
             <div className={`rounded-2xl p-4 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
               <PasswordHealthCheck darkMode={darkMode} generatedPassword={password} />
             </div>
+
+            {/* Security Tips card */}
+            <div className={`rounded-2xl p-4 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+              <SecurityTips darkMode={darkMode} />
+            </div>
           </div>
 
           {/* Column 3: History */}
@@ -441,7 +447,7 @@ export default function PasswordGenerator() {
                       {t.historyCopied}
                     </h2>
                     <div className="space-y-1">
-                      {copiedHistory.slice(0, 4).map((item) => (
+                      {copiedHistory.map((item) => (
                         <div
                           key={`copied-${item}`}
                           className={`group flex items-center justify-between rounded-lg px-3 py-2 transition-all ${
@@ -479,7 +485,7 @@ export default function PasswordGenerator() {
                       {t.historyFavorites}
                     </h2>
                     <div className="space-y-1">
-                      {favorites.slice(0, 4).map((item) => (
+                      {favorites.map((item) => (
                         <div
                           key={`fav-${item}`}
                           className={`group flex items-center justify-between rounded-lg px-3 py-2 transition-all ${
@@ -517,7 +523,7 @@ export default function PasswordGenerator() {
                       {t.historyRecent}
                     </h2>
                     <div className="space-y-1">
-                      {history.slice(0, 6).map((item) => (
+                      {history.map((item) => (
                         <div
                           key={`history-${item}`}
                           className={`group flex items-center justify-between rounded-lg px-3 py-2 transition-all ${
