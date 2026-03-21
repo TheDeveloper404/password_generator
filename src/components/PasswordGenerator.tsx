@@ -15,7 +15,7 @@ import { LanguageContext } from '../contexts/LanguageContext';
 import StrengthIndicator from './StrengthIndicator';
 import PasswordOptions from './PasswordOptions';
 import PolicyIndicator from './PolicyIndicator';
-import PasswordHealthCheck from './PasswordHealthCheck';
+import UsernameGenerator from './UsernameGenerator';
 
 const STORAGE_KEYS = {
   darkMode: 'pg_dark_mode',
@@ -390,7 +390,7 @@ export default function PasswordGenerator() {
               />
             </div>
 
-            {/* Column 2: Strength + Policy + Generate + Health Check */}
+            {/* Column 2: Strength + Policy + Generate */}
             <div className={`space-y-3 rounded-xl border p-3 lg:overflow-y-auto lg:max-h-full ${darkMode ? 'border-gray-700 bg-gray-800/40' : 'border-gray-200 bg-gray-50/70'}`}>
               <div className={`rounded-lg border p-3 space-y-3 ${darkMode ? 'border-gray-700 bg-gray-800/60' : 'border-gray-200 bg-white'}`}>
                 <StrengthIndicator strength={strength} darkMode={darkMode} />
@@ -409,11 +409,9 @@ export default function PasswordGenerator() {
                 {mode === 'password' ? t.generatePassword : t.generatePassphrase}
               </button>
 
-              <PasswordHealthCheck
-                darkMode={darkMode}
-                minEntropy={minEntropy}
-                generatedPassword={password}
-              />
+              <div className={`rounded-lg border p-3 ${darkMode ? 'border-gray-700 bg-gray-800/60' : 'border-gray-200 bg-white'}`}>
+                <UsernameGenerator darkMode={darkMode} />
+              </div>
             </div>
 
             {/* Column 3: History & Favorites */}
