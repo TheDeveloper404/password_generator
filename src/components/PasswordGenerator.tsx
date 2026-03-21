@@ -279,9 +279,9 @@ export default function PasswordGenerator() {
   const policyResult = useMemo(() => evaluatePolicy(password, DEFAULT_POLICY), [password]);
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'dark bg-gray-900' : 'bg-gray-100'} transition-colors duration-200`}>
-      <div className="container mx-auto px-4 py-8 lg:py-10 max-w-6xl">
-        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-xl p-5 lg:p-6 space-y-5`}>
+    <div className={`min-h-screen lg:h-screen lg:overflow-hidden ${darkMode ? 'dark bg-gray-900' : 'bg-gray-100'} transition-colors duration-200`}>
+      <div className="container mx-auto max-w-6xl px-3 py-4 lg:h-full lg:px-4 lg:py-4">
+        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-xl p-4 lg:p-5 space-y-4 lg:h-full lg:flex lg:flex-col`}>
           <div className="flex justify-between items-center">
             <h1 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
               Password Generator
@@ -343,8 +343,8 @@ export default function PasswordGenerator() {
             </label>
           </div>
 
-          <div className="grid gap-5 lg:grid-cols-12 lg:items-start lg:gap-8">
-            <div className="space-y-5 lg:col-span-7">
+          <div className="grid gap-4 lg:grid-cols-12 lg:items-start lg:gap-6 lg:flex-1 lg:min-h-0">
+            <div className="space-y-4 lg:col-span-7 lg:overflow-hidden">
               <PasswordOptions
                 mode={mode}
                 setMode={setMode}
@@ -362,7 +362,7 @@ export default function PasswordGenerator() {
               />
             </div>
 
-            <div className="space-y-4 lg:col-span-5 lg:max-h-[calc(100vh-14rem)] lg:overflow-y-auto lg:pr-1">
+            <div className="space-y-3 lg:col-span-5 lg:overflow-hidden lg:pr-1">
               <StrengthIndicator strength={strength} darkMode={darkMode} />
               <div className="-mt-2 text-xs">
                 <span className={`${strength.entropy >= minEntropy ? 'text-green-500' : 'text-amber-500'}`}>
@@ -401,7 +401,7 @@ export default function PasswordGenerator() {
                       <h2 className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
                         Istoric copiate
                       </h2>
-                      <div className="space-y-2 max-h-48 overflow-y-auto">
+                      <div className="space-y-2 max-h-36 overflow-hidden">
                         {copiedHistory.map((item) => (
                           <div
                             key={`copied-${item}`}
@@ -441,7 +441,7 @@ export default function PasswordGenerator() {
                       <h2 className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
                         Favorite
                       </h2>
-                      <div className="space-y-2 max-h-40 overflow-y-auto">
+                      <div className="space-y-2 max-h-32 overflow-hidden">
                         {favorites.slice(0, 5).map((item) => (
                           <div
                             key={`fav-${item}`}
@@ -481,7 +481,7 @@ export default function PasswordGenerator() {
                       <h2 className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
                         Istoric recent
                       </h2>
-                      <div className="space-y-2 max-h-56 overflow-y-auto">
+                      <div className="space-y-2 max-h-40 overflow-hidden">
                         {history.map((item) => (
                           <div
                             key={`history-${item}`}

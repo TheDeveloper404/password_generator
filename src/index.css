@@ -11,3 +11,12 @@
 .dark {
   color-scheme: dark;
 }
+
+@media (min-width: 1024px) {
+  html,
+  body,
+  #root {
+    height: 100%;
+    overflow: hidden;
+  }
+}
