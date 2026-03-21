@@ -95,7 +95,10 @@ function App() {
               return;
             }
           }
-          setScreen('welcome');
+          // Vault exists but no active session → go to unlock
+          setScreen('unlock');
+          setWelcomeVisible(false);
+          setTransitioning(true);
         } else {
           setScreen('welcome');
         }
