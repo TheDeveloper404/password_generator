@@ -293,10 +293,11 @@ export default function PasswordGenerator() {
   return (
     <LanguageContext.Provider value={{ lang, t, setLang }}>
     <div className={`min-h-screen lg:h-screen lg:overflow-hidden ${darkMode ? 'dark bg-gray-900' : 'bg-gray-100'} transition-colors duration-200`}>
-      <div className="container mx-auto max-w-7xl px-3 py-4 lg:h-full lg:px-4 lg:py-4">
-        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-xl p-4 lg:p-5 space-y-4 lg:h-full lg:flex lg:flex-col`}>
+      <div className="mx-auto max-w-7xl px-3 py-4 lg:h-full lg:max-w-[1600px] lg:px-6 lg:py-3">
+        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-xl p-4 lg:p-5 space-y-3 lg:h-full lg:flex lg:flex-col`}>
+          {/* Header row */}
           <div className="flex justify-between items-center">
-            <h1 className={`text-2xl lg:text-[30px] leading-tight font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            <h1 className={`text-xl lg:text-2xl leading-tight font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
               {t.appTitle}
             </h1>
             <div className="flex items-center gap-1">
@@ -312,24 +313,25 @@ export default function PasswordGenerator() {
                 onClick={() => setDarkMode((current) => !current)}
                 className={`p-2 rounded-full ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}
               >
-                {darkMode ? <Sun className="text-white" /> : <Moon className="text-gray-900" />}
+                {darkMode ? <Sun className="text-white" size={20} /> : <Moon className="text-gray-900" size={20} />}
               </button>
             </div>
           </div>
 
-          <div className={`relative flex items-center ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} p-4 rounded-lg`}>
+          {/* Password display */}
+          <div className={`relative flex items-center ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} p-3 rounded-lg`}>
             <input
               type="text"
               value={password}
               readOnly
-              className={`w-full pr-20 bg-transparent border-none focus:ring-0 text-lg ${
+              className={`w-full pr-20 bg-transparent border-none focus:ring-0 text-lg font-mono tracking-wide ${
                 darkMode ? 'text-white' : 'text-gray-900'
               }`}
               placeholder={
                 mode === 'password' ? t.placeholderPassword : t.placeholderPassphrase
               }
             />
-            <div className="absolute right-4 flex space-x-2">
+            <div className="absolute right-3 flex space-x-1">
               <button
                 onClick={() => void handleCopy()}
                 className={`p-2 rounded-md transition-colors ${
@@ -337,7 +339,7 @@ export default function PasswordGenerator() {
                 } ${copied ? 'text-green-500' : darkMode ? 'text-white' : 'text-gray-600'}`}
                 title="Copy to clipboard"
               >
-                <Copy size={20} />
+                <Copy size={18} />
               </button>
               <button
                 onClick={handleGenerate}
@@ -346,11 +348,12 @@ export default function PasswordGenerator() {
                 } ${darkMode ? 'text-white' : 'text-gray-600'}`}
                 title="Generate new password"
               >
-                <RefreshCw size={20} />
+                <RefreshCw size={18} />
               </button>
             </div>
           </div>
 
+          {/* Info bar */}
           <div className="flex items-center justify-between text-xs">
             <span className={`${copied ? 'text-green-500' : darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
               {copied ? t.copiedToClipboard : t.shortcutHint}
@@ -366,8 +369,10 @@ export default function PasswordGenerator() {
             </label>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-2 lg:items-start lg:gap-6 lg:flex-1 lg:min-h-0">
-            <div className={`space-y-4 rounded-xl border p-4 lg:overflow-y-auto lg:pr-1 ${darkMode ? 'border-gray-700 bg-gray-800/40' : 'border-gray-200 bg-gray-50/70'}`}>
+          {/* 3-column wide layout on desktop */}
+          <div className="grid gap-4 lg:grid-cols-3 lg:items-start lg:gap-4 lg:flex-1 lg:min-h-0">
+            {/* Column 1: Generator Options */}
+            <div className={`space-y-3 rounded-xl border p-3 lg:overflow-y-auto lg:max-h-full ${darkMode ? 'border-gray-700 bg-gray-800/40' : 'border-gray-200 bg-gray-50/70'}`}>
               <PasswordOptions
                 mode={mode}
                 setMode={setMode}
@@ -383,15 +388,10 @@ export default function PasswordGenerator() {
                 onApplyPreset={handleApplyPreset}
                 darkMode={darkMode}
               />
-
-              <PasswordHealthCheck
-                darkMode={darkMode}
-                minEntropy={minEntropy}
-                generatedPassword={password}
-              />
             </div>
 
-            <div className={`space-y-4 rounded-xl border p-4 lg:overflow-y-auto lg:pl-1 ${darkMode ? 'border-gray-700 bg-gray-800/40' : 'border-gray-200 bg-gray-50/70'}`}>
+            {/* Column 2: Strength + Policy + Generate + Health Check */}
+            <div className={`space-y-3 rounded-xl border p-3 lg:overflow-y-auto lg:max-h-full ${darkMode ? 'border-gray-700 bg-gray-800/40' : 'border-gray-200 bg-gray-50/70'}`}>
               <div className={`rounded-lg border p-3 space-y-3 ${darkMode ? 'border-gray-700 bg-gray-800/60' : 'border-gray-200 bg-white'}`}>
                 <StrengthIndicator strength={strength} darkMode={darkMode} />
                 <div className="text-xs">
@@ -404,11 +404,20 @@ export default function PasswordGenerator() {
 
               <button
                 onClick={handleGenerate}
-                className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
+                className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
               >
                 {mode === 'password' ? t.generatePassword : t.generatePassphrase}
               </button>
 
+              <PasswordHealthCheck
+                darkMode={darkMode}
+                minEntropy={minEntropy}
+                generatedPassword={password}
+              />
+            </div>
+
+            {/* Column 3: History & Favorites */}
+            <div className={`space-y-3 rounded-xl border p-3 lg:overflow-y-auto lg:max-h-full ${darkMode ? 'border-gray-700 bg-gray-800/40' : 'border-gray-200 bg-gray-50/70'}`}>
               {copiedHistory.length === 0 && favorites.length === 0 && history.length === 0 ? (
                 <div
                   className={`rounded-lg px-4 py-6 text-sm border ${
@@ -426,15 +435,15 @@ export default function PasswordGenerator() {
                       <h2 className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
                         {t.historyCopied}
                       </h2>
-                      <div className="space-y-2">
+                      <div className="space-y-1.5">
                         {copiedHistory.slice(0, 3).map((item) => (
                           <div
                             key={`copied-${item}`}
-                            className={`rounded-md px-3 py-2 text-sm flex items-center justify-between ${
+                            className={`rounded-md px-3 py-1.5 text-sm flex items-center justify-between ${
                               darkMode ? 'bg-gray-700 text-gray-100' : 'bg-gray-100 text-gray-800'
                             }`}
                           >
-                            <button className="truncate text-left" onClick={() => setPassword(item)}>
+                            <button className="truncate text-left font-mono text-xs" onClick={() => setPassword(item)}>
                               {item}
                             </button>
                             <div className="ml-2 flex items-center gap-1">
@@ -443,7 +452,7 @@ export default function PasswordGenerator() {
                                 onClick={() => void handleCopy(item)}
                                 title="Copy again"
                               >
-                                <Copy size={14} />
+                                <Copy size={13} />
                               </button>
                               <button
                                 className={`p-1 rounded text-red-500 ${
@@ -452,7 +461,7 @@ export default function PasswordGenerator() {
                                 onClick={() => removeFromCopiedHistory(item)}
                                 title="Remove from copied history"
                               >
-                                <Trash2 size={14} />
+                                <Trash2 size={13} />
                               </button>
                             </div>
                           </div>
@@ -466,15 +475,15 @@ export default function PasswordGenerator() {
                       <h2 className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
                         {t.historyFavorites}
                       </h2>
-                      <div className="space-y-2">
+                      <div className="space-y-1.5">
                         {favorites.slice(0, 3).map((item) => (
                           <div
                             key={`fav-${item}`}
-                            className={`rounded-md px-3 py-2 text-sm flex items-center justify-between ${
+                            className={`rounded-md px-3 py-1.5 text-sm flex items-center justify-between ${
                               darkMode ? 'bg-gray-700 text-gray-100' : 'bg-gray-100 text-gray-800'
                             }`}
                           >
-                            <button className="truncate text-left" onClick={() => setPassword(item)}>
+                            <button className="truncate text-left font-mono text-xs" onClick={() => setPassword(item)}>
                               {item}
                             </button>
                             <div className="ml-2 flex items-center gap-1">
@@ -483,7 +492,7 @@ export default function PasswordGenerator() {
                                 onClick={() => void handleCopy(item)}
                                 title="Copy"
                               >
-                                <Copy size={14} />
+                                <Copy size={13} />
                               </button>
                               <button
                                 className={`p-1 rounded text-yellow-500 ${
@@ -492,7 +501,7 @@ export default function PasswordGenerator() {
                                 onClick={() => toggleFavorite(item)}
                                 title="Remove favorite"
                               >
-                                <Star size={14} fill="currentColor" />
+                                <Star size={13} fill="currentColor" />
                               </button>
                             </div>
                           </div>
@@ -506,15 +515,15 @@ export default function PasswordGenerator() {
                       <h2 className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
                         {t.historyRecent}
                       </h2>
-                      <div className="space-y-2">
-                        {history.slice(0, 4).map((item) => (
+                      <div className="space-y-1.5">
+                        {history.slice(0, 5).map((item) => (
                           <div
                             key={`history-${item}`}
-                            className={`rounded-md px-3 py-2 text-sm flex items-center justify-between ${
+                            className={`rounded-md px-3 py-1.5 text-sm flex items-center justify-between ${
                               darkMode ? 'bg-gray-700 text-gray-100' : 'bg-gray-100 text-gray-800'
                             }`}
                           >
-                            <button className="truncate text-left" onClick={() => setPassword(item)}>
+                            <button className="truncate text-left font-mono text-xs" onClick={() => setPassword(item)}>
                               {item}
                             </button>
                             <div className="ml-2 flex items-center gap-1">
@@ -523,7 +532,7 @@ export default function PasswordGenerator() {
                                 onClick={() => void handleCopy(item)}
                                 title="Copy"
                               >
-                                <Copy size={14} />
+                                <Copy size={13} />
                               </button>
                               <button
                                 className={`p-1 rounded ${
@@ -536,7 +545,7 @@ export default function PasswordGenerator() {
                                 onClick={() => toggleFavorite(item)}
                                 title="Toggle favorite"
                               >
-                                <Star size={14} fill={favorites.includes(item) ? 'currentColor' : 'none'} />
+                                <Star size={13} fill={favorites.includes(item) ? 'currentColor' : 'none'} />
                               </button>
                               <button
                                 className={`p-1 rounded text-red-500 ${
@@ -545,7 +554,7 @@ export default function PasswordGenerator() {
                                 onClick={() => removeFromHistory(item)}
                                 title="Remove from history"
                               >
-                                <Trash2 size={14} />
+                                <Trash2 size={13} />
                               </button>
                             </div>
                           </div>
