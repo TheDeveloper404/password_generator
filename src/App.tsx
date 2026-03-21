@@ -257,6 +257,11 @@ function App() {
   const handleLogout = useCallback(() => {
     // Lock vault if unlocked
     handleLock();
+    // Sign out from Supabase (clears persisted session)
+    if (isCloudEnabled && supabase) {
+      void supabase.auth.signOut();
+    }
+    setCloudUser(null);
     // Clear saved tab so refresh after logout goes to Generator
     sessionStorage.removeItem('passgen_active_tab');
     // Transition back to welcome
