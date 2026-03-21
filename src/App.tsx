@@ -168,6 +168,15 @@ function App() {
     }, 700);
   }, []);
 
+  const handleLogout = useCallback(() => {
+    // Lock vault if unlocked
+    handleLock();
+    // Transition back to welcome
+    setWelcomeVisible(true);
+    setTransitioning(false);
+    setScreen('welcome');
+  }, [handleLock]);
+
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (screen === 'welcome' && e.key === 'Enter') {
@@ -332,6 +341,7 @@ function App() {
             onSetup={(pw) => handleSetup(pw)}
             onUnlock={handleUnlock}
             onReset={() => void handleReset()}
+            onLogout={handleLogout}
           />
         </div>
       )}

@@ -115,8 +115,12 @@ export interface Translations {
 
   // Tabs
   tabGenerator: string;
+  tabWifi: string;
   tabVault: string;
   tabHealth: string;
+
+  // Logout
+  logout: string;
 
   // WelcomePage
   welcomeSubtitle: string;
@@ -357,8 +361,12 @@ export const translations: Record<Language, Translations> = {
 
     // Tabs
     tabGenerator: 'Generator',
+    tabWifi: 'WiFi QR',
     tabVault: 'Seif',
     tabHealth: 'Sănătate',
+
+    // Logout
+    logout: 'Ieșire',
 
     // WelcomePage
     welcomeSubtitle: 'Generează parole sigure, rapid și simplu',
@@ -599,8 +607,12 @@ export const translations: Record<Language, Translations> = {
 
     // Tabs
     tabGenerator: 'Generator',
+    tabWifi: 'WiFi QR',
     tabVault: 'Vault',
     tabHealth: 'Health',
+
+    // Logout
+    logout: 'Logout',
 
     // WelcomePage
     welcomeSubtitle: 'Generate secure passwords, quickly and easily',

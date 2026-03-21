@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Copy, RefreshCw, Sun, Moon, Star, Trash2, Globe, KeyRound, Shield, Zap } from 'lucide-react';
+import { Copy, RefreshCw, Sun, Moon, Star, Trash2, Globe, KeyRound, Shield, Zap, Wifi, LogOut } from 'lucide-react';
 import {
   generatePassphrase,
   generatePassword,
@@ -78,6 +78,7 @@ interface PasswordGeneratorProps {
   onSetup: (password: string) => Promise<void>;
   onUnlock: (password: string) => Promise<boolean>;
   onReset: () => void;
+  onLogout: () => void;
 }
 
 export default function PasswordGenerator({
@@ -96,6 +97,7 @@ export default function PasswordGenerator({
   onSetup,
   onUnlock,
   onReset,
+  onLogout,
 }: PasswordGeneratorProps) {
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState<GeneratorMode>(() =>
@@ -321,6 +323,7 @@ export default function PasswordGenerator({
             <nav className={`hidden sm:flex items-center ml-4 gap-1 p-1 rounded-xl ${darkMode ? 'bg-gray-800/50' : 'bg-gray-100'}`}>
               {([
                 { id: 'generator' as MainTab, icon: Zap, label: t.tabGenerator },
+                { id: 'wifi' as MainTab, icon: Wifi, label: t.tabWifi },
                 { id: 'vault' as MainTab, icon: KeyRound, label: t.tabVault },
                 { id: 'health' as MainTab, icon: Shield, label: t.tabHealth },
               ]).map((tab) => (
@@ -366,6 +369,15 @@ export default function PasswordGenerator({
             >
               {darkMode ? <Sun size={16} /> : <Moon size={16} />}
             </button>
+            <div className={`h-5 w-px mx-0.5 hidden sm:block ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`} />
+            <button
+              onClick={onLogout}
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${darkMode ? 'hover:bg-red-500/10 text-gray-400 hover:text-red-400' : 'hover:bg-red-50 text-gray-500 hover:text-red-500'}`}
+              title={t.logout}
+            >
+              <LogOut size={14} />
+              <span className="hidden md:inline">{t.logout}</span>
+            </button>
           </div>
         </header>
 
@@ -373,6 +385,7 @@ export default function PasswordGenerator({
         <nav className={`flex sm:hidden items-center gap-1 p-1 rounded-xl mb-4 ${darkMode ? 'bg-gray-800/50' : 'bg-gray-100'}`}>
           {([
             { id: 'generator' as MainTab, icon: Zap, label: t.tabGenerator },
+            { id: 'wifi' as MainTab, icon: Wifi, label: t.tabWifi },
             { id: 'vault' as MainTab, icon: KeyRound, label: t.tabVault },
             { id: 'health' as MainTab, icon: Shield, label: t.tabHealth },
           ]).map((tab) => (
@@ -488,10 +501,6 @@ export default function PasswordGenerator({
               <SecurityTips darkMode={darkMode} />
             </div>
 
-            {/* WiFi QR Code card */}
-            <div className={`rounded-2xl p-4 flex-1 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
-              <WiFiQrCode darkMode={darkMode} generatedPassword={password} />
-            </div>
           </div>
 
           {/* Column 3: History */}
@@ -582,6 +591,17 @@ export default function PasswordGenerator({
             )}
           </div>
         </div>
+          </div>
+        )}
+
+        {/* WiFi QR Tab */}
+        {activeTab === 'wifi' && (
+          <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto">
+            <div className="max-w-lg mx-auto">
+              <div className={`rounded-2xl p-6 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+                <WiFiQrCode darkMode={darkMode} generatedPassword={password} />
+              </div>
+            </div>
           </div>
         )}
 
