@@ -214,6 +214,15 @@ export interface Translations {
   healthRecReused: string;
   healthRecOld: string;
   healthRecEmpty: string;
+
+  // Session persistence
+  sessionSettings: string;
+  sessionTimeout: string;
+  sessionDisabled: string;
+  sessionMinutes: (n: number) => string;
+  sessionHour: string;
+  sessionActive: string;
+  sessionExpires: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -432,6 +441,15 @@ export const translations: Record<Language, Translations> = {
     healthRecOld: 'Actualizează parolele mai vechi de 90 de zile.',
     healthRecEmpty: 'Adaugă parole pentru intrările fără parolă.',
 
+    // Session persistence
+    sessionSettings: 'Sesiune',
+    sessionTimeout: 'Păstrează deblocat',
+    sessionDisabled: 'Dezactivat (se blochează la refresh)',
+    sessionMinutes: (n: number) => `${n} minute`,
+    sessionHour: '1 oră',
+    sessionActive: 'Sesiune activă',
+    sessionExpires: 'Expiră la',
+
   },
 
   en: {
@@ -648,6 +666,15 @@ export const translations: Record<Language, Translations> = {
     healthRecReused: 'Use unique passwords for each account.',
     healthRecOld: 'Update passwords older than 90 days.',
     healthRecEmpty: 'Add passwords for entries without one.',
+
+    // Session persistence
+    sessionSettings: 'Session',
+    sessionTimeout: 'Stay unlocked',
+    sessionDisabled: 'Disabled (locks on refresh)',
+    sessionMinutes: (n: number) => `${n} minutes`,
+    sessionHour: '1 hour',
+    sessionActive: 'Session active',
+    sessionExpires: 'Expires at',
 
   },
 };

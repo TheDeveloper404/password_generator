@@ -70,13 +70,13 @@ function resetAttempts(): void {
  */
 export async function setupMasterPassword(
   masterPassword: string,
-): Promise<{ salt: Uint8Array }> {
+): Promise<{ salt: Uint8Array<ArrayBuffer> }> {
   // Generate unique salt for this user
   const salt = generateSalt();
 
   // Derive verifier hash (NOT the encryption key — separate derivation path)
   // We use a different salt suffix to ensure verifier ≠ encryption key
-  const verifierSalt = new Uint8Array(salt.length);
+  const verifierSalt = new Uint8Array(salt.length) as Uint8Array<ArrayBuffer>;
   verifierSalt.set(salt);
   // XOR the last byte to create a distinct salt for verifier
   verifierSalt[verifierSalt.length - 1] ^= 0x01;
@@ -123,7 +123,7 @@ export async function setupMasterPassword(
  */
 export async function verifyAndUnlock(
   masterPassword: string,
-): Promise<{ vault: VaultData; salt: Uint8Array } | null> {
+): Promise<{ vault: VaultData; salt: Uint8Array<ArrayBuffer> } | null> {
   if (isLockedOut()) {
     return null;
   }
@@ -134,7 +134,7 @@ export async function verifyAndUnlock(
   }
 
   // Derive verifier with the same salt transformation
-  const verifierSalt = new Uint8Array(authData.salt.length);
+  const verifierSalt = new Uint8Array(authData.salt.length) as Uint8Array<ArrayBuffer>;
   verifierSalt.set(authData.salt);
   verifierSalt[verifierSalt.length - 1] ^= 0x01;
 
@@ -186,7 +186,7 @@ export async function changeMasterPassword(
   const newSalt = generateSalt();
 
   // Create new verifier
-  const verifierSalt = new Uint8Array(newSalt.length);
+  const verifierSalt = new Uint8Array(newSalt.length) as Uint8Array<ArrayBuffer>;
   verifierSalt.set(newSalt);
   verifierSalt[verifierSalt.length - 1] ^= 0x01;
 

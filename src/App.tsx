@@ -28,6 +28,12 @@ import { wipeAllData } from './db/indexedDB';
 import { AUTO_LOCK_TIMEOUT_MS } from './crypto/constants';
 import { Language, translations } from './utils/i18n';
 import { LanguageContext } from './contexts/LanguageContext';
+import {
+  saveSession,
+  restoreSession,
+  clearSession,
+  refreshSession,
+} from './services/sessionService';
 
 function getStoredLang(): Language {
   try {
@@ -51,7 +57,7 @@ function App() {
   const [welcomeVisible, setWelcomeVisible] = useState(true);
   const [vault, setVault] = useState<VaultData | null>(null);
   const [masterPassword, setMasterPassword] = useState<string>('');
-  const [vaultSalt, setVaultSalt] = useState<Uint8Array | null>(null);
+  const [vaultSalt, setVaultSalt] = useState<Uint8Array<ArrayBuffer> | null>(null);
   const [loading, setLoading] = useState(true);
   const [lang, setLang] = useState<Language>(getStoredLang);
   const [darkMode, setDarkMode] = useState(getStoredDarkMode);
@@ -68,12 +74,27 @@ function App() {
     localStorage.setItem('pg_dark_mode', JSON.stringify(darkMode));
   }, [darkMode]);
 
-  // Check if vault is set up on mount
+  // Check if vault is set up on mount + try session restore
   useEffect(() => {
     void (async () => {
       try {
         const hasVault = await isVaultSetUp();
         if (hasVault) {
+          // Try to restore session (survives refresh)
+          const session = restoreSession();
+          if (session) {
+            const result = await verifyAndUnlock(session.masterPassword);
+            if (result) {
+              setMasterPassword(session.masterPassword);
+              setVaultSalt(result.salt);
+              setVault(result.vault);
+              setScreen('main');
+              setWelcomeVisible(false);
+              setTransitioning(true);
+              setLoading(false);
+              return;
+            }
+          }
           setScreen('welcome');
         } else {
           setScreen('welcome');
@@ -91,6 +112,15 @@ function App() {
     document.documentElement.classList.toggle('dark', darkMode);
   }, [darkMode]);
 
+  // Lock handler (defined early so resetAutoLock can reference it)
+  const handleLock = useCallback(() => {
+    setVault(null);
+    setMasterPassword('');
+    setVaultSalt(null);
+    setScreen('unlock');
+    clearSession();
+  }, []);
+
   // Auto-lock on inactivity
   const resetAutoLock = useCallback(() => {
     if (autoLockTimer.current) {
@@ -101,13 +131,16 @@ function App() {
         handleLock();
       }, AUTO_LOCK_TIMEOUT_MS);
     }
-  }, [vault, masterPassword]);
+  }, [vault, masterPassword, handleLock]);
 
   useEffect(() => {
     if (!vault) return;
 
     const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
-    const handler = () => resetAutoLock();
+    const handler = () => {
+      resetAutoLock();
+      refreshSession();
+    };
     events.forEach((e) => window.addEventListener(e, handler, { passive: true }));
     resetAutoLock();
 
@@ -160,6 +193,7 @@ function App() {
     if (result) {
       setVault(result.vault);
       setScreen('main');
+      saveSession(password, salt);
     }
   };
 
@@ -171,21 +205,16 @@ function App() {
     setVaultSalt(result.salt);
     setVault(result.vault);
     setScreen('main');
+    saveSession(password, result.salt);
     return true;
   };
-
-  const handleLock = useCallback(() => {
-    setVault(null);
-    setMasterPassword('');
-    setVaultSalt(null);
-    setScreen('unlock');
-  }, []);
 
   const handleReset = async () => {
     await wipeAllData();
     setVault(null);
     setMasterPassword('');
     setVaultSalt(null);
+    clearSession();
     setScreen('setup');
   };
 

@@ -18,10 +18,17 @@ import {
   KeyRound,
   Lock,
   FolderPlus,
+  Timer,
 } from 'lucide-react';
 import { useTranslation } from '../../contexts/LanguageContext';
 import type { VaultData, VaultEntry } from '../../types/vault';
 import { filterEntries, getAllTags, type VaultFilter } from '../../services/vaultService';
+import {
+  getSessionTimeout,
+  setSessionTimeout,
+  SESSION_TIMEOUT_OPTIONS,
+  type SessionTimeout,
+} from '../../services/sessionService';
 import VaultEntryForm from './VaultEntryForm';
 import { generatePassword } from '../../utils/passwordUtils';
 
@@ -191,6 +198,9 @@ export default function VaultView({
                   >
                     <Upload size={13} /> {t.vaultImport}
                   </button>
+                  <div className={`h-px ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`} />
+                  {/* Session timeout selector */}
+                  <SessionTimeoutSelector darkMode={darkMode} />
                   <div className={`h-px ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`} />
                   <button
                     onClick={() => { onLock(); setShowActionsMenu(false); }}
@@ -402,6 +412,53 @@ export default function VaultView({
           })}
         </div>
       )}
+    </div>
+  );
+}
+
+// ─── Session Timeout Selector ──────────────────────────────────────
+
+function SessionTimeoutSelector({ darkMode }: { darkMode: boolean }) {
+  const { t } = useTranslation();
+  const [timeout, setTimeoutVal] = useState<SessionTimeout>(getSessionTimeout);
+
+  const handleChange = (value: SessionTimeout) => {
+    setTimeoutVal(value);
+    setSessionTimeout(value);
+  };
+
+  const getLabel = (minutes: SessionTimeout): string => {
+    if (minutes === 0) return t.sessionDisabled;
+    if (minutes === 60) return t.sessionHour;
+    return t.sessionMinutes(minutes);
+  };
+
+  return (
+    <div className={`px-3 py-2.5`}>
+      <div className={`flex items-center gap-2 text-xs mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+        <Timer size={13} />
+        {t.sessionTimeout}
+      </div>
+      <div className="flex flex-wrap gap-1">
+        {SESSION_TIMEOUT_OPTIONS.map((opt) => (
+          <button
+            key={opt}
+            onClick={() => handleChange(opt)}
+            className={`px-2 py-1 rounded-md text-[10px] font-medium transition-all ${
+              timeout === opt
+                ? 'bg-blue-500 text-white'
+                : darkMode
+                  ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            {opt === 0 ? 'Off' : opt === 60 ? '1h' : `${opt}m`}
+          </button>
+        ))}
+      </div>
+      <div className={`mt-1.5 text-[10px] ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+        {getLabel(timeout)}
+      </div>
     </div>
   );
 }
