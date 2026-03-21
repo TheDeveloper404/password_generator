@@ -124,7 +124,15 @@ export default function PasswordGenerator({
     getStoredValue<string[]>(STORAGE_KEYS.favorites, [])
   );
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState<MainTab>('generator');
+  const [activeTab, setActiveTabRaw] = useState<MainTab>(() => {
+    const saved = sessionStorage.getItem('passgen_active_tab');
+    const valid: MainTab[] = ['generator', 'wifi', 'hash', 'vault', 'health'];
+    return saved && valid.includes(saved as MainTab) ? (saved as MainTab) : 'generator';
+  });
+  const setActiveTab = (tab: MainTab) => {
+    sessionStorage.setItem('passgen_active_tab', tab);
+    setActiveTabRaw(tab);
+  };
 
   const { t, lang, setLang } = useTranslation();
 
@@ -386,7 +394,7 @@ export default function PasswordGenerator({
         </header>
 
         {/* Mobile tab navigation */}
-        <nav className={`flex sm:hidden items-center gap-1 p-1 rounded-xl mb-4 ${darkMode ? 'bg-gray-800/50' : 'bg-gray-100'}`}>
+        <nav className={`flex sm:hidden items-center gap-0.5 p-1 rounded-xl mb-4 ${darkMode ? 'bg-gray-800/50' : 'bg-gray-100'}`}>
           {([
             { id: 'generator' as MainTab, icon: Zap, label: t.tabGenerator },
             { id: 'wifi' as MainTab, icon: Wifi, label: t.tabWifi },
@@ -397,16 +405,16 @@ export default function PasswordGenerator({
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-xs font-medium transition-all ${
+              className={`flex items-center justify-center gap-1 rounded-lg text-[11px] font-medium transition-all min-w-0 ${
                 activeTab === tab.id
-                  ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-sm'
-                  : darkMode
-                    ? 'text-gray-400 hover:text-white'
-                    : 'text-gray-500 hover:text-gray-700'
+                  ? 'flex-[1.6] px-2.5 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-sm'
+                  : `flex-1 px-1.5 py-2 ${darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-700'}`
               }`}
             >
-              <tab.icon size={13} />
-              {tab.label}
+              <tab.icon size={14} className="shrink-0" />
+              {activeTab === tab.id && (
+                <span className="truncate">{tab.label}</span>
+              )}
             </button>
           ))}
         </nav>
