@@ -449,8 +449,8 @@ export default function PasswordGenerator({
         {activeTab === 'generator' && (
           <div className="lg:flex lg:flex-col lg:flex-1 lg:min-h-0">
         {/* Password output bar */}
-        <div className={`relative flex items-center rounded-xl mb-4 transition-all ${darkMode ? 'bg-gray-800/80 border border-gray-700/60 shadow-lg shadow-black/20' : 'bg-white border border-gray-200 shadow-sm'}`}>
-          <div className="flex-1 px-5 py-3.5">
+        <div className={`relative flex items-center rounded-xl mb-3 max-w-4xl mx-auto w-full transition-all ${darkMode ? 'bg-gray-800/80 border border-gray-700/60 shadow-lg shadow-black/20' : 'bg-white border border-gray-200 shadow-sm'}`}>
+          <div className="flex-1 px-5 py-2.5">
             <input
               type="text"
               value={password}
@@ -481,10 +481,10 @@ export default function PasswordGenerator({
         </div>
 
         {/* Main 3-column grid */}
-        <div className="grid gap-4 lg:grid-cols-3 lg:flex-1 lg:min-h-0">
+        <div className="grid gap-3 lg:grid-cols-3 lg:flex-1 lg:min-h-0">
 
           {/* Column 1: Options + Strength + Generate */}
-          <div className="flex flex-col gap-4 lg:overflow-y-auto lg:max-h-full">
+          <div className="flex flex-col gap-3 lg:overflow-y-auto lg:max-h-full">
             <div className={`rounded-2xl p-4 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
               <PasswordOptions
                 mode={mode}
@@ -523,26 +523,7 @@ export default function PasswordGenerator({
             </button>
           </div>
 
-          {/* Column 2: Username Generator + Health Check */}
-          <div className="flex flex-col gap-4 lg:overflow-y-auto lg:max-h-full">
-            {/* Username Generator card */}
-            <div className={`rounded-2xl p-4 flex-1 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
-              <UsernameGenerator darkMode={darkMode} />
-            </div>
-
-            {/* Password Health Check card */}
-            <div className={`rounded-2xl p-4 flex-1 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
-              <PasswordHealthCheck darkMode={darkMode} generatedPassword={password} />
-            </div>
-
-            {/* Security Tips card */}
-            <div className={`rounded-2xl p-4 flex-1 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
-              <SecurityTips darkMode={darkMode} />
-            </div>
-
-          </div>
-
-          {/* Column 3: History */}
+          {/* Column 2: History */}
           <div className={`rounded-2xl p-4 lg:overflow-y-auto lg:max-h-full lg:flex-1 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
             {copiedHistory.length === 0 && favorites.length === 0 ? (
               <div className={`flex flex-col items-center justify-center py-10 text-center ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
@@ -629,6 +610,24 @@ export default function PasswordGenerator({
               </div>
             )}
           </div>
+
+          {/* Column 3: Tools */}
+          <div className="flex flex-col gap-3 lg:overflow-y-auto lg:max-h-full">
+            {/* Username Generator card */}
+            <div className={`rounded-2xl p-4 flex-1 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+              <UsernameGenerator darkMode={darkMode} />
+            </div>
+
+            {/* Password Health Check card */}
+            <div className={`rounded-2xl p-4 flex-1 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+              <PasswordHealthCheck darkMode={darkMode} generatedPassword={password} />
+            </div>
+
+            {/* Security Tips card */}
+            <div className={`rounded-2xl p-4 flex-1 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+              <SecurityTips darkMode={darkMode} />
+            </div>
+          </div>
         </div>
           </div>
         )}
@@ -636,9 +635,17 @@ export default function PasswordGenerator({
         {/* WiFi QR Tab */}
         {activeTab === 'wifi' && (
           <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto">
-            <div className="max-w-lg mx-auto">
-              <div className={`rounded-2xl p-6 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
-                <WiFiQrCode darkMode={darkMode} generatedPassword={password} />
+            <div className={`rounded-2xl lg:h-full overflow-hidden transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+              <div className="lg:grid lg:grid-cols-2 lg:h-full">
+                <div className="p-6 lg:p-8 lg:overflow-y-auto">
+                  <WiFiQrCode darkMode={darkMode} generatedPassword={password} />
+                </div>
+                <div className={`hidden lg:flex items-center justify-center relative overflow-hidden ${darkMode ? 'bg-gradient-to-br from-cyan-950/40 via-gray-900/60 to-blue-950/40' : 'bg-gradient-to-br from-cyan-50 via-sky-50 to-blue-100'}`}>
+                  <Wifi size={180} strokeWidth={0.8} className={`${darkMode ? 'text-cyan-400/[0.07]' : 'text-cyan-400/[0.12]'}`} />
+                  <div className={`absolute bottom-8 left-8 right-8 text-center ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+                    <p className="text-xs font-medium">WPA / WPA2 / WPA3</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -647,9 +654,17 @@ export default function PasswordGenerator({
         {/* Hash Generator Tab */}
         {activeTab === 'hash' && (
           <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto">
-            <div className="max-w-2xl mx-auto">
-              <div className={`rounded-2xl p-6 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
-                <HashGenerator darkMode={darkMode} />
+            <div className={`rounded-2xl lg:h-full overflow-hidden transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+              <div className="lg:grid lg:grid-cols-5 lg:h-full">
+                <div className="lg:col-span-3 p-6 lg:p-8 lg:overflow-y-auto">
+                  <HashGenerator darkMode={darkMode} />
+                </div>
+                <div className={`lg:col-span-2 hidden lg:flex items-center justify-center relative overflow-hidden ${darkMode ? 'bg-gradient-to-br from-purple-950/40 via-gray-900/60 to-indigo-950/40' : 'bg-gradient-to-br from-purple-50 via-violet-50 to-indigo-100'}`}>
+                  <Hash size={180} strokeWidth={0.8} className={`${darkMode ? 'text-purple-400/[0.07]' : 'text-purple-400/[0.12]'}`} />
+                  <div className={`absolute bottom-8 left-8 right-8 text-center ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+                    <p className="text-xs font-medium">MD5 · SHA-1 · SHA-256 · SHA-512</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -658,9 +673,17 @@ export default function PasswordGenerator({
         {/* AI Analyzer Tab */}
         {activeTab === 'analyzer' && (
           <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto">
-            <div className="max-w-2xl mx-auto">
-              <div className={`rounded-2xl p-6 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
-                <PasswordAnalyzer darkMode={darkMode} generatedPassword={password} />
+            <div className={`rounded-2xl lg:h-full overflow-hidden transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+              <div className="lg:grid lg:grid-cols-5 lg:h-full">
+                <div className="lg:col-span-3 p-6 lg:p-8 lg:overflow-y-auto">
+                  <PasswordAnalyzer darkMode={darkMode} generatedPassword={password} />
+                </div>
+                <div className={`lg:col-span-2 hidden lg:flex items-center justify-center relative overflow-hidden ${darkMode ? 'bg-gradient-to-br from-fuchsia-950/40 via-gray-900/60 to-pink-950/40' : 'bg-gradient-to-br from-fuchsia-50 via-pink-50 to-rose-100'}`}>
+                  <Brain size={180} strokeWidth={0.8} className={`${darkMode ? 'text-fuchsia-400/[0.07]' : 'text-fuchsia-400/[0.12]'}`} />
+                  <div className={`absolute bottom-8 left-8 right-8 text-center ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+                    <p className="text-xs font-medium">AI · Shannon Entropy · 10 Vulnerability Checks</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -669,9 +692,17 @@ export default function PasswordGenerator({
         {/* Audio Passphrase Tab */}
         {activeTab === 'audio' && (
           <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto">
-            <div className="max-w-2xl mx-auto">
-              <div className={`rounded-2xl p-6 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
-                <AudioPassphrase darkMode={darkMode} generatedPassword={password} />
+            <div className={`rounded-2xl lg:h-full overflow-hidden transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+              <div className="lg:grid lg:grid-cols-2 lg:h-full">
+                <div className="p-6 lg:p-8 lg:overflow-y-auto">
+                  <AudioPassphrase darkMode={darkMode} generatedPassword={password} />
+                </div>
+                <div className={`hidden lg:flex items-center justify-center relative overflow-hidden ${darkMode ? 'bg-gradient-to-br from-pink-950/40 via-gray-900/60 to-rose-950/40' : 'bg-gradient-to-br from-pink-50 via-rose-50 to-orange-100'}`}>
+                  <Music size={180} strokeWidth={0.8} className={`${darkMode ? 'text-pink-400/[0.07]' : 'text-pink-400/[0.12]'}`} />
+                  <div className={`absolute bottom-8 left-8 right-8 text-center ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+                    <p className="text-xs font-medium">Pentatonic · Major · Chromatic</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
