@@ -62,6 +62,23 @@ export interface Translations {
   policyDigit: string;
   policySymbol: string;
 
+  // PasswordHealthCheck
+  healthCheckTitle: string;
+  healthCheckDesc: string;
+  riskNA: string;
+  riskHigh: string;
+  riskMedium: string;
+  riskLow: string;
+  passwordToCheckPlaceholder: string;
+  useGenerated: string;
+  strengthLabel: string;
+  policyLabel: string;
+  checkBreach: string;
+  breachNotFound: string;
+  breachFound: (count: string) => string;
+  breachError: string;
+  hashDisclaimer: string;
+
   // UsernameGenerator
   usernameTitle: string;
   usernameDesc: string;
@@ -150,6 +167,23 @@ export const translations: Record<Language, Translations> = {
     policyDigit: 'Cel puțin o cifră',
     policySymbol: 'Cel puțin un simbol',
 
+    // PasswordHealthCheck
+    healthCheckTitle: 'Verificare Sănătate Parolă',
+    healthCheckDesc: 'Introdu sau folosește parola generată pentru a verifica securitatea ei.',
+    riskNA: 'N/A',
+    riskHigh: 'Risc Ridicat',
+    riskMedium: 'Risc Mediu',
+    riskLow: 'Risc Scăzut',
+    passwordToCheckPlaceholder: 'Introdu parola de verificat...',
+    useGenerated: 'Folosește generată',
+    strengthLabel: 'Putere',
+    policyLabel: 'Politică',
+    checkBreach: 'Verifică Breșe de Date',
+    breachNotFound: 'Parola nu a fost găsită în breșe cunoscute.',
+    breachFound: (count) => `Parola a fost expusă în ${count} breșe de date!`,
+    breachError: 'Nu s-a putut verifica. Încearcă din nou.',
+    hashDisclaimer: 'Doar primele 5 caractere din hash-ul SHA-1 sunt trimise — parola ta nu părăsește niciodată dispozitivul.',
+
     // UsernameGenerator
     usernameTitle: 'Generator Username',
     usernameDesc: 'Introdu numele tău și generează username-uri unice.',
@@ -237,6 +271,23 @@ export const translations: Record<Language, Translations> = {
     policyLowercase: 'At least one lowercase letter',
     policyDigit: 'At least one digit',
     policySymbol: 'At least one symbol',
+
+    // PasswordHealthCheck
+    healthCheckTitle: 'Password Health Check',
+    healthCheckDesc: 'Enter or use the generated password to check its security.',
+    riskNA: 'N/A',
+    riskHigh: 'High Risk',
+    riskMedium: 'Medium Risk',
+    riskLow: 'Low Risk',
+    passwordToCheckPlaceholder: 'Enter password to check...',
+    useGenerated: 'Use generated',
+    strengthLabel: 'Strength',
+    policyLabel: 'Policy',
+    checkBreach: 'Check Data Breaches',
+    breachNotFound: 'Password not found in known breaches.',
+    breachFound: (count) => `Password exposed in ${count} data breaches!`,
+    breachError: 'Could not check. Try again.',
+    hashDisclaimer: 'Only the first 5 characters of the SHA-1 hash are sent — your password never leaves your device.',
 
     // UsernameGenerator
     usernameTitle: 'Username Generator',

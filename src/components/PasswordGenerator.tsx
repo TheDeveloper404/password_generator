@@ -16,6 +16,7 @@ import StrengthIndicator from './StrengthIndicator';
 import PasswordOptions from './PasswordOptions';
 import PolicyIndicator from './PolicyIndicator';
 import UsernameGenerator from './UsernameGenerator';
+import PasswordHealthCheck from './PasswordHealthCheck';
 
 const STORAGE_KEYS = {
   darkMode: 'pg_dark_mode',
@@ -377,27 +378,26 @@ export default function PasswordGenerator() {
         {/* Main 3-column grid */}
         <div className="grid gap-4 lg:grid-cols-3 lg:flex-1 lg:min-h-0">
 
-          {/* Column 1: Options */}
-          <div className={`rounded-2xl p-4 lg:overflow-y-auto lg:max-h-full transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
-            <PasswordOptions
-              mode={mode}
-              setMode={setMode}
-              minEntropy={minEntropy}
-              setMinEntropy={setMinEntropy}
-              length={length}
-              setLength={setLength}
-              options={options}
-              setOptions={setOptions}
-              passphraseOptions={passphraseOptions}
-              setPassphraseOptions={setPassphraseOptions}
-              presets={PASSWORD_PRESETS}
-              onApplyPreset={handleApplyPreset}
-              darkMode={darkMode}
-            />
-          </div>
-
-          {/* Column 2: Analysis + Generate + Username */}
+          {/* Column 1: Options + Strength + Generate */}
           <div className="space-y-4 lg:overflow-y-auto lg:max-h-full">
+            <div className={`rounded-2xl p-4 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+              <PasswordOptions
+                mode={mode}
+                setMode={setMode}
+                minEntropy={minEntropy}
+                setMinEntropy={setMinEntropy}
+                length={length}
+                setLength={setLength}
+                options={options}
+                setOptions={setOptions}
+                passphraseOptions={passphraseOptions}
+                setPassphraseOptions={setPassphraseOptions}
+                presets={PASSWORD_PRESETS}
+                onApplyPreset={handleApplyPreset}
+                darkMode={darkMode}
+              />
+            </div>
+
             {/* Strength & Policy card */}
             <div className={`rounded-2xl p-4 space-y-3 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
               <StrengthIndicator strength={strength} darkMode={darkMode} />
@@ -416,10 +416,18 @@ export default function PasswordGenerator() {
             >
               {mode === 'password' ? t.generatePassword : t.generatePassphrase}
             </button>
+          </div>
 
+          {/* Column 2: Username Generator + Health Check */}
+          <div className="space-y-4 lg:overflow-y-auto lg:max-h-full">
             {/* Username Generator card */}
             <div className={`rounded-2xl p-4 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
               <UsernameGenerator darkMode={darkMode} />
+            </div>
+
+            {/* Password Health Check card */}
+            <div className={`rounded-2xl p-4 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+              <PasswordHealthCheck darkMode={darkMode} generatedPassword={password} />
             </div>
           </div>
 
@@ -448,7 +456,7 @@ export default function PasswordGenerator() {
                           <button className="truncate text-left font-mono text-xs" onClick={() => setPassword(item)}>
                             {item}
                           </button>
-                          <div className="ml-2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="ml-2 flex items-center gap-0.5">
                             <button
                               className={`p-1 rounded-md ${darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`}
                               onClick={() => void handleCopy(item)}
@@ -486,7 +494,7 @@ export default function PasswordGenerator() {
                           <button className="truncate text-left font-mono text-xs" onClick={() => setPassword(item)}>
                             {item}
                           </button>
-                          <div className="ml-2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="ml-2 flex items-center gap-0.5">
                             <button
                               className={`p-1 rounded-md ${darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`}
                               onClick={() => void handleCopy(item)}
@@ -524,7 +532,7 @@ export default function PasswordGenerator() {
                           <button className="truncate text-left font-mono text-xs" onClick={() => setPassword(item)}>
                             {item}
                           </button>
-                          <div className="ml-2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="ml-2 flex items-center gap-0.5">
                             <button
                               className={`p-1 rounded-md ${darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`}
                               onClick={() => void handleCopy(item)}
