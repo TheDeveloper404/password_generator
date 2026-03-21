@@ -16,6 +16,7 @@ import {
 import type { VaultData } from '../types/vault';
 import { encryptVaultRaw } from './vaultService';
 import { deriveKey, decrypt } from '../crypto/cryptoService';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 
 export interface CloudVaultRow {
   encrypted_blob: string;
@@ -144,4 +145,39 @@ export async function deleteCloudVault(): Promise<void> {
     .eq('user_id', user.id);
 
   if (error) throw new Error(`Cloud delete failed: ${error.message}`);
+}
+
+/**
+ * Subscribe to realtime changes on the user's vault row.
+ * When another device uploads a new vault blob, this triggers a callback
+ * so we can download + decrypt and merge/replace the local vault.
+ *
+ * Returns an unsubscribe function.
+ */
+export function subscribeToVaultChanges(
+  userId: string,
+  onRemoteChange: () => void,
+): () => void {
+  if (!isCloudEnabled || !supabase) return () => {};
+
+  const channel: RealtimeChannel = supabase
+    .channel(`vault-sync-${userId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'vaults',
+        filter: `user_id=eq.${userId}`,
+      },
+      () => {
+        // A remote device updated the vault — notify the app
+        onRemoteChange();
+      },
+    )
+    .subscribe();
+
+  return () => {
+    void supabase?.removeChannel(channel);
+  };
 }

@@ -1,4 +1,5 @@
 export interface PasswordCharacterOptions {
+  [key: string]: boolean;
   uppercase: boolean;
   lowercase: boolean;
   numbers: boolean;

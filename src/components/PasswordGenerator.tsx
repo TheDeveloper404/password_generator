@@ -641,7 +641,11 @@ export default function PasswordGenerator({
                   <WiFiQrCode darkMode={darkMode} generatedPassword={password} />
                 </div>
                 <div className={`hidden lg:flex items-center justify-center relative overflow-hidden ${darkMode ? 'bg-gradient-to-br from-cyan-950/40 via-gray-900/60 to-blue-950/40' : 'bg-gradient-to-br from-cyan-50 via-sky-50 to-blue-100'}`}>
-                  <Wifi size={180} strokeWidth={0.8} className={`${darkMode ? 'text-cyan-400/[0.07]' : 'text-cyan-400/[0.12]'}`} />
+                  {/* Radiating rings */}
+                  <div className={`absolute rounded-full w-40 h-40 border ${darkMode ? 'border-cyan-400/[0.06]' : 'border-cyan-400/[0.1]'} animate-ping`} style={{ animationDuration: '3s' }} />
+                  <div className={`absolute rounded-full w-64 h-64 border ${darkMode ? 'border-cyan-400/[0.04]' : 'border-cyan-400/[0.07]'} animate-ping`} style={{ animationDuration: '4s', animationDelay: '0.5s' }} />
+                  <div className={`absolute rounded-full w-96 h-96 border ${darkMode ? 'border-cyan-400/[0.03]' : 'border-cyan-400/[0.05]'} animate-ping`} style={{ animationDuration: '5s', animationDelay: '1s' }} />
+                  <Wifi size={180} strokeWidth={0.8} className={`anim-float ${darkMode ? 'text-cyan-400/[0.07]' : 'text-cyan-400/[0.12]'}`} />
                   <div className={`absolute bottom-8 left-8 right-8 text-center ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
                     <p className="text-xs font-medium">WPA / WPA2 / WPA3</p>
                   </div>
@@ -660,7 +664,10 @@ export default function PasswordGenerator({
                   <HashGenerator darkMode={darkMode} />
                 </div>
                 <div className={`lg:col-span-2 hidden lg:flex items-center justify-center relative overflow-hidden ${darkMode ? 'bg-gradient-to-br from-purple-950/40 via-gray-900/60 to-indigo-950/40' : 'bg-gradient-to-br from-purple-50 via-violet-50 to-indigo-100'}`}>
-                  <Hash size={180} strokeWidth={0.8} className={`${darkMode ? 'text-purple-400/[0.07]' : 'text-purple-400/[0.12]'}`} />
+                  {/* Orbiting dots */}
+                  <div className={`absolute w-48 h-48 rounded-full border border-dashed ${darkMode ? 'border-purple-400/[0.08]' : 'border-purple-400/[0.12]'} anim-spin-slow`} />
+                  <div className={`absolute w-72 h-72 rounded-full border border-dashed ${darkMode ? 'border-indigo-400/[0.05]' : 'border-indigo-400/[0.08]'} anim-spin-slow`} style={{ animationDirection: 'reverse', animationDuration: '30s' }} />
+                  <Hash size={180} strokeWidth={0.8} className={`anim-pulse ${darkMode ? 'text-purple-400/[0.07]' : 'text-purple-400/[0.12]'}`} />
                   <div className={`absolute bottom-8 left-8 right-8 text-center ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
                     <p className="text-xs font-medium">MD5 · SHA-1 · SHA-256 · SHA-512</p>
                   </div>
@@ -679,7 +686,10 @@ export default function PasswordGenerator({
                   <PasswordAnalyzer darkMode={darkMode} generatedPassword={password} />
                 </div>
                 <div className={`lg:col-span-2 hidden lg:flex items-center justify-center relative overflow-hidden ${darkMode ? 'bg-gradient-to-br from-fuchsia-950/40 via-gray-900/60 to-pink-950/40' : 'bg-gradient-to-br from-fuchsia-50 via-pink-50 to-rose-100'}`}>
-                  <Brain size={180} strokeWidth={0.8} className={`${darkMode ? 'text-fuchsia-400/[0.07]' : 'text-fuchsia-400/[0.12]'}`} />
+                  {/* Scanning line */}
+                  <div className={`absolute inset-x-0 h-px ${darkMode ? 'bg-gradient-to-r from-transparent via-fuchsia-400/20 to-transparent' : 'bg-gradient-to-r from-transparent via-fuchsia-400/30 to-transparent'}`} style={{ animation: 'decorFloat 4s ease-in-out infinite' }} />
+                  <div className={`absolute w-56 h-56 rounded-full ${darkMode ? 'bg-fuchsia-500/[0.03]' : 'bg-fuchsia-500/[0.05]'} anim-pulse`} />
+                  <Brain size={180} strokeWidth={0.8} className={`anim-pulse ${darkMode ? 'text-fuchsia-400/[0.07]' : 'text-fuchsia-400/[0.12]'}`} style={{ animationDelay: '0.5s' }} />
                   <div className={`absolute bottom-8 left-8 right-8 text-center ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
                     <p className="text-xs font-medium">AI · Shannon Entropy · 10 Vulnerability Checks</p>
                   </div>
@@ -698,7 +708,21 @@ export default function PasswordGenerator({
                   <AudioPassphrase darkMode={darkMode} generatedPassword={password} />
                 </div>
                 <div className={`hidden lg:flex items-center justify-center relative overflow-hidden ${darkMode ? 'bg-gradient-to-br from-pink-950/40 via-gray-900/60 to-rose-950/40' : 'bg-gradient-to-br from-pink-50 via-rose-50 to-orange-100'}`}>
-                  <Music size={180} strokeWidth={0.8} className={`${darkMode ? 'text-pink-400/[0.07]' : 'text-pink-400/[0.12]'}`} />
+                  {/* Sound wave bars */}
+                  <div className="absolute flex items-center gap-1.5">
+                    {[...Array(12)].map((_, i) => (
+                      <div
+                        key={i}
+                        className={`w-1 rounded-full ${darkMode ? 'bg-pink-400/[0.08]' : 'bg-pink-400/[0.12]'}`}
+                        style={{
+                          height: `${20 + Math.sin(i * 0.8) * 40 + 30}px`,
+                          animation: 'decorFloat 3s ease-in-out infinite',
+                          animationDelay: `${i * 0.15}s`,
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <Music size={180} strokeWidth={0.8} className={`anim-float-slow ${darkMode ? 'text-pink-400/[0.07]' : 'text-pink-400/[0.12]'}`} />
                   <div className={`absolute bottom-8 left-8 right-8 text-center ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
                     <p className="text-xs font-medium">Pentatonic · Major · Chromatic</p>
                   </div>

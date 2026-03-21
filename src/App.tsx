@@ -23,7 +23,7 @@ import {
   downloadExport,
   readFileAsText,
 } from './services/exportService';
-import { uploadVault } from './services/cloudService';
+import { uploadVault, downloadVault, subscribeToVaultChanges } from './services/cloudService';
 import { supabase, isCloudEnabled } from './lib/supabase';
 import { wipeAllData } from './db/indexedDB';
 import { AUTO_LOCK_TIMEOUT_MS } from './crypto/constants';
@@ -67,6 +67,7 @@ function App() {
   const [cloudUser, setCloudUser] = useState<User | null>(null);
   const [showCloudAuth, setShowCloudAuth] = useState(false);
   const autoLockTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isRemoteSync = useRef(false);
 
   const t = translations[lang];
 
@@ -178,14 +179,41 @@ function App() {
     if (vault && masterPassword && vaultSalt) {
       void encryptAndSaveVault(vault, masterPassword, vaultSalt);
 
-      // Auto-sync to cloud if authenticated
-      if (isCloudEnabled && cloudUser) {
+      // Auto-sync to cloud if authenticated (skip if this was a remote sync)
+      if (isCloudEnabled && cloudUser && !isRemoteSync.current) {
         void uploadVault(vault, masterPassword).catch(() => {
           // Silent fail — cloud sync is best-effort
         });
       }
+      isRemoteSync.current = false;
     }
   }, [vault, masterPassword, vaultSalt, cloudUser]);
+
+  // ─── Realtime Sync — listen for vault changes from other devices ───
+  useEffect(() => {
+    if (!isCloudEnabled || !cloudUser || !masterPassword) return;
+
+    const unsubscribe = subscribeToVaultChanges(cloudUser.id, () => {
+      // Another device updated the vault — download and merge
+      void downloadVault(masterPassword).then((remoteVault) => {
+        if (!remoteVault) return;
+
+        setVault((currentVault) => {
+          // If no local vault or remote is newer, use remote
+          if (!currentVault || remoteVault.lastModified > currentVault.lastModified) {
+            isRemoteSync.current = true;
+            return remoteVault;
+          }
+          // If local is newer or same, keep local
+          return currentVault;
+        });
+      }).catch(() => {
+        // Silent fail — will retry on next change
+      });
+    });
+
+    return unsubscribe;
+  }, [cloudUser, masterPassword]);
 
   // ─── Screen Transitions ────────────────────────────────────────────
 

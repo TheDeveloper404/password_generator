@@ -62,3 +62,30 @@ html.dark body {
 .animate-fadeIn {
   animation: fadeIn 0.5s ease-out;
 }
+
+/* Decorative panel animations */
+@keyframes decorFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-12px) scale(1.03); }
+}
+
+@keyframes decorPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.08); }
+}
+
+@keyframes decorSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes decorRadiate {
+  0% { box-shadow: 0 0 0 0 currentColor; opacity: 0.5; }
+  70% { box-shadow: 0 0 0 60px transparent; opacity: 0; }
+  100% { box-shadow: 0 0 0 0 transparent; opacity: 0; }
+}
+
+.anim-float { animation: decorFloat 6s ease-in-out infinite; }
+.anim-pulse { animation: decorPulse 4s ease-in-out infinite; }
+.anim-spin-slow { animation: decorSpin 20s linear infinite; }
+.anim-float-slow { animation: decorFloat 8s ease-in-out infinite; }

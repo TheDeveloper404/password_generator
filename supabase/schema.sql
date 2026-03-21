@@ -59,3 +59,10 @@ CREATE TRIGGER set_updated_at
   BEFORE UPDATE ON public.vaults
   FOR EACH ROW
   EXECUTE FUNCTION public.handle_updated_at();
+
+-- ────────────────────────────────────────────────────────
+-- Enable Realtime for cross-device sync
+-- Supabase Realtime will broadcast UPDATE events to
+-- subscribed clients so they can pull the latest vault.
+-- ────────────────────────────────────────────────────────
+ALTER PUBLICATION supabase_realtime ADD TABLE public.vaults;
