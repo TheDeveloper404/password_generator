@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Copy, RefreshCw, Sun, Moon, Star, Trash2, Globe, KeyRound, Shield, Zap, Wifi, LogOut, Hash } from 'lucide-react';
+import { Copy, RefreshCw, Sun, Moon, Star, Trash2, Globe, KeyRound, Shield, Zap, Wifi, LogOut, Hash, Brain, Music, Map } from 'lucide-react';
 import {
   generatePassphrase,
   generatePassword,
@@ -19,6 +19,9 @@ import PasswordHealthCheck from './PasswordHealthCheck';
 import SecurityTips from './SecurityTips';
 import WiFiQrCode from './WiFiQrCode';
 import HashGenerator from './HashGenerator';
+import PasswordAnalyzer from './PasswordAnalyzer';
+import AudioPassphrase from './AudioPassphrase';
+import PasswordMap from './PasswordMap';
 import VaultView from './vault/VaultView';
 import HealthDashboard from './vault/HealthDashboard';
 import MasterPasswordSetup from './auth/MasterPasswordSetup';
@@ -126,7 +129,7 @@ export default function PasswordGenerator({
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTabRaw] = useState<MainTab>(() => {
     const saved = sessionStorage.getItem('passgen_active_tab');
-    const valid: MainTab[] = ['generator', 'wifi', 'hash', 'vault', 'health'];
+    const valid: MainTab[] = ['generator', 'wifi', 'hash', 'analyzer', 'audio', 'map', 'vault', 'health'];
     return saved && valid.includes(saved as MainTab) ? (saved as MainTab) : 'generator';
   });
   const setActiveTab = (tab: MainTab) => {
@@ -336,6 +339,9 @@ export default function PasswordGenerator({
                 { id: 'generator' as MainTab, icon: Zap, label: t.tabGenerator },
                 { id: 'wifi' as MainTab, icon: Wifi, label: t.tabWifi },
                 { id: 'hash' as MainTab, icon: Hash, label: t.tabHash },
+                { id: 'analyzer' as MainTab, icon: Brain, label: t.tabAnalyzer },
+                { id: 'audio' as MainTab, icon: Music, label: t.tabAudio },
+                { id: 'map' as MainTab, icon: Map, label: t.tabMap },
                 { id: 'vault' as MainTab, icon: KeyRound, label: t.tabVault },
                 { id: 'health' as MainTab, icon: Shield, label: t.tabHealth },
               ]).map((tab) => (
@@ -399,6 +405,9 @@ export default function PasswordGenerator({
             { id: 'generator' as MainTab, icon: Zap, label: t.tabGenerator },
             { id: 'wifi' as MainTab, icon: Wifi, label: t.tabWifi },
             { id: 'hash' as MainTab, icon: Hash, label: t.tabHash },
+            { id: 'analyzer' as MainTab, icon: Brain, label: t.tabAnalyzer },
+            { id: 'audio' as MainTab, icon: Music, label: t.tabAudio },
+            { id: 'map' as MainTab, icon: Map, label: t.tabMap },
             { id: 'vault' as MainTab, icon: KeyRound, label: t.tabVault },
             { id: 'health' as MainTab, icon: Shield, label: t.tabHealth },
           ]).map((tab) => (
@@ -626,6 +635,52 @@ export default function PasswordGenerator({
                 <HashGenerator darkMode={darkMode} />
               </div>
             </div>
+          </div>
+        )}
+
+        {/* AI Analyzer Tab */}
+        {activeTab === 'analyzer' && (
+          <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto">
+            <div className="max-w-2xl mx-auto">
+              <div className={`rounded-2xl p-6 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+                <PasswordAnalyzer darkMode={darkMode} generatedPassword={password} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Audio Passphrase Tab */}
+        {activeTab === 'audio' && (
+          <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto">
+            <div className="max-w-2xl mx-auto">
+              <div className={`rounded-2xl p-6 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+                <AudioPassphrase darkMode={darkMode} generatedPassword={password} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Password Map Tab */}
+        {activeTab === 'map' && (
+          <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto">
+            {vault ? (
+              <div className={`rounded-2xl p-5 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+                <PasswordMap darkMode={darkMode} vault={vault} />
+              </div>
+            ) : vaultConfigured ? (
+              <UnlockScreen
+                darkMode={darkMode}
+                onUnlock={onUnlock}
+                onReset={onReset}
+                inline
+              />
+            ) : (
+              <MasterPasswordSetup
+                darkMode={darkMode}
+                onSetup={onSetup}
+                inline
+              />
+            )}
           </div>
         )}
 

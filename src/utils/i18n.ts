@@ -287,6 +287,84 @@ export interface Translations {
   wifiCopyString: string;
   wifiEnterBoth: string;
   wifiEnterSSID: string;
+
+  // Password Map
+  tabMap: string;
+  mapTitle: string;
+  mapDesc: string;
+  mapEmpty: string;
+  mapTotal: string;
+  mapAvgScore: string;
+  mapCritical: string;
+  mapWeak: string;
+  mapFair: string;
+  mapStrong: string;
+  mapExcellent: string;
+  mapStrongCount: string;
+  mapScore: string;
+  mapLength: string;
+  mapChars: string;
+  mapUser: string;
+  mapHint: string;
+
+  // AI Password Analyzer
+  tabAnalyzer: string;
+  analyzerTitle: string;
+  analyzerDesc: string;
+  analyzerPlaceholder: string;
+  analyzerButton: string;
+  analyzerUseGenerated: string;
+  analyzerScoreLabel: string;
+  analyzerFindings: string;
+  analyzerShort: string;
+  analyzerShortDetail: (n: number) => string;
+  analyzerMediumLength: string;
+  analyzerMediumLengthDetail: string;
+  analyzerGoodLength: string;
+  analyzerGoodLengthDetail: (n: number) => string;
+  analyzerCommon: string;
+  analyzerCommonDetail: string;
+  analyzerKeyboard: string;
+  analyzerKeyboardDetail: (seq: string) => string;
+  analyzerSequential: string;
+  analyzerSequentialDetail: (seq: string) => string;
+  analyzerRepeating: string;
+  analyzerRepeatingDetail: (pat: string) => string;
+  analyzerDate: string;
+  analyzerDateDetail: string;
+  analyzerDictionary: string;
+  analyzerDictionaryDetail: (words: string) => string;
+  analyzerNoMix: string;
+  analyzerNoMixDetail: string;
+  analyzerLowMix: string;
+  analyzerLowMixDetail: string;
+  analyzerGoodMix: string;
+  analyzerGoodMixDetail: (n: number) => string;
+  analyzerLowUnique: string;
+  analyzerLowUniqueDetail: (pct: number) => string;
+  analyzerLowEntropy: string;
+  analyzerLowEntropyDetail: (val: string) => string;
+  analyzerHighEntropy: string;
+  analyzerHighEntropyDetail: (val: string) => string;
+  analyzerOnlyDigits: string;
+  analyzerOnlyDigitsDetail: string;
+
+  // Audio Passphrase
+  tabAudio: string;
+  audioTitle: string;
+  audioDesc: string;
+  audioPlaceholder: string;
+  audioPlay: string;
+  audioStop: string;
+  audioUseGenerated: string;
+  audioScale: string;
+  audioScalePentatonic: string;
+  audioScaleMajor: string;
+  audioScaleChromatic: string;
+  audioTempo: string;
+  audioVolume: string;
+  audioVisualizer: string;
+  audioExplain: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -578,6 +656,84 @@ export const translations: Record<Language, Translations> = {
     wifiEnterBoth: 'Completează numele rețelei și parola pentru a genera codul QR.',
     wifiEnterSSID: 'Completează numele rețelei pentru a genera codul QR.',
 
+    // Password Map
+    tabMap: 'Hartă',
+    mapTitle: 'Harta Parolelor',
+    mapDesc: 'Vizualizare interactivă a securității parolelor din seif.',
+    mapEmpty: 'Adaugă parole în seif pentru a vedea harta securității.',
+    mapTotal: 'Total',
+    mapAvgScore: 'Scor Mediu',
+    mapCritical: 'Critic',
+    mapWeak: 'Slab',
+    mapFair: 'Acceptabil',
+    mapStrong: 'Puternic',
+    mapExcellent: 'Excelent',
+    mapStrongCount: 'Puternice',
+    mapScore: 'Scor securitate',
+    mapLength: 'Lungime',
+    mapChars: 'caractere',
+    mapUser: 'Utilizator',
+    mapHint: 'Click pe un cerc pentru detalii. Cercurile mari = parole puternice.',
+
+    // AI Password Analyzer
+    tabAnalyzer: 'Analizator',
+    analyzerTitle: 'Analizator AI Parole',
+    analyzerDesc: 'Analiză inteligentă care explică de ce o parolă este slabă sau puternică.',
+    analyzerPlaceholder: 'Introdu o parolă de analizat...',
+    analyzerButton: 'Analizează',
+    analyzerUseGenerated: '↑ Folosește parola generată',
+    analyzerScoreLabel: 'Scor de securitate',
+    analyzerFindings: 'Observații',
+    analyzerShort: 'Parolă prea scurtă',
+    analyzerShortDetail: (n) => `Doar ${n} caractere — minim recomandat: 12.`,
+    analyzerMediumLength: 'Lungime acceptabilă',
+    analyzerMediumLengthDetail: 'Parolă de 8-11 caractere. O parolă de 12+ este mult mai sigură.',
+    analyzerGoodLength: 'Lungime excelentă',
+    analyzerGoodLengthDetail: (n) => `${n} caractere — suficient pentru securitate ridicată.`,
+    analyzerCommon: 'Parolă foarte comună!',
+    analyzerCommonDetail: 'Această parolă apare în listele publice de parole sparte. Este ghicibilă instant.',
+    analyzerKeyboard: 'Pattern de tastatură detectat',
+    analyzerKeyboardDetail: (seq) => `Secvența "${seq}" urmează aranjamentul tastaturii — ușor de ghicit.`,
+    analyzerSequential: 'Caractere secvențiale',
+    analyzerSequentialDetail: (seq) => `Secvența "${seq}" este o serie consecutive — predictibilă.`,
+    analyzerRepeating: 'Pattern repetitiv',
+    analyzerRepeatingDetail: (pat) => `Patternul "${pat}" se repetă — reduce entropia reală.`,
+    analyzerDate: 'Dată detectată',
+    analyzerDateDetail: 'Parola pare să conțină o dată. Datele sunt ușor de ghicit (zile de naștere, aniversări).',
+    analyzerDictionary: 'Cuvinte comune detectate',
+    analyzerDictionaryDetail: (words) => `Cuvintele "${words}" sunt frecvente în dicționare de atacuri.`,
+    analyzerNoMix: 'Un singur tip de caractere',
+    analyzerNoMixDetail: 'Folosește doar un tip de caracter (litere SAU cifre). Combinația diversă crește securitatea exponențial.',
+    analyzerLowMix: 'Diversitate limitată',
+    analyzerLowMixDetail: 'Doar 2 tipuri de caractere. Adaugă simboluri sau cifre pentru mai multă complexitate.',
+    analyzerGoodMix: 'Mix excelent de caractere',
+    analyzerGoodMixDetail: (n) => `${n} tipuri diferite de caractere — complexitate bună.`,
+    analyzerLowUnique: 'Puține caractere unice',
+    analyzerLowUniqueDetail: (pct) => `Doar ${pct}% din caractere sunt unice — multe repetiții.`,
+    analyzerLowEntropy: 'Entropie Shannon scăzută',
+    analyzerLowEntropyDetail: (val) => `Entropia Shannon de ${val} bits/char indică predictibilitate ridicată.`,
+    analyzerHighEntropy: 'Entropie Shannon ridicată',
+    analyzerHighEntropyDetail: (val) => `Entropia Shannon de ${val} bits/char — distribuție excelentă.`,
+    analyzerOnlyDigits: 'Doar cifre',
+    analyzerOnlyDigitsDetail: 'O parolă formată doar din cifre este extrem de vulnerabilă la atacuri brute-force.',
+
+    // Audio Passphrase
+    tabAudio: 'Audio',
+    audioTitle: 'Audio Passphrase',
+    audioDesc: 'Transformă parola în melodie. Parolele puternice sună complex, cele slabe — monoton.',
+    audioPlaceholder: 'Introdu o parolă de redat...',
+    audioPlay: 'Redă',
+    audioStop: 'Stop',
+    audioUseGenerated: '↑ Folosește parola generată',
+    audioScale: 'Scară muzicală',
+    audioScalePentatonic: 'Pentatonică',
+    audioScaleMajor: 'Major',
+    audioScaleChromatic: 'Cromatică',
+    audioTempo: 'Tempo',
+    audioVolume: 'Volum',
+    audioVisualizer: 'Vizualizator',
+    audioExplain: 'Fiecare caracter produce o notă unică bazată pe codul ASCII. O parolă diversă generează o melodie variată, în timp ce una simplă sună repetitiv și monoton.',
+
   },
 
   en: {
@@ -867,6 +1023,84 @@ export const translations: Record<Language, Translations> = {
     wifiCopyString: 'Copy',
     wifiEnterBoth: 'Enter network name and password to generate QR code.',
     wifiEnterSSID: 'Enter network name to generate QR code.',
+
+    // Password Map
+    tabMap: 'Map',
+    mapTitle: 'Password Map',
+    mapDesc: 'Interactive visualization of your vault password security.',
+    mapEmpty: 'Add passwords to your vault to see the security map.',
+    mapTotal: 'Total',
+    mapAvgScore: 'Avg Score',
+    mapCritical: 'Critical',
+    mapWeak: 'Weak',
+    mapFair: 'Fair',
+    mapStrong: 'Strong',
+    mapExcellent: 'Excellent',
+    mapStrongCount: 'Strong',
+    mapScore: 'Security score',
+    mapLength: 'Length',
+    mapChars: 'chars',
+    mapUser: 'Username',
+    mapHint: 'Click a circle for details. Larger circles = stronger passwords.',
+
+    // AI Password Analyzer
+    tabAnalyzer: 'Analyzer',
+    analyzerTitle: 'AI Password Analyzer',
+    analyzerDesc: 'Smart analysis that explains why a password is weak or strong.',
+    analyzerPlaceholder: 'Enter a password to analyze...',
+    analyzerButton: 'Analyze',
+    analyzerUseGenerated: '↑ Use generated password',
+    analyzerScoreLabel: 'Security Score',
+    analyzerFindings: 'Findings',
+    analyzerShort: 'Password too short',
+    analyzerShortDetail: (n) => `Only ${n} characters — minimum recommended: 12.`,
+    analyzerMediumLength: 'Acceptable length',
+    analyzerMediumLengthDetail: '8-11 character password. A 12+ character password is much more secure.',
+    analyzerGoodLength: 'Excellent length',
+    analyzerGoodLengthDetail: (n) => `${n} characters — sufficient for high security.`,
+    analyzerCommon: 'Very common password!',
+    analyzerCommonDetail: 'This password appears in public breach lists. It can be guessed instantly.',
+    analyzerKeyboard: 'Keyboard pattern detected',
+    analyzerKeyboardDetail: (seq) => `The sequence "${seq}" follows the keyboard layout — easy to guess.`,
+    analyzerSequential: 'Sequential characters',
+    analyzerSequentialDetail: (seq) => `The sequence "${seq}" is a consecutive series — predictable.`,
+    analyzerRepeating: 'Repeating pattern',
+    analyzerRepeatingDetail: (pat) => `The pattern "${pat}" repeats — reduces actual entropy.`,
+    analyzerDate: 'Date detected',
+    analyzerDateDetail: 'The password appears to contain a date. Dates are easy to guess (birthdays, anniversaries).',
+    analyzerDictionary: 'Common words detected',
+    analyzerDictionaryDetail: (words) => `The words "${words}" are common in attack dictionaries.`,
+    analyzerNoMix: 'Single character type',
+    analyzerNoMixDetail: 'Uses only one character type (letters OR digits). A diverse mix increases security exponentially.',
+    analyzerLowMix: 'Limited diversity',
+    analyzerLowMixDetail: 'Only 2 character types. Add symbols or digits for more complexity.',
+    analyzerGoodMix: 'Excellent character mix',
+    analyzerGoodMixDetail: (n) => `${n} different character types — good complexity.`,
+    analyzerLowUnique: 'Few unique characters',
+    analyzerLowUniqueDetail: (pct) => `Only ${pct}% of characters are unique — many repetitions.`,
+    analyzerLowEntropy: 'Low Shannon entropy',
+    analyzerLowEntropyDetail: (val) => `Shannon entropy of ${val} bits/char indicates high predictability.`,
+    analyzerHighEntropy: 'High Shannon entropy',
+    analyzerHighEntropyDetail: (val) => `Shannon entropy of ${val} bits/char — excellent distribution.`,
+    analyzerOnlyDigits: 'Digits only',
+    analyzerOnlyDigitsDetail: 'A password made of only digits is extremely vulnerable to brute-force attacks.',
+
+    // Audio Passphrase
+    tabAudio: 'Audio',
+    audioTitle: 'Audio Passphrase',
+    audioDesc: 'Turn your password into music. Strong passwords sound complex, weak ones — monotone.',
+    audioPlaceholder: 'Enter a password to play...',
+    audioPlay: 'Play',
+    audioStop: 'Stop',
+    audioUseGenerated: '↑ Use generated password',
+    audioScale: 'Scale',
+    audioScalePentatonic: 'Pentatonic',
+    audioScaleMajor: 'Major',
+    audioScaleChromatic: 'Chromatic',
+    audioTempo: 'Tempo',
+    audioVolume: 'Volume',
+    audioVisualizer: 'Visualizer',
+    audioExplain: 'Each character produces a unique note based on its ASCII code. A diverse password generates a varied melody, while a simple one sounds repetitive and monotone.',
 
   },
 };

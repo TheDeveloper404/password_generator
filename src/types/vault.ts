@@ -76,5 +76,8 @@ export type MainTab =
   | 'generator'
   | 'wifi'
   | 'hash'
+  | 'analyzer'
+  | 'audio'
+  | 'map'
   | 'vault'
   | 'health';

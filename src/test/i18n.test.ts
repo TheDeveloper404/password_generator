@@ -39,6 +39,17 @@ describe('i18n translations', () => {
       expect(typeof t.policyMinLength(12)).toBe('string');
       expect(typeof t.sessionMinutes(15)).toBe('string');
       expect(typeof t.healthScoreDesc(5)).toBe('string');
+      // Analyzer function translations
+      expect(typeof t.analyzerShortDetail(4)).toBe('string');
+      expect(typeof t.analyzerGoodLengthDetail(16)).toBe('string');
+      expect(typeof t.analyzerKeyboardDetail('qwerty')).toBe('string');
+      expect(typeof t.analyzerSequentialDetail('abcd')).toBe('string');
+      expect(typeof t.analyzerRepeatingDetail('ab')).toBe('string');
+      expect(typeof t.analyzerDictionaryDetail('pass, word')).toBe('string');
+      expect(typeof t.analyzerGoodMixDetail(4)).toBe('string');
+      expect(typeof t.analyzerLowUniqueDetail(30)).toBe('string');
+      expect(typeof t.analyzerLowEntropyDetail('2.5')).toBe('string');
+      expect(typeof t.analyzerHighEntropyDetail('4.2')).toBe('string');
     });
   });
 
@@ -131,5 +142,72 @@ describe('i18n translations', () => {
     const en = translations.en;
     expect(en.generatePassword).toContain('Generate');
     expect(en.copiedToClipboard).toContain('Copied');
+  });
+
+  it('has Password Map translations', () => {
+    languages.forEach((lang) => {
+      const t = translations[lang];
+      expect(t.mapTitle).toBeDefined();
+      expect(t.mapDesc).toBeDefined();
+      expect(t.mapEmpty).toBeDefined();
+      expect(t.mapTotal).toBeDefined();
+      expect(t.mapAvgScore).toBeDefined();
+      expect(t.mapCritical).toBeDefined();
+      expect(t.mapWeak).toBeDefined();
+      expect(t.mapFair).toBeDefined();
+      expect(t.mapStrong).toBeDefined();
+      expect(t.mapExcellent).toBeDefined();
+      expect(t.mapStrongCount).toBeDefined();
+      expect(t.mapScore).toBeDefined();
+      expect(t.mapLength).toBeDefined();
+      expect(t.mapChars).toBeDefined();
+      expect(t.mapUser).toBeDefined();
+      expect(t.mapHint).toBeDefined();
+    });
+  });
+
+  it('has AI Password Analyzer translations', () => {
+    languages.forEach((lang) => {
+      const t = translations[lang];
+      expect(t.analyzerTitle).toBeDefined();
+      expect(t.analyzerDesc).toBeDefined();
+      expect(t.analyzerPlaceholder).toBeDefined();
+      expect(t.analyzerButton).toBeDefined();
+      expect(t.analyzerUseGenerated).toBeDefined();
+      expect(t.analyzerScoreLabel).toBeDefined();
+      expect(t.analyzerCommon).toBeDefined();
+      expect(t.analyzerShort).toBeDefined();
+      expect(t.analyzerKeyboard).toBeDefined();
+      expect(t.analyzerSequential).toBeDefined();
+      expect(t.analyzerRepeating).toBeDefined();
+      expect(t.analyzerOnlyDigits).toBeDefined();
+      expect(t.analyzerNoMix).toBeDefined();
+      expect(t.analyzerGoodLength).toBeDefined();
+      expect(t.analyzerGoodMix).toBeDefined();
+      expect(t.analyzerDictionary).toBeDefined();
+      expect(t.analyzerLowUnique).toBeDefined();
+      expect(t.analyzerLowEntropy).toBeDefined();
+      expect(t.analyzerHighEntropy).toBeDefined();
+    });
+  });
+
+  it('has Audio Passphrase translations', () => {
+    languages.forEach((lang) => {
+      const t = translations[lang];
+      expect(t.audioTitle).toBeDefined();
+      expect(t.audioDesc).toBeDefined();
+      expect(t.audioPlaceholder).toBeDefined();
+      expect(t.audioPlay).toBeDefined();
+      expect(t.audioStop).toBeDefined();
+      expect(t.audioUseGenerated).toBeDefined();
+      expect(t.audioScale).toBeDefined();
+      expect(t.audioScalePentatonic).toBeDefined();
+      expect(t.audioScaleMajor).toBeDefined();
+      expect(t.audioScaleChromatic).toBeDefined();
+      expect(t.audioTempo).toBeDefined();
+      expect(t.audioVolume).toBeDefined();
+      expect(t.audioVisualizer).toBeDefined();
+      expect(t.audioExplain).toBeDefined();
+    });
   });
 });
