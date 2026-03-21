@@ -7,6 +7,8 @@ export interface Translations {
   placeholderPassphrase: string;
   copiedToClipboard: string;
   shortcutHint: string;
+  switchToEn: string;
+  switchToRo: string;
   privacyMode: string;
   generatePassword: string;
   generatePassphrase: string;
@@ -112,6 +114,8 @@ export const translations: Record<Language, Translations> = {
     placeholderPassphrase: 'Apasă generate pentru a crea o frază-parolă',
     copiedToClipboard: 'Copiat în clipboard!',
     shortcutHint: 'Shortcut: Space generează · Ctrl/Cmd+C copiază',
+    switchToEn: 'Switch to English',
+    switchToRo: 'Schimbă în Română',
     privacyMode: 'Mod privat',
     generatePassword: 'Generează Parolă',
     generatePassphrase: 'Generează Frază',
@@ -217,6 +221,8 @@ export const translations: Record<Language, Translations> = {
     placeholderPassphrase: 'Click generate to create passphrase',
     copiedToClipboard: 'Copied to clipboard!',
     shortcutHint: 'Shortcut: Space generate · Ctrl/Cmd+C copy',
+    switchToEn: 'Switch to English',
+    switchToRo: 'Schimbă în Română',
     privacyMode: 'Privacy mode',
     generatePassword: 'Generate Password',
     generatePassphrase: 'Generate Passphrase',

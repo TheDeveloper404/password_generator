@@ -306,14 +306,9 @@ export default function PasswordGenerator() {
             <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg shadow-blue-500/20">
               <RefreshCw size={18} className="text-white" />
             </div>
-            <div>
-              <h1 className={`text-lg lg:text-xl font-bold tracking-tight ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                {t.appTitle}
-              </h1>
-              <p className={`text-[11px] leading-none ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
-                {t.shortcutHint}
-              </p>
-            </div>
+            <h1 className={`text-lg lg:text-xl font-bold tracking-tight ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+              {t.appTitle}
+            </h1>
           </div>
           <div className="flex items-center gap-2">
             <label className={`hidden sm:flex items-center gap-1.5 text-xs cursor-pointer select-none ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
@@ -329,7 +324,7 @@ export default function PasswordGenerator() {
             <button
               onClick={() => setLang(lang === 'ro' ? 'en' : 'ro')}
               className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${darkMode ? 'hover:bg-white/5 text-gray-400' : 'hover:bg-gray-100 text-gray-500'}`}
-              title={lang === 'ro' ? 'Switch to English' : 'Schimbă în Română'}
+              title={lang === 'ro' ? t.switchToEn : t.switchToRo}
             >
               <Globe size={14} />
               {lang === 'ro' ? 'EN' : 'RO'}

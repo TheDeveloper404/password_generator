@@ -127,7 +127,7 @@ export default function PasswordOptions({
           <label className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
             {t.minEntropyTarget}
           </label>
-          <span className={`text-xs font-mono px-1.5 py-0.5 rounded ${darkMode ? 'text-gray-400 bg-gray-700/50' : 'text-gray-500 bg-gray-100'}`}>{minEntropy} bits</span>
+          <span className={`text-xs font-mono px-1.5 py-0.5 rounded ${darkMode ? 'text-gray-400 bg-gray-700/50' : 'text-gray-500 bg-gray-100'}`}>{minEntropy} {t.bits}</span>
         </div>
         <input
           type="range"
@@ -163,7 +163,7 @@ export default function PasswordOptions({
             <label className={`block text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
               {t.passwordOptions}
             </label>
-            <div className="space-y-2">
+            <div className="grid grid-cols-2 gap-2">
               {[
                 { key: 'uppercase', label: t.includeUppercase },
                 { key: 'lowercase', label: t.includeLowercase },

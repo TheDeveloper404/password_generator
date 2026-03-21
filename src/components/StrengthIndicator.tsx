@@ -62,7 +62,7 @@ export default function StrengthIndicator({ strength, darkMode }: StrengthIndica
       </div>
       <div className="grid grid-cols-2 gap-2 text-xs">
         <div className={`${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-          {t.entropyLabel}: <span className={`font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>{strength.entropy} bits</span>
+          {t.entropyLabel}: <span className={`font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>{strength.entropy} {t.bits}</span>
         </div>
         <div className={`${darkMode ? 'text-gray-400' : 'text-gray-500'} text-right`}>
           {t.crackTimeLabel}: <span className={`font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>{strength.crackTime}</span>
