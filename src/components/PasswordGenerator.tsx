@@ -280,10 +280,10 @@ export default function PasswordGenerator() {
 
   return (
     <div className={`min-h-screen lg:h-screen lg:overflow-hidden ${darkMode ? 'dark bg-gray-900' : 'bg-gray-100'} transition-colors duration-200`}>
-      <div className="container mx-auto max-w-6xl px-3 py-4 lg:h-full lg:px-4 lg:py-4">
-        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-xl p-4 lg:p-5 space-y-4 lg:h-full lg:flex lg:flex-col`}>
+      <div className="container mx-auto max-w-7xl px-3 py-4 lg:h-full lg:px-4 lg:py-4">
+        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-xl p-4 lg:p-5 space-y-4 lg:h-full lg:flex lg:flex-col`}>
           <div className="flex justify-between items-center">
-            <h1 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            <h1 className={`text-2xl lg:text-[30px] leading-tight font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
               Password Generator
             </h1>
             <button
@@ -343,8 +343,8 @@ export default function PasswordGenerator() {
             </label>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-12 lg:items-start lg:gap-6 lg:flex-1 lg:min-h-0">
-            <div className="space-y-4 lg:col-span-7 lg:overflow-hidden">
+          <div className="grid gap-4 lg:grid-cols-2 lg:items-start lg:gap-6 lg:flex-1 lg:min-h-0">
+            <div className={`space-y-4 rounded-xl border p-4 lg:overflow-hidden lg:pr-1 ${darkMode ? 'border-gray-700 bg-gray-800/40' : 'border-gray-200 bg-gray-50/70'}`}>
               <PasswordOptions
                 mode={mode}
                 setMode={setMode}
@@ -362,18 +362,20 @@ export default function PasswordGenerator() {
               />
             </div>
 
-            <div className="space-y-3 lg:col-span-5 lg:overflow-hidden lg:pr-1">
-              <StrengthIndicator strength={strength} darkMode={darkMode} />
-              <div className="-mt-2 text-xs">
-                <span className={`${strength.entropy >= minEntropy ? 'text-green-500' : 'text-amber-500'}`}>
-                  Entropy target: {minEntropy} bits {strength.entropy >= minEntropy ? '✓' : `(${strength.entropy} bits)`}
-                </span>
+            <div className={`space-y-4 rounded-xl border p-4 lg:overflow-hidden lg:pl-1 ${darkMode ? 'border-gray-700 bg-gray-800/40' : 'border-gray-200 bg-gray-50/70'}`}>
+              <div className={`rounded-lg border p-3 space-y-3 ${darkMode ? 'border-gray-700 bg-gray-800/60' : 'border-gray-200 bg-white'}`}>
+                <StrengthIndicator strength={strength} darkMode={darkMode} />
+                <div className="text-xs">
+                  <span className={`${strength.entropy >= minEntropy ? 'text-green-500' : 'text-amber-500'}`}>
+                    Entropy target: {minEntropy} bits {strength.entropy >= minEntropy ? '✓' : `(${strength.entropy} bits)`}
+                  </span>
+                </div>
+                <PolicyIndicator result={policyResult} darkMode={darkMode} />
               </div>
-              <PolicyIndicator result={policyResult} darkMode={darkMode} />
 
               <button
                 onClick={handleGenerate}
-                className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
+                className="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
               >
                 {mode === 'password' ? 'Generate Password' : 'Generate Passphrase'}
               </button>
@@ -397,12 +399,12 @@ export default function PasswordGenerator() {
               ) : (
                 <>
                   {copiedHistory.length > 0 && (
-                    <div className="space-y-2">
+                    <div className={`space-y-2 rounded-lg border p-3 ${darkMode ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-white'}`}>
                       <h2 className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
                         Istoric copiate
                       </h2>
-                      <div className="space-y-2 max-h-36 overflow-hidden">
-                        {copiedHistory.map((item) => (
+                      <div className="space-y-2">
+                        {copiedHistory.slice(0, 3).map((item) => (
                           <div
                             key={`copied-${item}`}
                             className={`rounded-md px-3 py-2 text-sm flex items-center justify-between ${
@@ -437,12 +439,12 @@ export default function PasswordGenerator() {
                   )}
 
                   {favorites.length > 0 && (
-                    <div className="space-y-2">
+                    <div className={`space-y-2 rounded-lg border p-3 ${darkMode ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-white'}`}>
                       <h2 className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
                         Favorite
                       </h2>
-                      <div className="space-y-2 max-h-32 overflow-hidden">
-                        {favorites.slice(0, 5).map((item) => (
+                      <div className="space-y-2">
+                        {favorites.slice(0, 3).map((item) => (
                           <div
                             key={`fav-${item}`}
                             className={`rounded-md px-3 py-2 text-sm flex items-center justify-between ${
@@ -477,12 +479,12 @@ export default function PasswordGenerator() {
                   )}
 
                   {history.length > 0 && (
-                    <div className="space-y-2">
+                    <div className={`space-y-2 rounded-lg border p-3 ${darkMode ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-white'}`}>
                       <h2 className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
                         Istoric recent
                       </h2>
-                      <div className="space-y-2 max-h-40 overflow-hidden">
-                        {history.map((item) => (
+                      <div className="space-y-2">
+                        {history.slice(0, 4).map((item) => (
                           <div
                             key={`history-${item}`}
                             className={`rounded-md px-3 py-2 text-sm flex items-center justify-between ${

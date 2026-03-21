@@ -15,6 +15,8 @@ interface SecurityTipsInput {
   policy: PolicyResult;
   minEntropy: number;
   breachCount?: number | null;
+  piiExposure?: boolean;
+  piiMatches?: string[];
 }
 
 const COMMON_PATTERNS = ['password', 'qwerty', 'letmein', 'welcome', 'admin', '123456'];
@@ -26,7 +28,7 @@ function hasSimpleSequence(password: string): boolean {
 
 export function getLiveSecurityTips(input: SecurityTipsInput): SecurityTip[] {
   const tips: SecurityTip[] = [];
-  const { password, strength, policy, minEntropy, breachCount } = input;
+  const { password, strength, policy, minEntropy, breachCount, piiExposure, piiMatches } = input;
 
   if (!password) {
     return [
@@ -92,6 +94,17 @@ export function getLiveSecurityTips(input: SecurityTipsInput): SecurityTip[] {
       id: 'breach',
       severity: 'high',
       text: `Parola a fost găsită în leak-uri (${breachCount.toLocaleString()} apariții). Schimb-o imediat.`,
+    });
+  }
+
+  if (piiExposure) {
+    const sample = piiMatches?.slice(0, 2).join(', ');
+    tips.push({
+      id: 'pii',
+      severity: 'high',
+      text: sample
+        ? `Parola conține date personale (${sample}). Evită nume/email/domeniu în parolă.`
+        : 'Parola conține date personale. Evită nume/email/domeniu în parolă.',
     });
   }
 
