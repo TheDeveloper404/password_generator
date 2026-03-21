@@ -383,7 +383,7 @@ export default function PasswordGenerator({
             </button>
             <div className={`h-5 w-px mx-0.5 hidden sm:block ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`} />
             <button
-              onClick={onLogout}
+              onClick={() => { sessionStorage.removeItem('passgen_active_tab'); onLogout(); }}
               className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${darkMode ? 'hover:bg-red-500/10 text-gray-400 hover:text-red-400' : 'hover:bg-red-50 text-gray-500 hover:text-red-500'}`}
               title={t.logout}
             >

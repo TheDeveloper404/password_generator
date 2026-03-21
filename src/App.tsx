@@ -116,7 +116,6 @@ function App() {
     setMasterPassword('');
     setVaultSalt(null);
     clearSession();
-    sessionStorage.removeItem('passgen_active_tab');
     // Stay on main screen — generator still works, vault/health show unlock
   }, []);
 
@@ -172,6 +171,8 @@ function App() {
   const handleLogout = useCallback(() => {
     // Lock vault if unlocked
     handleLock();
+    // Clear saved tab so refresh after logout goes to Generator
+    sessionStorage.removeItem('passgen_active_tab');
     // Transition back to welcome
     setWelcomeVisible(true);
     setTransitioning(false);
