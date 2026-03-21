@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Copy, RefreshCw, Sun, Moon, Star, Trash2, Globe } from 'lucide-react';
 import {
   generatePassphrase,

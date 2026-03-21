@@ -58,7 +58,7 @@ function getCharacterPoolSize(password: string): number {
 
 export function calculateStrength(
   password: string,
-  options: { [key: string]: boolean },
+  options: Partial<Record<string, boolean>>,
   t?: Translations
 ): StrengthResult {
   const strengthLabels = t
