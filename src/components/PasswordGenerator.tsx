@@ -342,8 +342,8 @@ export default function PasswordGenerator() {
             </label>
           </div>
 
-          <div className="grid gap-5 lg:grid-cols-2 lg:items-start">
-            <div className="space-y-5 lg:max-h-[calc(100vh-14rem)] lg:overflow-y-auto lg:pr-2">
+          <div className="grid gap-5 lg:grid-cols-12 lg:items-start lg:gap-8">
+            <div className="space-y-5 lg:col-span-7">
               <PasswordOptions
                 mode={mode}
                 setMode={setMode}
@@ -359,9 +359,11 @@ export default function PasswordGenerator() {
                 onApplyPreset={handleApplyPreset}
                 darkMode={darkMode}
               />
+            </div>
 
+            <div className="space-y-4 lg:col-span-5 lg:max-h-[calc(100vh-14rem)] lg:overflow-y-auto lg:pr-1">
               <StrengthIndicator strength={strength} darkMode={darkMode} />
-              <div className="-mt-3 text-xs">
+              <div className="-mt-2 text-xs">
                 <span className={`${strength.entropy >= minEntropy ? 'text-green-500' : 'text-amber-500'}`}>
                   Entropy target: {minEntropy} bits {strength.entropy >= minEntropy ? '✓' : `(${strength.entropy} bits)`}
                 </span>
@@ -374,9 +376,7 @@ export default function PasswordGenerator() {
               >
                 {mode === 'password' ? 'Generate Password' : 'Generate Passphrase'}
               </button>
-            </div>
 
-            <div className="space-y-4 lg:max-h-[calc(100vh-14rem)] lg:overflow-y-auto lg:pl-2">
               {copiedHistory.length === 0 && favorites.length === 0 && history.length === 0 ? (
                 <div
                   className={`rounded-lg px-4 py-6 text-sm border ${
