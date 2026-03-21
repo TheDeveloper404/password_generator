@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from '../contexts/LanguageContext';
 
 interface StrengthIndicatorProps {
   strength: {
@@ -11,6 +12,8 @@ interface StrengthIndicatorProps {
 }
 
 export default function StrengthIndicator({ strength, darkMode }: StrengthIndicatorProps) {
+  const { t } = useTranslation();
+
   const getColorClass = (score: number) => {
     const colors = {
       0: 'bg-red-500',
@@ -26,7 +29,7 @@ export default function StrengthIndicator({ strength, darkMode }: StrengthIndica
     <div className="space-y-2">
       <div className="flex justify-between items-center">
         <span className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-700'}`}>
-          Password Strength
+          {t.passwordStrength}
         </span>
         <span
           className={`text-sm font-medium ${
@@ -44,10 +47,10 @@ export default function StrengthIndicator({ strength, darkMode }: StrengthIndica
       </div>
       <div className="grid grid-cols-2 gap-2 text-xs">
         <div className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-          Entropy: <span className="font-semibold">{strength.entropy} bits</span>
+          {t.entropyLabel}: <span className="font-semibold">{strength.entropy} bits</span>
         </div>
         <div className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} text-right`}>
-          Crack time: <span className="font-semibold">{strength.crackTime}</span>
+          {t.crackTimeLabel}: <span className="font-semibold">{strength.crackTime}</span>
         </div>
       </div>
     </div>

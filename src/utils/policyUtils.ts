@@ -1,3 +1,5 @@
+import type { Translations } from './i18n';
+
 export interface PasswordPolicy {
   minLength: number;
   requireUppercase: boolean;
@@ -28,11 +30,11 @@ export const DEFAULT_POLICY: PasswordPolicy = {
   requireSymbols: true,
 };
 
-export function evaluatePolicy(password: string, policy: PasswordPolicy): PolicyResult {
+export function evaluatePolicy(password: string, policy: PasswordPolicy, t?: Translations): PolicyResult {
   const checks: PolicyCheck[] = [
     {
       key: 'length',
-      label: `Minim ${policy.minLength} caractere`,
+      label: t ? t.policyMinLength(policy.minLength) : `Minim ${policy.minLength} caractere`,
       passed: password.length >= policy.minLength,
     },
   ];
@@ -40,7 +42,7 @@ export function evaluatePolicy(password: string, policy: PasswordPolicy): Policy
   if (policy.requireUppercase) {
     checks.push({
       key: 'uppercase',
-      label: 'Cel puțin o literă mare',
+      label: t ? t.policyUppercase : 'Cel puțin o literă mare',
       passed: /[A-Z]/.test(password),
     });
   }
@@ -48,7 +50,7 @@ export function evaluatePolicy(password: string, policy: PasswordPolicy): Policy
   if (policy.requireLowercase) {
     checks.push({
       key: 'lowercase',
-      label: 'Cel puțin o literă mică',
+      label: t ? t.policyLowercase : 'Cel puțin o literă mică',
       passed: /[a-z]/.test(password),
     });
   }
@@ -56,7 +58,7 @@ export function evaluatePolicy(password: string, policy: PasswordPolicy): Policy
   if (policy.requireNumbers) {
     checks.push({
       key: 'numbers',
-      label: 'Cel puțin o cifră',
+      label: t ? t.policyDigit : 'Cel puțin o cifră',
       passed: /[0-9]/.test(password),
     });
   }
@@ -64,7 +66,7 @@ export function evaluatePolicy(password: string, policy: PasswordPolicy): Policy
   if (policy.requireSymbols) {
     checks.push({
       key: 'symbols',
-      label: 'Cel puțin un simbol',
+      label: t ? t.policySymbol : 'Cel puțin un simbol',
       passed: /[^A-Za-z0-9]/.test(password),
     });
   }

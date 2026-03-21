@@ -5,6 +5,7 @@ import {
   PassphraseOptions,
   PasswordCharacterOptions,
 } from '../utils/passwordUtils';
+import { useTranslation } from '../contexts/LanguageContext';
 
 interface PasswordOptionsProps {
   mode: GeneratorMode;
@@ -22,6 +23,14 @@ interface PasswordOptionsProps {
   darkMode: boolean;
 }
 
+const PRESET_LABEL_KEYS: Record<string, keyof ReturnType<typeof import('../contexts/LanguageContext').useTranslation>['t']> = {
+  wifi: 'presetWifi',
+  bank: 'presetBank',
+  social: 'presetSocial',
+  pin: 'presetPin',
+  memorable: 'presetMemorable',
+};
+
 export default function PasswordOptions({
   mode,
   setMode,
@@ -37,6 +46,8 @@ export default function PasswordOptions({
   onApplyPreset,
   darkMode,
 }: PasswordOptionsProps) {
+  const { t } = useTranslation();
+
   const handleOptionChange = (key: keyof typeof options) => {
     setOptions({ ...options, [key]: !options[key] });
   };
@@ -48,11 +59,16 @@ export default function PasswordOptions({
     setPassphraseOptions({ ...passphraseOptions, [key]: value });
   };
 
+  const getPresetLabel = (preset: GeneratorPreset) => {
+    const key = PRESET_LABEL_KEYS[preset.id];
+    return key ? (t[key] as string) : preset.label;
+  };
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
         <label className={`block font-medium ${darkMode ? 'text-white' : 'text-gray-700'}`}>
-          Mode
+          {t.mode}
         </label>
         <div className="grid grid-cols-2 gap-2">
           <button
@@ -66,7 +82,7 @@ export default function PasswordOptions({
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
-            Password
+            {t.password}
           </button>
           <button
             type="button"
@@ -79,14 +95,14 @@ export default function PasswordOptions({
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
-            Passphrase
+            {t.passphrase}
           </button>
         </div>
       </div>
 
       <div className="space-y-2">
         <label className={`block font-medium ${darkMode ? 'text-white' : 'text-gray-700'}`}>
-          Preset-uri rapide
+          {t.quickPresets}
         </label>
         <div className="flex flex-wrap gap-2">
           {presets.map((preset) => (
@@ -100,7 +116,7 @@ export default function PasswordOptions({
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              {preset.label}
+              {getPresetLabel(preset)}
             </button>
           ))}
         </div>
@@ -109,7 +125,7 @@ export default function PasswordOptions({
       <div className="space-y-2">
         <div className="flex justify-between">
           <label className={`font-medium ${darkMode ? 'text-white' : 'text-gray-700'}`}>
-            Entropy minimă țintă
+            {t.minEntropyTarget}
           </label>
           <span className={`${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{minEntropy} bits</span>
         </div>
@@ -129,7 +145,7 @@ export default function PasswordOptions({
           <div className="space-y-2">
             <div className="flex justify-between">
               <label className={`font-medium ${darkMode ? 'text-white' : 'text-gray-700'}`}>
-                Password Length
+                {t.passwordLength}
               </label>
               <span className={`${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{length}</span>
             </div>
@@ -145,14 +161,14 @@ export default function PasswordOptions({
 
           <div className="space-y-2">
             <label className={`block font-medium ${darkMode ? 'text-white' : 'text-gray-700'}`}>
-              Password Options
+              {t.passwordOptions}
             </label>
             <div className="space-y-2">
               {[
-                { key: 'uppercase', label: 'Include Uppercase' },
-                { key: 'lowercase', label: 'Include Lowercase' },
-                { key: 'numbers', label: 'Include Numbers' },
-                { key: 'symbols', label: 'Include Symbols' },
+                { key: 'uppercase', label: t.includeUppercase },
+                { key: 'lowercase', label: t.includeLowercase },
+                { key: 'numbers', label: t.includeNumbers },
+                { key: 'symbols', label: t.includeSymbols },
               ].map(({ key, label }) => (
                 <div key={key} className="flex items-center">
                   <input
@@ -178,7 +194,7 @@ export default function PasswordOptions({
           <div className="space-y-2">
             <div className="flex justify-between">
               <label className={`font-medium ${darkMode ? 'text-white' : 'text-gray-700'}`}>
-                Număr de cuvinte
+                {t.wordCount}
               </label>
               <span className={`${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                 {passphraseOptions.wordCount}
@@ -198,7 +214,7 @@ export default function PasswordOptions({
 
           <div className="space-y-2">
             <label className={`block font-medium ${darkMode ? 'text-white' : 'text-gray-700'}`}>
-              Separator
+              {t.separator}
             </label>
             <select
               value={passphraseOptions.separator}
@@ -235,7 +251,7 @@ export default function PasswordOptions({
                 htmlFor="capitalize"
                 className={`ml-2 block text-sm ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}
               >
-                Capitalize words
+                {t.capitalizeWords}
               </label>
             </div>
 
@@ -253,7 +269,7 @@ export default function PasswordOptions({
                 htmlFor="includeNumber"
                 className={`ml-2 block text-sm ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}
               >
-                Append random number
+                {t.appendRandomNumber}
               </label>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import { PolicyResult } from '../utils/policyUtils';
+import { useTranslation } from '../contexts/LanguageContext';
 
 interface PolicyIndicatorProps {
   result: PolicyResult;
@@ -6,11 +7,13 @@ interface PolicyIndicatorProps {
 }
 
 export default function PolicyIndicator({ result, darkMode }: PolicyIndicatorProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <span className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-700'}`}>
-          Policy Compliance
+          {t.policyCompliance}
         </span>
         <span
           className={`text-sm font-semibold ${

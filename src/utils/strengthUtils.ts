@@ -1,3 +1,5 @@
+import type { Translations } from './i18n';
+
 export interface StrengthResult {
   score: number;
   label: string;
@@ -5,23 +7,42 @@ export interface StrengthResult {
   crackTime: string;
 }
 
-function formatCrackTime(seconds: number): string {
-  if (seconds < 1) return '< 1 secundă';
-  if (seconds < 60) return `${Math.round(seconds)} secunde`;
+interface CrackTimeStrings {
+  crackLessThan1s: string;
+  crackSeconds: (n: number) => string;
+  crackMinutes: (n: number) => string;
+  crackHours: (n: number) => string;
+  crackDays: (n: number) => string;
+  crackYears: (n: number) => string;
+  crackOver1000: string;
+}
 
+function formatCrackTime(seconds: number, t?: CrackTimeStrings): string {
+  if (!t) {
+    if (seconds < 1) return '< 1 secundă';
+    if (seconds < 60) return `${Math.round(seconds)} secunde`;
+    const minutes = seconds / 60;
+    if (minutes < 60) return `${Math.round(minutes)} minute`;
+    const hours = minutes / 60;
+    if (hours < 24) return `${Math.round(hours)} ore`;
+    const days = hours / 24;
+    if (days < 365) return `${Math.round(days)} zile`;
+    const years = days / 365;
+    if (years < 1000) return `${Math.round(years)} ani`;
+    return 'peste 1000 ani';
+  }
+
+  if (seconds < 1) return t.crackLessThan1s;
+  if (seconds < 60) return t.crackSeconds(Math.round(seconds));
   const minutes = seconds / 60;
-  if (minutes < 60) return `${Math.round(minutes)} minute`;
-
+  if (minutes < 60) return t.crackMinutes(Math.round(minutes));
   const hours = minutes / 60;
-  if (hours < 24) return `${Math.round(hours)} ore`;
-
+  if (hours < 24) return t.crackHours(Math.round(hours));
   const days = hours / 24;
-  if (days < 365) return `${Math.round(days)} zile`;
-
+  if (days < 365) return t.crackDays(Math.round(days));
   const years = days / 365;
-  if (years < 1000) return `${Math.round(years)} ani`;
-
-  return 'peste 1000 ani';
+  if (years < 1000) return t.crackYears(Math.round(years));
+  return t.crackOver1000;
 }
 
 function getCharacterPoolSize(password: string): number {
@@ -37,10 +58,15 @@ function getCharacterPoolSize(password: string): number {
 
 export function calculateStrength(
   password: string,
-  options: { [key: string]: boolean }
+  options: { [key: string]: boolean },
+  t?: Translations
 ): StrengthResult {
+  const strengthLabels = t
+    ? [t.veryWeak, t.weak, t.medium, t.strong, t.veryStrong]
+    : ['Very Weak', 'Weak', 'Medium', 'Strong', 'Very Strong'];
+
   if (!password) {
-    return { score: 0, label: 'Very Weak', entropy: 0, crackTime: '< 1 secundă' };
+    return { score: 0, label: strengthLabels[0], entropy: 0, crackTime: t ? t.crackLessThan1s : '< 1 secundă' };
   }
 
   const poolSize = getCharacterPoolSize(password);
@@ -73,11 +99,10 @@ export function calculateStrength(
   const guessesPerSecond = 10_000_000_000;
   const crackTimeSeconds = Math.pow(2, entropy) / guessesPerSecond;
 
-  const labels = ['Very Weak', 'Weak', 'Medium', 'Strong', 'Very Strong'];
   return {
     score,
-    label: labels[score],
+    label: strengthLabels[score],
     entropy: Number(entropy.toFixed(1)),
-    crackTime: formatCrackTime(crackTimeSeconds),
+    crackTime: formatCrackTime(crackTimeSeconds, t),
   };
 }

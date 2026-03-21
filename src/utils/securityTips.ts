@@ -1,5 +1,6 @@
 import { PolicyResult } from './policyUtils';
 import { StrengthResult } from './strengthUtils';
+import type { Translations } from './i18n';
 
 export type TipSeverity = 'high' | 'medium' | 'low' | 'good';
 
@@ -17,6 +18,7 @@ interface SecurityTipsInput {
   breachCount?: number | null;
   piiExposure?: boolean;
   piiMatches?: string[];
+  t?: Translations;
 }
 
 const COMMON_PATTERNS = ['password', 'qwerty', 'letmein', 'welcome', 'admin', '123456'];
@@ -28,14 +30,14 @@ function hasSimpleSequence(password: string): boolean {
 
 export function getLiveSecurityTips(input: SecurityTipsInput): SecurityTip[] {
   const tips: SecurityTip[] = [];
-  const { password, strength, policy, minEntropy, breachCount, piiExposure, piiMatches } = input;
+  const { password, strength, policy, minEntropy, breachCount, piiExposure, piiMatches, t } = input;
 
   if (!password) {
     return [
       {
         id: 'empty',
         severity: 'low',
-        text: 'Generează sau introdu o parolă pentru analiză live.',
+        text: t?.tipEmpty ?? 'Generează sau introdu o parolă pentru analiză live.',
       },
     ];
   }
@@ -44,7 +46,7 @@ export function getLiveSecurityTips(input: SecurityTipsInput): SecurityTip[] {
     tips.push({
       id: 'length',
       severity: 'high',
-      text: 'Crește lungimea la minim 12-16 caractere pentru rezistență mai bună.',
+      text: t?.tipLength ?? 'Crește lungimea la minim 12-16 caractere pentru rezistență mai bună.',
     });
   }
 
@@ -52,7 +54,7 @@ export function getLiveSecurityTips(input: SecurityTipsInput): SecurityTip[] {
     tips.push({
       id: 'common',
       severity: 'high',
-      text: 'Evită cuvinte sau pattern-uri comune (ex: password, qwerty, 123456).',
+      text: t?.tipCommon ?? 'Evită cuvinte sau pattern-uri comune (ex: password, qwerty, 123456).',
     });
   }
 
@@ -60,7 +62,7 @@ export function getLiveSecurityTips(input: SecurityTipsInput): SecurityTip[] {
     tips.push({
       id: 'repeat',
       severity: 'medium',
-      text: 'Evită caractere repetitive consecutive (ex: aaa, 111).',
+      text: t?.tipRepeat ?? 'Evită caractere repetitive consecutive (ex: aaa, 111).',
     });
   }
 
@@ -68,7 +70,7 @@ export function getLiveSecurityTips(input: SecurityTipsInput): SecurityTip[] {
     tips.push({
       id: 'sequence',
       severity: 'medium',
-      text: 'Evită secvențe previzibile (ex: 1234, abcd, qwer).',
+      text: t?.tipSequence ?? 'Evită secvențe previzibile (ex: 1234, abcd, qwer).',
     });
   }
 
@@ -76,16 +78,19 @@ export function getLiveSecurityTips(input: SecurityTipsInput): SecurityTip[] {
     tips.push({
       id: 'entropy',
       severity: 'medium',
-      text: `Ținta curentă este ${minEntropy} biți, iar parola are ${strength.entropy} biți.`,
+      text: t
+        ? t.tipEntropy(minEntropy, strength.entropy)
+        : `Ținta curentă este ${minEntropy} biți, iar parola are ${strength.entropy} biți.`,
     });
   }
 
   const failedPolicyChecks = policy.checks.filter((check) => !check.passed);
   if (failedPolicyChecks.length > 0) {
+    const labels = failedPolicyChecks.slice(0, 2).map((check) => check.label).join(', ');
     tips.push({
       id: 'policy',
       severity: 'medium',
-      text: `Reguli lipsă: ${failedPolicyChecks.slice(0, 2).map((check) => check.label).join(', ')}.`,
+      text: t ? t.tipPolicy(labels) : `Reguli lipsă: ${labels}.`,
     });
   }
 
@@ -93,7 +98,9 @@ export function getLiveSecurityTips(input: SecurityTipsInput): SecurityTip[] {
     tips.push({
       id: 'breach',
       severity: 'high',
-      text: `Parola a fost găsită în leak-uri (${breachCount.toLocaleString()} apariții). Schimb-o imediat.`,
+      text: t
+        ? t.tipBreach(breachCount.toLocaleString())
+        : `Parola a fost găsită în leak-uri (${breachCount.toLocaleString()} apariții). Schimb-o imediat.`,
     });
   }
 
@@ -103,8 +110,8 @@ export function getLiveSecurityTips(input: SecurityTipsInput): SecurityTip[] {
       id: 'pii',
       severity: 'high',
       text: sample
-        ? `Parola conține date personale (${sample}). Evită nume/email/domeniu în parolă.`
-        : 'Parola conține date personale. Evită nume/email/domeniu în parolă.',
+        ? (t?.tipPiiWithSample(sample) ?? `Parola conține date personale (${sample}). Evită nume/email/domeniu în parolă.`)
+        : (t?.tipPiiGeneric ?? 'Parola conține date personale. Evită nume/email/domeniu în parolă.'),
     });
   }
 
@@ -112,7 +119,7 @@ export function getLiveSecurityTips(input: SecurityTipsInput): SecurityTip[] {
     tips.push({
       id: 'good',
       severity: 'good',
-      text: 'Parola arată solid. Păstrează parole unice pentru fiecare cont important.',
+      text: t?.tipGood ?? 'Parola arată solid. Păstrează parole unice pentru fiecare cont important.',
     });
   }
 
