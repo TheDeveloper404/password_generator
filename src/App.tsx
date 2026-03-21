@@ -328,6 +328,7 @@ function App() {
           <PasswordGenerator
             vault={vault}
             vaultConfigured={vaultConfigured}
+            masterPassword={masterPassword}
             darkMode={darkMode}
             setDarkMode={setDarkMode}
             onAddEntry={handleAddEntry}

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Copy, RefreshCw, Sun, Moon, Star, Trash2, Globe, KeyRound, Shield, Zap, Wifi, LogOut } from 'lucide-react';
+import { Copy, RefreshCw, Sun, Moon, Star, Trash2, Globe, KeyRound, Shield, Zap, Wifi, LogOut, Hash } from 'lucide-react';
 import {
   generatePassphrase,
   generatePassword,
@@ -18,6 +18,7 @@ import UsernameGenerator from './UsernameGenerator';
 import PasswordHealthCheck from './PasswordHealthCheck';
 import SecurityTips from './SecurityTips';
 import WiFiQrCode from './WiFiQrCode';
+import HashGenerator from './HashGenerator';
 import VaultView from './vault/VaultView';
 import HealthDashboard from './vault/HealthDashboard';
 import MasterPasswordSetup from './auth/MasterPasswordSetup';
@@ -65,6 +66,7 @@ function getStoredValue<T>(key: string, fallback: T): T {
 interface PasswordGeneratorProps {
   vault: VaultData | null;
   vaultConfigured: boolean;
+  masterPassword: string;
   darkMode: boolean;
   setDarkMode: (v: boolean | ((prev: boolean) => boolean)) => void;
   onAddEntry: (entry: Partial<VaultEntry>) => void;
@@ -84,6 +86,7 @@ interface PasswordGeneratorProps {
 export default function PasswordGenerator({
   vault,
   vaultConfigured,
+  masterPassword: masterPw,
   darkMode,
   setDarkMode,
   onAddEntry,
@@ -324,6 +327,7 @@ export default function PasswordGenerator({
               {([
                 { id: 'generator' as MainTab, icon: Zap, label: t.tabGenerator },
                 { id: 'wifi' as MainTab, icon: Wifi, label: t.tabWifi },
+                { id: 'hash' as MainTab, icon: Hash, label: t.tabHash },
                 { id: 'vault' as MainTab, icon: KeyRound, label: t.tabVault },
                 { id: 'health' as MainTab, icon: Shield, label: t.tabHealth },
               ]).map((tab) => (
@@ -386,6 +390,7 @@ export default function PasswordGenerator({
           {([
             { id: 'generator' as MainTab, icon: Zap, label: t.tabGenerator },
             { id: 'wifi' as MainTab, icon: Wifi, label: t.tabWifi },
+            { id: 'hash' as MainTab, icon: Hash, label: t.tabHash },
             { id: 'vault' as MainTab, icon: KeyRound, label: t.tabVault },
             { id: 'health' as MainTab, icon: Shield, label: t.tabHealth },
           ]).map((tab) => (
@@ -605,6 +610,17 @@ export default function PasswordGenerator({
           </div>
         )}
 
+        {/* Hash Generator Tab */}
+        {activeTab === 'hash' && (
+          <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto">
+            <div className="max-w-2xl mx-auto">
+              <div className={`rounded-2xl p-6 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+                <HashGenerator darkMode={darkMode} />
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Vault Tab */}
         {activeTab === 'vault' && (
           <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto">
@@ -621,6 +637,7 @@ export default function PasswordGenerator({
                   onExport={onExport}
                   onImport={onImport}
                   onLock={onLock}
+                  masterPassword={masterPw}
                 />
               </div>
             ) : vaultConfigured ? (

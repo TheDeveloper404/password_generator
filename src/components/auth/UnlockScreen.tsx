@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Shield, Eye, EyeOff, AlertTriangle } from 'lucide-react';
+import { Shield, Eye, EyeOff, AlertTriangle, Fingerprint } from 'lucide-react';
 import { useTranslation } from '../../contexts/LanguageContext';
 import { isLockedOut, getRemainingLockoutMs, getFailedAttempts } from '../../services/authService';
 import { MAX_UNLOCK_ATTEMPTS } from '../../crypto/constants';
+import {
+  isBiometricAvailable,
+  isBiometricEnrolled,
+  authenticateWithBiometric,
+} from '../../services/biometricService';
 
 interface UnlockScreenProps {
   darkMode: boolean;
@@ -19,6 +24,36 @@ export default function UnlockScreen({ darkMode, onUnlock, onReset, inline }: Un
   const [error, setError] = useState('');
   const [lockoutRemaining, setLockoutRemaining] = useState(0);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [biometricReady, setBiometricReady] = useState(false);
+  const [biometricLoading, setBiometricLoading] = useState(false);
+
+  // Check biometric availability
+  useEffect(() => {
+    void (async () => {
+      const available = await isBiometricAvailable();
+      if (available) {
+        const enrolled = await isBiometricEnrolled();
+        setBiometricReady(enrolled);
+      }
+    })();
+  }, []);
+
+  const handleBiometricUnlock = async () => {
+    if (biometricLoading) return;
+    setBiometricLoading(true);
+    setError('');
+    try {
+      const mp = await authenticateWithBiometric();
+      const success = await onUnlock(mp);
+      if (!success) {
+        setError(t.biometricError);
+      }
+    } catch {
+      setError(t.biometricError);
+    } finally {
+      setBiometricLoading(false);
+    }
+  };
 
   // Update lockout timer
   useEffect(() => {
@@ -125,6 +160,23 @@ export default function UnlockScreen({ darkMode, onUnlock, onReset, inline }: Un
           >
             {loading ? t.unlockLoading : t.unlockButton}
           </button>
+
+          {/* Biometric unlock */}
+          {biometricReady && !lockoutRemaining && (
+            <button
+              type="button"
+              onClick={() => void handleBiometricUnlock()}
+              disabled={biometricLoading}
+              className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm transition-all ${
+                darkMode
+                  ? 'bg-gray-700/50 text-gray-300 hover:bg-gray-700 border border-gray-600'
+                  : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'
+              }`}
+            >
+              <Fingerprint size={18} className={biometricLoading ? 'animate-pulse' : ''} />
+              {t.biometricUnlock}
+            </button>
+          )}
 
           {/* Reset vault link */}
           <div className="text-center pt-2">

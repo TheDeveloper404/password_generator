@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   Plus,
   Search,
@@ -19,6 +19,8 @@ import {
   Lock,
   FolderPlus,
   Timer,
+  FileSpreadsheet,
+  Fingerprint,
 } from 'lucide-react';
 import { useTranslation } from '../../contexts/LanguageContext';
 import type { VaultData, VaultEntry } from '../../types/vault';
@@ -31,6 +33,13 @@ import {
 } from '../../services/sessionService';
 import VaultEntryForm from './VaultEntryForm';
 import { generatePassword } from '../../utils/passwordUtils';
+import ImportCsvDialog from '../ImportCsvDialog';
+import {
+  isBiometricAvailable,
+  isBiometricEnrolled,
+  registerBiometric,
+  removeBiometric,
+} from '../../services/biometricService';
 
 interface VaultViewProps {
   darkMode: boolean;
@@ -43,6 +52,7 @@ interface VaultViewProps {
   onExport: () => void;
   onImport: () => void;
   onLock: () => void;
+  masterPassword?: string;
 }
 
 export default function VaultView({
@@ -56,6 +66,7 @@ export default function VaultView({
   onExport,
   onImport,
   onLock,
+  masterPassword,
 }: VaultViewProps) {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<VaultFilter>({});
@@ -67,6 +78,22 @@ export default function VaultView({
   const [newFolderName, setNewFolderName] = useState('');
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [showActionsMenu, setShowActionsMenu] = useState(false);
+  const [showCsvImport, setShowCsvImport] = useState(false);
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricActive, setBiometricActive] = useState(false);
+  const [biometricLoading, setBiometricLoading] = useState(false);
+
+  // Check biometric availability on mount
+  useEffect(() => {
+    void (async () => {
+      const available = await isBiometricAvailable();
+      setBiometricAvailable(available);
+      if (available) {
+        const enrolled = await isBiometricEnrolled();
+        setBiometricActive(enrolled);
+      }
+    })();
+  }, []);
 
   const filteredEntries = useMemo(() => filterEntries(vault, filter), [vault, filter]);
   const allTags = useMemo(() => getAllTags(vault), [vault]);
@@ -76,6 +103,31 @@ export default function VaultView({
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
   }, []);
+
+  const handleToggleBiometric = async () => {
+    if (biometricLoading) return;
+    setBiometricLoading(true);
+    try {
+      if (biometricActive) {
+        await removeBiometric();
+        setBiometricActive(false);
+      } else if (masterPassword) {
+        await registerBiometric(masterPassword);
+        setBiometricActive(true);
+      }
+    } catch {
+      // User cancelled or error — silently ignore
+    } finally {
+      setBiometricLoading(false);
+    }
+  };
+
+  const handleCsvImport = (entries: Partial<VaultEntry>[]) => {
+    for (const entry of entries) {
+      onAddEntry(entry);
+    }
+    alert(t.csvImportSuccess(entries.length));
+  };
 
   const toggleReveal = (id: string) => {
     setRevealedPasswords((prev) => {
@@ -198,6 +250,27 @@ export default function VaultView({
                   >
                     <Upload size={13} /> {t.vaultImport}
                   </button>
+                  <button
+                    onClick={() => { setShowCsvImport(true); setShowActionsMenu(false); }}
+                    className={`w-full flex items-center gap-2 px-3 py-2.5 text-xs ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'}`}
+                  >
+                    <FileSpreadsheet size={13} /> {t.vaultImportCsv}
+                  </button>
+                  <div className={`h-px ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`} />
+                  {/* Biometric toggle */}
+                  {biometricAvailable && (
+                    <button
+                      onClick={() => { void handleToggleBiometric(); setShowActionsMenu(false); }}
+                      disabled={biometricLoading}
+                      className={`w-full flex items-center gap-2 px-3 py-2.5 text-xs ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'}`}
+                    >
+                      <Fingerprint size={13} />
+                      {biometricActive ? t.biometricDisable : t.biometricEnable}
+                      {biometricActive && (
+                        <span className="ml-auto text-[10px] text-emerald-500">●</span>
+                      )}
+                    </button>
+                  )}
                   <div className={`h-px ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`} />
                   {/* Session timeout selector */}
                   <SessionTimeoutSelector darkMode={darkMode} />
@@ -411,6 +484,15 @@ export default function VaultView({
             );
           })}
         </div>
+      )}
+
+      {/* CSV Import Dialog */}
+      {showCsvImport && (
+        <ImportCsvDialog
+          darkMode={darkMode}
+          onImport={handleCsvImport}
+          onClose={() => setShowCsvImport(false)}
+        />
       )}
     </div>
   );

@@ -228,6 +228,50 @@ export interface Translations {
   sessionActive: string;
   sessionExpires: string;
 
+  // Hash Generator
+  tabHash: string;
+  hashTitle: string;
+  hashDesc: string;
+  hashInput: string;
+  hashInputPlaceholder: string;
+  hashUploadFile: string;
+  hashFileLoaded: string;
+  hashCharCount: string;
+  hashByteCount: string;
+  hashResults: string;
+  hashDisclaimer2: string;
+
+  // Import CSV
+  csvTitle: string;
+  csvDesc: string;
+  csvSource: string;
+  csvAutoDetect: string;
+  csvSelectFile: string;
+  csvFileHint: string;
+  csvNoEntries: string;
+  csvParseError: string;
+  csvPreviewTitle: string;
+  csvDetectedSource: string;
+  csvTotalRows: string;
+  csvImportable: string;
+  csvSkipped: string;
+  csvPreview: string;
+  csvMore: string;
+  csvImportButton: string;
+  csvImportSuccess: (n: number) => string;
+  vaultImportCsv: string;
+
+  // Biometric
+  biometricUnlock: string;
+  biometricEnable: string;
+  biometricDisable: string;
+  biometricNotAvailable: string;
+  biometricEnrolled: string;
+  biometricPrompt: string;
+  biometricError: string;
+  biometricRegisterSuccess: string;
+  biometricRemoved: string;
+
   // WiFi QR Code
   wifiTitle: string;
   wifiDesc: string;
@@ -474,6 +518,50 @@ export const translations: Record<Language, Translations> = {
     sessionActive: 'Sesiune activă',
     sessionExpires: 'Expiră la',
 
+    // Hash Generator
+    tabHash: 'Hash',
+    hashTitle: 'Generator Hash',
+    hashDesc: 'Calculează hash-uri criptografice pentru orice text sau fișier.',
+    hashInput: 'Text de intrare',
+    hashInputPlaceholder: 'Introdu textul de hașurat...',
+    hashUploadFile: 'Încarcă fișier',
+    hashFileLoaded: 'Fișier încărcat',
+    hashCharCount: 'Caractere',
+    hashByteCount: 'Octeți',
+    hashResults: 'Rezultate',
+    hashDisclaimer2: 'Toate calculele sunt efectuate local în browser. Niciun dat nu părăsește dispozitivul tău.',
+
+    // Import CSV
+    csvTitle: 'Import CSV',
+    csvDesc: 'Importă parole din alte managere de parole.',
+    csvSource: 'Sursă',
+    csvAutoDetect: 'Auto-detectare',
+    csvSelectFile: 'Selectează fișierul CSV',
+    csvFileHint: 'Acceptă .csv și .txt',
+    csvNoEntries: 'Nu s-au găsit intrări valide în fișier.',
+    csvParseError: 'Eroare la citirea fișierului.',
+    csvPreviewTitle: 'Previzualizare import',
+    csvDetectedSource: 'Sursă detectată',
+    csvTotalRows: 'Total rânduri',
+    csvImportable: 'Importabile',
+    csvSkipped: 'Omise',
+    csvPreview: 'Previzualizare',
+    csvMore: 'altele',
+    csvImportButton: 'Importă',
+    csvImportSuccess: (n) => `${n} intrări importate din CSV cu succes!`,
+    vaultImportCsv: 'Importă din CSV',
+
+    // Biometric
+    biometricUnlock: 'Deblochează cu biometric',
+    biometricEnable: 'Activează deblocare biometrică',
+    biometricDisable: 'Dezactivează biometric',
+    biometricNotAvailable: 'Autentificarea biometrică nu este disponibilă pe acest dispozitiv.',
+    biometricEnrolled: 'Biometric activat',
+    biometricPrompt: 'Folosește amprenta sau Face ID pentru a debloca seiful.',
+    biometricError: 'Autentificarea biometrică a eșuat.',
+    biometricRegisterSuccess: 'Deblocare biometrică activată cu succes!',
+    biometricRemoved: 'Deblocarea biometrică a fost dezactivată.',
+
     // WiFi QR Code
     wifiTitle: 'QR Code WiFi',
     wifiDesc: 'Generează un cod QR scanabil pentru conectarea rapidă la rețeaua WiFi.',
@@ -719,6 +807,50 @@ export const translations: Record<Language, Translations> = {
     sessionHour: '1 hour',
     sessionActive: 'Session active',
     sessionExpires: 'Expires at',
+
+    // Hash Generator
+    tabHash: 'Hash',
+    hashTitle: 'Hash Generator',
+    hashDesc: 'Compute cryptographic hashes for any text or file.',
+    hashInput: 'Input text',
+    hashInputPlaceholder: 'Enter text to hash...',
+    hashUploadFile: 'Upload file',
+    hashFileLoaded: 'File loaded',
+    hashCharCount: 'Characters',
+    hashByteCount: 'Bytes',
+    hashResults: 'Results',
+    hashDisclaimer2: 'All computations are performed locally in your browser. No data leaves your device.',
+
+    // Import CSV
+    csvTitle: 'Import CSV',
+    csvDesc: 'Import passwords from other password managers.',
+    csvSource: 'Source',
+    csvAutoDetect: 'Auto-detect',
+    csvSelectFile: 'Select CSV file',
+    csvFileHint: 'Accepts .csv and .txt',
+    csvNoEntries: 'No valid entries found in the file.',
+    csvParseError: 'Error reading the file.',
+    csvPreviewTitle: 'Import preview',
+    csvDetectedSource: 'Detected source',
+    csvTotalRows: 'Total rows',
+    csvImportable: 'Importable',
+    csvSkipped: 'Skipped',
+    csvPreview: 'Preview',
+    csvMore: 'more',
+    csvImportButton: 'Import',
+    csvImportSuccess: (n) => `${n} entries imported from CSV successfully!`,
+    vaultImportCsv: 'Import from CSV',
+
+    // Biometric
+    biometricUnlock: 'Unlock with biometrics',
+    biometricEnable: 'Enable biometric unlock',
+    biometricDisable: 'Disable biometrics',
+    biometricNotAvailable: 'Biometric authentication is not available on this device.',
+    biometricEnrolled: 'Biometrics enabled',
+    biometricPrompt: 'Use your fingerprint or Face ID to unlock the vault.',
+    biometricError: 'Biometric authentication failed.',
+    biometricRegisterSuccess: 'Biometric unlock enabled successfully!',
+    biometricRemoved: 'Biometric unlock has been disabled.',
 
     // WiFi QR Code
     wifiTitle: 'WiFi QR Code',

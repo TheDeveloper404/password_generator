@@ -75,5 +75,6 @@ export type AppScreen =
 export type MainTab =
   | 'generator'
   | 'wifi'
+  | 'hash'
   | 'vault'
   | 'health';

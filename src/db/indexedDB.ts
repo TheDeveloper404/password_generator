@@ -6,20 +6,22 @@
  * Object Stores:
  *   - vault: Encrypted vault blobs
  *   - auth: Master password verifier data
+ *   - biometric: WebAuthn biometric enrollment data
  */
 
 import type { AuthData, EncryptedVault } from '../types/vault';
 
 const DB_NAME = 'passgen_db';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 const STORE_VAULT = 'vault';
 const STORE_AUTH = 'auth';
+const STORE_BIOMETRIC = 'biometric';
 
 const VAULT_KEY = 'primary';
 const AUTH_KEY = 'primary';
 
-function openDB(): Promise<IDBDatabase> {
+export function openDB(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
@@ -32,6 +34,10 @@ function openDB(): Promise<IDBDatabase> {
 
       if (!db.objectStoreNames.contains(STORE_AUTH)) {
         db.createObjectStore(STORE_AUTH, { keyPath: 'id' });
+      }
+
+      if (!db.objectStoreNames.contains(STORE_BIOMETRIC)) {
+        db.createObjectStore(STORE_BIOMETRIC, { keyPath: 'id' });
       }
     };
 
@@ -138,9 +144,11 @@ export async function isVaultSetUp(): Promise<boolean> {
 /** Completely wipe all data (factory reset) */
 export async function wipeAllData(): Promise<void> {
   const db = await openDB();
-  const tx = db.transaction([STORE_VAULT, STORE_AUTH], 'readwrite');
-  tx.objectStore(STORE_VAULT).clear();
-  tx.objectStore(STORE_AUTH).clear();
+  const stores = [STORE_VAULT, STORE_AUTH, STORE_BIOMETRIC];
+  const tx = db.transaction(stores, 'readwrite');
+  for (const store of stores) {
+    tx.objectStore(store).clear();
+  }
 
   return new Promise((resolve, reject) => {
     tx.oncomplete = () => {

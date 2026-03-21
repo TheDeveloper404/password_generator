@@ -3,10 +3,12 @@
   "language": "en,ro",
   "words": [
     "André",
+    "biometric",
     "Müller",
     "nopass",
     "passgen",
-    "passphrase"
+    "passphrase",
+    "pwned"
   ],
   "ignorePaths": [
     "node_modules",
