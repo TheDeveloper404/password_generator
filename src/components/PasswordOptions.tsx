@@ -67,19 +67,19 @@ export default function PasswordOptions({
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <label className={`block font-medium ${darkMode ? 'text-white' : 'text-gray-700'}`}>
+        <label className={`block text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
           {t.mode}
         </label>
         <div className="grid grid-cols-2 gap-2">
           <button
             type="button"
             onClick={() => setMode('password')}
-            className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+            className={`rounded-lg px-3 py-2 text-sm font-medium transition-all ${
               mode === 'password'
-                ? 'bg-blue-600 text-white'
+                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md shadow-blue-500/20'
                 : darkMode
-                  ? 'bg-gray-700 text-gray-200 hover:bg-gray-600'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-gray-700/50 text-gray-300 hover:bg-gray-700'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
             {t.password}
@@ -87,12 +87,12 @@ export default function PasswordOptions({
           <button
             type="button"
             onClick={() => setMode('passphrase')}
-            className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+            className={`rounded-lg px-3 py-2 text-sm font-medium transition-all ${
               mode === 'passphrase'
-                ? 'bg-blue-600 text-white'
+                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md shadow-blue-500/20'
                 : darkMode
-                  ? 'bg-gray-700 text-gray-200 hover:bg-gray-600'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-gray-700/50 text-gray-300 hover:bg-gray-700'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
             {t.passphrase}
@@ -101,19 +101,19 @@ export default function PasswordOptions({
       </div>
 
       <div className="space-y-2">
-        <label className={`block font-medium ${darkMode ? 'text-white' : 'text-gray-700'}`}>
+        <label className={`block text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
           {t.quickPresets}
         </label>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           {presets.map((preset) => (
             <button
               key={preset.id}
               type="button"
               onClick={() => onApplyPreset(preset.id)}
-              className={`rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
+              className={`rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all ${
                 darkMode
-                  ? 'bg-gray-700 text-gray-200 hover:bg-gray-600'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-gray-700/50 text-gray-300 hover:bg-gray-700 hover:text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-800'
               }`}
             >
               {getPresetLabel(preset)}
@@ -124,10 +124,10 @@ export default function PasswordOptions({
 
       <div className="space-y-2">
         <div className="flex justify-between">
-          <label className={`font-medium ${darkMode ? 'text-white' : 'text-gray-700'}`}>
+          <label className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
             {t.minEntropyTarget}
           </label>
-          <span className={`${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{minEntropy} bits</span>
+          <span className={`text-xs font-mono px-1.5 py-0.5 rounded ${darkMode ? 'text-gray-400 bg-gray-700/50' : 'text-gray-500 bg-gray-100'}`}>{minEntropy} bits</span>
         </div>
         <input
           type="range"
@@ -144,10 +144,10 @@ export default function PasswordOptions({
         <>
           <div className="space-y-2">
             <div className="flex justify-between">
-              <label className={`font-medium ${darkMode ? 'text-white' : 'text-gray-700'}`}>
+              <label className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
                 {t.passwordLength}
               </label>
-              <span className={`${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{length}</span>
+              <span className={`text-xs font-mono px-1.5 py-0.5 rounded ${darkMode ? 'text-gray-400 bg-gray-700/50' : 'text-gray-500 bg-gray-100'}`}>{length}</span>
             </div>
             <input
               type="range"
@@ -160,7 +160,7 @@ export default function PasswordOptions({
           </div>
 
           <div className="space-y-2">
-            <label className={`block font-medium ${darkMode ? 'text-white' : 'text-gray-700'}`}>
+            <label className={`block text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
               {t.passwordOptions}
             </label>
             <div className="space-y-2">
@@ -193,10 +193,10 @@ export default function PasswordOptions({
         <div className="space-y-3">
           <div className="space-y-2">
             <div className="flex justify-between">
-              <label className={`font-medium ${darkMode ? 'text-white' : 'text-gray-700'}`}>
+              <label className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
                 {t.wordCount}
               </label>
-              <span className={`${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+              <span className={`text-xs font-mono px-1.5 py-0.5 rounded ${darkMode ? 'text-gray-400 bg-gray-700/50' : 'text-gray-500 bg-gray-100'}`}>
                 {passphraseOptions.wordCount}
               </span>
             </div>
@@ -213,7 +213,7 @@ export default function PasswordOptions({
           </div>
 
           <div className="space-y-2">
-            <label className={`block font-medium ${darkMode ? 'text-white' : 'text-gray-700'}`}>
+            <label className={`block text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
               {t.separator}
             </label>
             <select
@@ -224,15 +224,15 @@ export default function PasswordOptions({
                   event.target.value as PassphraseOptions['separator']
                 )
               }
-              className={`w-full rounded-md border px-3 py-2 text-sm ${
+              className={`w-full rounded-lg border px-3 py-2 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/40 ${
                 darkMode
-                  ? 'bg-gray-700 border-gray-600 text-gray-100'
-                  : 'bg-white border-gray-300 text-gray-800'
+                  ? 'bg-gray-700/50 border-gray-600 text-gray-100'
+                  : 'bg-gray-50 border-gray-200 text-gray-800'
               }`}
             >
-              <option value="-">Dash (-)</option>
-              <option value="_">Underscore (_)</option>
-              <option value=".">Dot (.)</option>
+              <option value="-">{t.separatorDash}</option>
+              <option value="_">{t.separatorUnderscore}</option>
+              <option value=".">{t.separatorDot}</option>
             </select>
           </div>
 

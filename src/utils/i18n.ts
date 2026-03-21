@@ -14,6 +14,15 @@ export interface Translations {
   historyCopied: string;
   historyFavorites: string;
   historyRecent: string;
+  copyToClipboard: string;
+  generateNew: string;
+  copyAgain: string;
+  removeFromCopied: string;
+  copy: string;
+  removeFavorite: string;
+  toggleFavorite: string;
+  removeFromHistory: string;
+  bits: string;
 
   // PasswordOptions
   mode: string;
@@ -36,9 +45,14 @@ export interface Translations {
   presetSocial: string;
   presetPin: string;
   presetMemorable: string;
+  separatorDash: string;
+  separatorUnderscore: string;
+  separatorDot: string;
 
   // StrengthIndicator
   passwordStrength: string;
+  entropyLabel: string;
+  crackTimeLabel: string;
 
   // PolicyIndicator
   policyCompliance: string;
@@ -71,13 +85,12 @@ export interface Translations {
   crackDays: (n: number) => string;
   crackYears: (n: number) => string;
   crackOver1000: string;
-
 }
 
 export const translations: Record<Language, Translations> = {
   ro: {
     // PasswordGenerator
-    appTitle: 'Password Generator',
+    appTitle: 'Generator de Parole',
     placeholderPassword: 'Apasă generate pentru a crea o parolă',
     placeholderPassphrase: 'Apasă generate pentru a crea o frază-parolă',
     copiedToClipboard: 'Copiat în clipboard!',
@@ -89,6 +102,15 @@ export const translations: Record<Language, Translations> = {
     historyCopied: 'Istoric copiate',
     historyFavorites: 'Favorite',
     historyRecent: 'Istoric recent',
+    copyToClipboard: 'Copiază în clipboard',
+    generateNew: 'Generează parolă nouă',
+    copyAgain: 'Copiază din nou',
+    removeFromCopied: 'Șterge din istoricul copiate',
+    copy: 'Copiază',
+    removeFavorite: 'Șterge din favorite',
+    toggleFavorite: 'Adaugă/Șterge favorit',
+    removeFromHistory: 'Șterge din istoric',
+    bits: 'biți',
 
     // PasswordOptions
     mode: 'Mod',
@@ -111,9 +133,14 @@ export const translations: Record<Language, Translations> = {
     presetSocial: 'Social',
     presetPin: 'PIN',
     presetMemorable: 'Memorabil',
+    separatorDash: 'Liniuță (-)',
+    separatorUnderscore: 'Underscore (_)',
+    separatorDot: 'Punct (.)',
 
     // StrengthIndicator
     passwordStrength: 'Putere Parolă',
+    entropyLabel: 'Entropie',
+    crackTimeLabel: 'Timp spargere',
 
     // PolicyIndicator
     policyCompliance: 'Conformitate Politică',
@@ -163,6 +190,15 @@ export const translations: Record<Language, Translations> = {
     historyCopied: 'Copied history',
     historyFavorites: 'Favorites',
     historyRecent: 'Recent history',
+    copyToClipboard: 'Copy to clipboard',
+    generateNew: 'Generate new password',
+    copyAgain: 'Copy again',
+    removeFromCopied: 'Remove from copied history',
+    copy: 'Copy',
+    removeFavorite: 'Remove favorite',
+    toggleFavorite: 'Toggle favorite',
+    removeFromHistory: 'Remove from history',
+    bits: 'bits',
 
     // PasswordOptions
     mode: 'Mode',
@@ -185,9 +221,14 @@ export const translations: Record<Language, Translations> = {
     presetSocial: 'Social',
     presetPin: 'PIN',
     presetMemorable: 'Memorable',
+    separatorDash: 'Dash (-)',
+    separatorUnderscore: 'Underscore (_)',
+    separatorDot: 'Dot (.)',
 
     // StrengthIndicator
     passwordStrength: 'Password Strength',
+    entropyLabel: 'Entropy',
+    crackTimeLabel: 'Crack time',
 
     // PolicyIndicator
     policyCompliance: 'Policy Compliance',

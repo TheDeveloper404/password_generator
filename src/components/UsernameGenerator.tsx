@@ -31,13 +31,15 @@ export default function UsernameGenerator({ darkMode }: UsernameGeneratorProps) 
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
-        <User size={16} className={darkMode ? 'text-purple-400' : 'text-purple-600'} />
+        <div className="flex items-center justify-center w-6 h-6 rounded-md bg-gradient-to-br from-purple-500 to-pink-500 shadow-sm">
+          <User size={13} className="text-white" />
+        </div>
         <h3 className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
           {t.usernameTitle}
         </h3>
       </div>
 
-      <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+      <p className={`text-[11px] ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
         {t.usernameDesc}
       </p>
 
@@ -47,10 +49,10 @@ export default function UsernameGenerator({ darkMode }: UsernameGeneratorProps) 
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
           placeholder={t.usernameFirstName}
-          className={`w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+          className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/40 focus:border-purple-500 transition-all ${
             darkMode
-              ? 'border-gray-600 bg-gray-700 text-white placeholder-gray-400'
-              : 'border-gray-300 bg-white text-gray-900 placeholder-gray-400'
+              ? 'border-gray-600 bg-gray-700/50 text-white placeholder-gray-500'
+              : 'border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400'
           }`}
         />
         <input
@@ -58,10 +60,10 @@ export default function UsernameGenerator({ darkMode }: UsernameGeneratorProps) 
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
           placeholder={t.usernameLastName}
-          className={`w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+          className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/40 focus:border-purple-500 transition-all ${
             darkMode
-              ? 'border-gray-600 bg-gray-700 text-white placeholder-gray-400'
-              : 'border-gray-300 bg-white text-gray-900 placeholder-gray-400'
+              ? 'border-gray-600 bg-gray-700/50 text-white placeholder-gray-500'
+              : 'border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400'
           }`}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && canGenerate) handleGenerate();
@@ -72,40 +74,40 @@ export default function UsernameGenerator({ darkMode }: UsernameGeneratorProps) 
       <button
         onClick={handleGenerate}
         disabled={!canGenerate}
-        className={`w-full py-2.5 px-4 font-semibold rounded-lg transition-colors text-sm flex items-center justify-center gap-2 ${
+        className={`w-full py-2.5 px-4 font-semibold rounded-lg transition-all text-sm flex items-center justify-center gap-2 ${
           canGenerate
-            ? 'bg-purple-600 hover:bg-purple-700 text-white'
+            ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-md shadow-purple-500/20 hover:shadow-lg active:scale-[0.98]'
             : darkMode
-              ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              ? 'bg-gray-700/50 text-gray-600 cursor-not-allowed'
+              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
         }`}
       >
-        <RefreshCw size={14} />
+        <RefreshCw size={13} />
         {t.usernameGenerate}
       </button>
 
       {usernames.length > 0 && (
-        <div className="space-y-1.5">
+        <div className="space-y-1">
           {usernames.map((username, idx) => (
             <div
               key={`${username}-${idx}`}
-              className={`flex items-center justify-between rounded-md px-3 py-1.5 text-sm ${
-                darkMode ? 'bg-gray-700 text-gray-100' : 'bg-gray-100 text-gray-800'
+              className={`group flex items-center justify-between rounded-lg px-3 py-1.5 transition-all ${
+                darkMode ? 'hover:bg-gray-700/50 text-gray-200' : 'hover:bg-gray-50 text-gray-700'
               }`}
             >
               <span className="font-mono text-xs truncate">{username}</span>
               <button
                 onClick={() => void handleCopy(username, idx)}
-                className={`ml-2 p-1 rounded transition-colors ${
+                className={`ml-2 p-1 rounded-md transition-all ${
                   copiedIdx === idx
-                    ? 'text-green-500'
+                    ? 'text-emerald-400'
                     : darkMode
-                      ? 'hover:bg-gray-600 text-gray-300'
-                      : 'hover:bg-gray-200 text-gray-500'
+                      ? 'opacity-0 group-hover:opacity-100 hover:bg-gray-600 text-gray-400'
+                      : 'opacity-0 group-hover:opacity-100 hover:bg-gray-200 text-gray-400'
                 }`}
                 title={t.usernameCopy}
               >
-                <Copy size={13} />
+                <Copy size={12} />
               </button>
             </div>
           ))}

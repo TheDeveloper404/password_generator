@@ -6,6 +6,23 @@
   body {
     @apply antialiased;
   }
+
+  * {
+    scrollbar-width: thin;
+  }
+
+  *::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: rgba(128, 128, 128, 0.3);
+    border-radius: 20px;
+  }
 }
 
 .dark {

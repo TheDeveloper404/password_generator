@@ -292,277 +292,274 @@ export default function PasswordGenerator() {
 
   return (
     <LanguageContext.Provider value={{ lang, t, setLang }}>
-    <div className={`min-h-screen lg:h-screen lg:overflow-hidden ${darkMode ? 'dark bg-gray-900' : 'bg-gray-100'} transition-colors duration-200`}>
-      <div className="mx-auto max-w-7xl px-3 py-4 lg:h-full lg:max-w-[1600px] lg:px-6 lg:py-3">
-        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-xl p-4 lg:p-5 space-y-3 lg:h-full lg:flex lg:flex-col`}>
-          {/* Header row */}
-          <div className="flex justify-between items-center">
-            <h1 className={`text-xl lg:text-2xl leading-tight font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-              {t.appTitle}
-            </h1>
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => setLang(lang === 'ro' ? 'en' : 'ro')}
-                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-medium transition-colors ${darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'}`}
-                title={lang === 'ro' ? 'Switch to English' : 'Schimbă în Română'}
-              >
-                <Globe size={15} />
-                {lang === 'ro' ? 'EN' : 'RO'}
-              </button>
-              <button
-                onClick={() => setDarkMode((current) => !current)}
-                className={`p-2 rounded-full ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}
-              >
-                {darkMode ? <Sun className="text-white" size={20} /> : <Moon className="text-gray-900" size={20} />}
-              </button>
+    <div className={`min-h-screen lg:h-screen lg:overflow-hidden transition-colors duration-300 ${darkMode ? 'dark bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950' : 'bg-gradient-to-br from-slate-50 via-white to-blue-50'}`}>
+
+      {/* Top accent bar */}
+      <div className="h-1 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+
+      <div className="mx-auto max-w-[1680px] px-4 py-3 lg:h-[calc(100%-4px)] lg:px-6 lg:py-4 lg:flex lg:flex-col">
+
+        {/* Header */}
+        <header className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg shadow-blue-500/20">
+              <RefreshCw size={18} className="text-white" />
+            </div>
+            <div>
+              <h1 className={`text-lg lg:text-xl font-bold tracking-tight ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                {t.appTitle}
+              </h1>
+              <p className={`text-[11px] leading-none ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                {t.shortcutHint}
+              </p>
             </div>
           </div>
-
-          {/* Password display */}
-          <div className={`relative flex items-center ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} p-3 rounded-lg`}>
-            <input
-              type="text"
-              value={password}
-              readOnly
-              className={`w-full pr-20 bg-transparent border-none focus:ring-0 text-lg font-mono tracking-wide ${
-                darkMode ? 'text-white' : 'text-gray-900'
-              }`}
-              placeholder={
-                mode === 'password' ? t.placeholderPassword : t.placeholderPassphrase
-              }
-            />
-            <div className="absolute right-3 flex space-x-1">
-              <button
-                onClick={() => void handleCopy()}
-                className={`p-2 rounded-md transition-colors ${
-                  darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'
-                } ${copied ? 'text-green-500' : darkMode ? 'text-white' : 'text-gray-600'}`}
-                title="Copy to clipboard"
-              >
-                <Copy size={18} />
-              </button>
-              <button
-                onClick={handleGenerate}
-                className={`p-2 rounded-md transition-colors ${
-                  darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'
-                } ${darkMode ? 'text-white' : 'text-gray-600'}`}
-                title="Generate new password"
-              >
-                <RefreshCw size={18} />
-              </button>
-            </div>
-          </div>
-
-          {/* Info bar */}
-          <div className="flex items-center justify-between text-xs">
-            <span className={`${copied ? 'text-green-500' : darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-              {copied ? t.copiedToClipboard : t.shortcutHint}
-            </span>
-            <label className={`flex items-center gap-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+          <div className="flex items-center gap-2">
+            <label className={`hidden sm:flex items-center gap-1.5 text-xs cursor-pointer select-none ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
               <input
                 type="checkbox"
                 checked={privacyMode}
                 onChange={() => setPrivacyMode((current) => !current)}
-                className="h-3.5 w-3.5 rounded border-gray-300 text-blue-600"
+                className="h-3.5 w-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
               {t.privacyMode}
             </label>
+            <div className={`h-5 w-px mx-1 hidden sm:block ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`} />
+            <button
+              onClick={() => setLang(lang === 'ro' ? 'en' : 'ro')}
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${darkMode ? 'hover:bg-white/5 text-gray-400' : 'hover:bg-gray-100 text-gray-500'}`}
+              title={lang === 'ro' ? 'Switch to English' : 'Schimbă în Română'}
+            >
+              <Globe size={14} />
+              {lang === 'ro' ? 'EN' : 'RO'}
+            </button>
+            <button
+              onClick={() => setDarkMode((current) => !current)}
+              className={`p-2 rounded-lg transition-all ${darkMode ? 'hover:bg-white/5 text-gray-400' : 'hover:bg-gray-100 text-gray-500'}`}
+            >
+              {darkMode ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+          </div>
+        </header>
+
+        {/* Password output bar */}
+        <div className={`relative flex items-center rounded-xl mb-4 transition-all ${darkMode ? 'bg-gray-800/80 border border-gray-700/60 shadow-lg shadow-black/20' : 'bg-white border border-gray-200 shadow-sm'}`}>
+          <div className="flex-1 px-5 py-3.5">
+            <input
+              type="text"
+              value={password}
+              readOnly
+              className={`w-full bg-transparent border-none focus:ring-0 focus:outline-none text-lg font-mono tracking-wider ${darkMode ? 'text-white placeholder-gray-600' : 'text-gray-900 placeholder-gray-300'}`}
+              placeholder={mode === 'password' ? t.placeholderPassword : t.placeholderPassphrase}
+            />
+          </div>
+          <div className="flex items-center gap-1 pr-3">
+            <span className={`text-xs mr-2 ${copied ? 'text-emerald-400 font-medium' : 'hidden'}`}>
+              {t.copiedToClipboard}
+            </span>
+            <button
+              onClick={() => void handleCopy()}
+              className={`p-2.5 rounded-lg transition-all ${copied ? 'text-emerald-400 bg-emerald-500/10' : darkMode ? 'text-gray-400 hover:text-white hover:bg-white/5' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'}`}
+              title={t.copyToClipboard}
+            >
+              <Copy size={16} />
+            </button>
+            <button
+              onClick={handleGenerate}
+              className="p-2.5 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 transition-all shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/30"
+              title={t.generateNew}
+            >
+              <RefreshCw size={16} />
+            </button>
+          </div>
+        </div>
+
+        {/* Main 3-column grid */}
+        <div className="grid gap-4 lg:grid-cols-3 lg:flex-1 lg:min-h-0">
+
+          {/* Column 1: Options */}
+          <div className={`rounded-2xl p-4 lg:overflow-y-auto lg:max-h-full transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+            <PasswordOptions
+              mode={mode}
+              setMode={setMode}
+              minEntropy={minEntropy}
+              setMinEntropy={setMinEntropy}
+              length={length}
+              setLength={setLength}
+              options={options}
+              setOptions={setOptions}
+              passphraseOptions={passphraseOptions}
+              setPassphraseOptions={setPassphraseOptions}
+              presets={PASSWORD_PRESETS}
+              onApplyPreset={handleApplyPreset}
+              darkMode={darkMode}
+            />
           </div>
 
-          {/* 3-column wide layout on desktop */}
-          <div className="grid gap-4 lg:grid-cols-3 lg:items-start lg:gap-4 lg:flex-1 lg:min-h-0">
-            {/* Column 1: Generator Options */}
-            <div className={`space-y-3 rounded-xl border p-3 lg:overflow-y-auto lg:max-h-full ${darkMode ? 'border-gray-700 bg-gray-800/40' : 'border-gray-200 bg-gray-50/70'}`}>
-              <PasswordOptions
-                mode={mode}
-                setMode={setMode}
-                minEntropy={minEntropy}
-                setMinEntropy={setMinEntropy}
-                length={length}
-                setLength={setLength}
-                options={options}
-                setOptions={setOptions}
-                passphraseOptions={passphraseOptions}
-                setPassphraseOptions={setPassphraseOptions}
-                presets={PASSWORD_PRESETS}
-                onApplyPreset={handleApplyPreset}
-                darkMode={darkMode}
-              />
-            </div>
-
-            {/* Column 2: Strength + Policy + Generate */}
-            <div className={`space-y-3 rounded-xl border p-3 lg:overflow-y-auto lg:max-h-full ${darkMode ? 'border-gray-700 bg-gray-800/40' : 'border-gray-200 bg-gray-50/70'}`}>
-              <div className={`rounded-lg border p-3 space-y-3 ${darkMode ? 'border-gray-700 bg-gray-800/60' : 'border-gray-200 bg-white'}`}>
-                <StrengthIndicator strength={strength} darkMode={darkMode} />
-                <div className="text-xs">
-                  <span className={`${strength.entropy >= minEntropy ? 'text-green-500' : 'text-amber-500'}`}>
-                    {t.minEntropyTarget}: {minEntropy} bits {strength.entropy >= minEntropy ? '✓' : `(${strength.entropy} bits)`}
-                  </span>
-                </div>
-                <PolicyIndicator result={policyResult} darkMode={darkMode} />
+          {/* Column 2: Analysis + Generate + Username */}
+          <div className="space-y-4 lg:overflow-y-auto lg:max-h-full">
+            {/* Strength & Policy card */}
+            <div className={`rounded-2xl p-4 space-y-3 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+              <StrengthIndicator strength={strength} darkMode={darkMode} />
+              <div className="text-xs">
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-medium ${strength.entropy >= minEntropy ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'}`}>
+                  {t.minEntropyTarget}: {minEntropy} {t.bits} {strength.entropy >= minEntropy ? '✓' : `(${strength.entropy} ${t.bits})`}
+                </span>
               </div>
+              <PolicyIndicator result={policyResult} darkMode={darkMode} />
+            </div>
 
-              <button
-                onClick={handleGenerate}
-                className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
-              >
-                {mode === 'password' ? t.generatePassword : t.generatePassphrase}
-              </button>
+            {/* Generate button */}
+            <button
+              onClick={handleGenerate}
+              className="w-full py-3.5 px-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30 active:scale-[0.98]"
+            >
+              {mode === 'password' ? t.generatePassword : t.generatePassphrase}
+            </button>
 
-              <div className={`rounded-lg border p-3 ${darkMode ? 'border-gray-700 bg-gray-800/60' : 'border-gray-200 bg-white'}`}>
-                <UsernameGenerator darkMode={darkMode} />
+            {/* Username Generator card */}
+            <div className={`rounded-2xl p-4 transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+              <UsernameGenerator darkMode={darkMode} />
+            </div>
+          </div>
+
+          {/* Column 3: History */}
+          <div className={`rounded-2xl p-4 lg:overflow-y-auto lg:max-h-full transition-all ${darkMode ? 'bg-gray-800/50 border border-gray-700/50' : 'bg-white border border-gray-200/80 shadow-sm'}`}>
+            {copiedHistory.length === 0 && favorites.length === 0 && history.length === 0 ? (
+              <div className={`flex flex-col items-center justify-center py-10 text-center ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                <Star size={28} className="mb-2 opacity-30" />
+                <p className="text-sm">{t.historyEmpty}</p>
               </div>
-            </div>
-
-            {/* Column 3: History & Favorites */}
-            <div className={`space-y-3 rounded-xl border p-3 lg:overflow-y-auto lg:max-h-full ${darkMode ? 'border-gray-700 bg-gray-800/40' : 'border-gray-200 bg-gray-50/70'}`}>
-              {copiedHistory.length === 0 && favorites.length === 0 && history.length === 0 ? (
-                <div
-                  className={`rounded-lg px-4 py-6 text-sm border ${
-                    darkMode
-                      ? 'bg-gray-700 border-gray-600 text-gray-300'
-                      : 'bg-gray-50 border-gray-200 text-gray-600'
-                  }`}
-                >
-                  {t.historyEmpty}
-                </div>
-              ) : (
-                <>
-                  {copiedHistory.length > 0 && (
-                    <div className={`space-y-2 rounded-lg border p-3 ${darkMode ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-white'}`}>
-                      <h2 className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                        {t.historyCopied}
-                      </h2>
-                      <div className="space-y-1.5">
-                        {copiedHistory.slice(0, 3).map((item) => (
-                          <div
-                            key={`copied-${item}`}
-                            className={`rounded-md px-3 py-1.5 text-sm flex items-center justify-between ${
-                              darkMode ? 'bg-gray-700 text-gray-100' : 'bg-gray-100 text-gray-800'
-                            }`}
-                          >
-                            <button className="truncate text-left font-mono text-xs" onClick={() => setPassword(item)}>
-                              {item}
+            ) : (
+              <div className="space-y-4">
+                {copiedHistory.length > 0 && (
+                  <div className="space-y-2">
+                    <h2 className={`text-xs font-semibold uppercase tracking-wider ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      {t.historyCopied}
+                    </h2>
+                    <div className="space-y-1">
+                      {copiedHistory.slice(0, 4).map((item) => (
+                        <div
+                          key={`copied-${item}`}
+                          className={`group flex items-center justify-between rounded-lg px-3 py-2 transition-all ${
+                            darkMode ? 'hover:bg-gray-700/50 text-gray-200' : 'hover:bg-gray-50 text-gray-700'
+                          }`}
+                        >
+                          <button className="truncate text-left font-mono text-xs" onClick={() => setPassword(item)}>
+                            {item}
+                          </button>
+                          <div className="ml-2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button
+                              className={`p-1 rounded-md ${darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`}
+                              onClick={() => void handleCopy(item)}
+                              title={t.copyAgain}
+                            >
+                              <Copy size={12} />
                             </button>
-                            <div className="ml-2 flex items-center gap-1">
-                              <button
-                                className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`}
-                                onClick={() => void handleCopy(item)}
-                                title="Copy again"
-                              >
-                                <Copy size={13} />
-                              </button>
-                              <button
-                                className={`p-1 rounded text-red-500 ${
-                                  darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'
-                                }`}
-                                onClick={() => removeFromCopiedHistory(item)}
-                                title="Remove from copied history"
-                              >
-                                <Trash2 size={13} />
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {favorites.length > 0 && (
-                    <div className={`space-y-2 rounded-lg border p-3 ${darkMode ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-white'}`}>
-                      <h2 className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                        {t.historyFavorites}
-                      </h2>
-                      <div className="space-y-1.5">
-                        {favorites.slice(0, 3).map((item) => (
-                          <div
-                            key={`fav-${item}`}
-                            className={`rounded-md px-3 py-1.5 text-sm flex items-center justify-between ${
-                              darkMode ? 'bg-gray-700 text-gray-100' : 'bg-gray-100 text-gray-800'
-                            }`}
-                          >
-                            <button className="truncate text-left font-mono text-xs" onClick={() => setPassword(item)}>
-                              {item}
+                            <button
+                              className={`p-1 rounded-md text-red-400 ${darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`}
+                              onClick={() => removeFromCopiedHistory(item)}
+                              title={t.removeFromCopied}
+                            >
+                              <Trash2 size={12} />
                             </button>
-                            <div className="ml-2 flex items-center gap-1">
-                              <button
-                                className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`}
-                                onClick={() => void handleCopy(item)}
-                                title="Copy"
-                              >
-                                <Copy size={13} />
-                              </button>
-                              <button
-                                className={`p-1 rounded text-yellow-500 ${
-                                  darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'
-                                }`}
-                                onClick={() => toggleFavorite(item)}
-                                title="Remove favorite"
-                              >
-                                <Star size={13} fill="currentColor" />
-                              </button>
-                            </div>
                           </div>
-                        ))}
-                      </div>
+                        </div>
+                      ))}
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  {history.length > 0 && (
-                    <div className={`space-y-2 rounded-lg border p-3 ${darkMode ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-white'}`}>
-                      <h2 className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                        {t.historyRecent}
-                      </h2>
-                      <div className="space-y-1.5">
-                        {history.slice(0, 5).map((item) => (
-                          <div
-                            key={`history-${item}`}
-                            className={`rounded-md px-3 py-1.5 text-sm flex items-center justify-between ${
-                              darkMode ? 'bg-gray-700 text-gray-100' : 'bg-gray-100 text-gray-800'
-                            }`}
-                          >
-                            <button className="truncate text-left font-mono text-xs" onClick={() => setPassword(item)}>
-                              {item}
+                {favorites.length > 0 && (
+                  <div className="space-y-2">
+                    <h2 className={`text-xs font-semibold uppercase tracking-wider ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      {t.historyFavorites}
+                    </h2>
+                    <div className="space-y-1">
+                      {favorites.slice(0, 4).map((item) => (
+                        <div
+                          key={`fav-${item}`}
+                          className={`group flex items-center justify-between rounded-lg px-3 py-2 transition-all ${
+                            darkMode ? 'hover:bg-gray-700/50 text-gray-200' : 'hover:bg-gray-50 text-gray-700'
+                          }`}
+                        >
+                          <button className="truncate text-left font-mono text-xs" onClick={() => setPassword(item)}>
+                            {item}
+                          </button>
+                          <div className="ml-2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button
+                              className={`p-1 rounded-md ${darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`}
+                              onClick={() => void handleCopy(item)}
+                              title={t.copy}
+                            >
+                              <Copy size={12} />
                             </button>
-                            <div className="ml-2 flex items-center gap-1">
-                              <button
-                                className={`p-1 rounded ${darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`}
-                                onClick={() => void handleCopy(item)}
-                                title="Copy"
-                              >
-                                <Copy size={13} />
-                              </button>
-                              <button
-                                className={`p-1 rounded ${
-                                  favorites.includes(item)
-                                    ? 'text-yellow-500'
-                                    : darkMode
-                                      ? 'text-gray-300'
-                                      : 'text-gray-500'
-                                } ${darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`}
-                                onClick={() => toggleFavorite(item)}
-                                title="Toggle favorite"
-                              >
-                                <Star size={13} fill={favorites.includes(item) ? 'currentColor' : 'none'} />
-                              </button>
-                              <button
-                                className={`p-1 rounded text-red-500 ${
-                                  darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'
-                                }`}
-                                onClick={() => removeFromHistory(item)}
-                                title="Remove from history"
-                              >
-                                <Trash2 size={13} />
-                              </button>
-                            </div>
+                            <button
+                              className={`p-1 rounded-md text-amber-400 ${darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`}
+                              onClick={() => toggleFavorite(item)}
+                              title={t.removeFavorite}
+                            >
+                              <Star size={12} fill="currentColor" />
+                            </button>
                           </div>
-                        ))}
-                      </div>
+                        </div>
+                      ))}
                     </div>
-                  )}
-                </>
-              )}
-            </div>
+                  </div>
+                )}
+
+                {history.length > 0 && (
+                  <div className="space-y-2">
+                    <h2 className={`text-xs font-semibold uppercase tracking-wider ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      {t.historyRecent}
+                    </h2>
+                    <div className="space-y-1">
+                      {history.slice(0, 6).map((item) => (
+                        <div
+                          key={`history-${item}`}
+                          className={`group flex items-center justify-between rounded-lg px-3 py-2 transition-all ${
+                            darkMode ? 'hover:bg-gray-700/50 text-gray-200' : 'hover:bg-gray-50 text-gray-700'
+                          }`}
+                        >
+                          <button className="truncate text-left font-mono text-xs" onClick={() => setPassword(item)}>
+                            {item}
+                          </button>
+                          <div className="ml-2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button
+                              className={`p-1 rounded-md ${darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`}
+                              onClick={() => void handleCopy(item)}
+                              title={t.copy}
+                            >
+                              <Copy size={12} />
+                            </button>
+                            <button
+                              className={`p-1 rounded-md ${
+                                favorites.includes(item)
+                                  ? 'text-amber-400'
+                                  : darkMode
+                                    ? 'text-gray-500'
+                                    : 'text-gray-400'
+                              } ${darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`}
+                              onClick={() => toggleFavorite(item)}
+                              title={t.toggleFavorite}
+                            >
+                              <Star size={12} fill={favorites.includes(item) ? 'currentColor' : 'none'} />
+                            </button>
+                            <button
+                              className={`p-1 rounded-md text-red-400 ${darkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'}`}
+                              onClick={() => removeFromHistory(item)}
+                              title={t.removeFromHistory}
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
