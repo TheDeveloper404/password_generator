@@ -48,7 +48,7 @@ function getStoredDarkMode(): boolean {
     const raw = localStorage.getItem('pg_dark_mode');
     if (raw) return JSON.parse(raw) as boolean;
   } catch { /* ignore */ }
-  return false;
+  return true;
 }
 
 function App() {
