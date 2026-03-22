@@ -20,7 +20,6 @@ import {
   FolderPlus,
   Timer,
   FileSpreadsheet,
-  Fingerprint,
 } from 'lucide-react';
 import { useTranslation } from '../../contexts/LanguageContext';
 import type { VaultData, VaultEntry } from '../../types/vault';
@@ -34,12 +33,6 @@ import {
 import VaultEntryForm from './VaultEntryForm';
 import { generatePassword } from '../../utils/passwordUtils';
 import ImportCsvDialog from './ImportCsvDialog';
-import {
-  isBiometricAvailable,
-  isBiometricEnrolled,
-  registerBiometric,
-  removeBiometric,
-} from '../../services/biometricService';
 import {
   isPatternEnrolled,
   registerPattern,
@@ -85,25 +78,14 @@ export default function VaultView({
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [showActionsMenu, setShowActionsMenu] = useState(false);
   const [showCsvImport, setShowCsvImport] = useState(false);
-  const [biometricAvailable, setBiometricAvailable] = useState(false);
-  const [biometricActive, setBiometricActive] = useState(false);
-  const [biometricLoading, setBiometricLoading] = useState(false);
   const [patternActive, setPatternActive] = useState(false);
   const [showPatternSetup, setShowPatternSetup] = useState(false);
   const [patternError, setPatternError] = useState('');
   const [pendingPattern, setPendingPattern] = useState<number[] | null>(null);
 
-  // Check biometric availability and pattern lock on mount
+  // Check pattern lock on mount
   useEffect(() => {
-    void (async () => {
-      const available = await isBiometricAvailable();
-      setBiometricAvailable(available);
-      if (available) {
-        const enrolled = await isBiometricEnrolled();
-        setBiometricActive(enrolled);
-      }
-      setPatternActive(isPatternEnrolled());
-    })();
+    setPatternActive(isPatternEnrolled());
   }, []);
 
   const filteredEntries = useMemo(() => filterEntries(vault, filter), [vault, filter]);
@@ -114,24 +96,6 @@ export default function VaultView({
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
   }, []);
-
-  const handleToggleBiometric = async () => {
-    if (biometricLoading) return;
-    setBiometricLoading(true);
-    try {
-      if (biometricActive) {
-        await removeBiometric();
-        setBiometricActive(false);
-      } else if (masterPassword) {
-        await registerBiometric(masterPassword);
-        setBiometricActive(true);
-      }
-    } catch {
-      // User cancelled or error — silently ignore
-    } finally {
-      setBiometricLoading(false);
-    }
-  };
 
   const handleCsvImport = (entries: Partial<VaultEntry>[]) => {
     for (const entry of entries) {
@@ -257,25 +221,7 @@ export default function VaultView({
         </div>
 
         <div className="flex items-center gap-1.5">
-          {/* Security toggles — always visible */}
-          {biometricAvailable && (
-            <button
-              onClick={() => { void handleToggleBiometric(); }}
-              disabled={biometricLoading}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border ${
-                biometricActive
-                  ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
-                  : darkMode
-                    ? 'border-gray-700 bg-gray-800/50 text-gray-400 hover:border-blue-500/40 hover:text-blue-400'
-                    : 'border-gray-200 bg-gray-50 text-gray-500 hover:border-blue-400 hover:text-blue-500'
-              }`}
-              title={biometricActive ? t.biometricDisable : t.biometricEnable}
-            >
-              <Fingerprint size={13} />
-              <span className="hidden sm:inline">{biometricActive ? 'Face ID' : 'Face ID'}</span>
-              {biometricActive && <span className="text-[10px] text-emerald-400">✓</span>}
-            </button>
-          )}
+          {/* Pattern lock toggle — always visible */}
           <button
             onClick={() => {
               if (patternActive) {
@@ -345,20 +291,6 @@ export default function VaultView({
                     <FileSpreadsheet size={13} /> {t.vaultImportCsv}
                   </button>
                   <div className={`h-px ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`} />
-                  {/* Biometric toggle (for login — enroll/unenroll) */}
-                  {biometricAvailable && (
-                    <button
-                      onClick={() => { void handleToggleBiometric(); setShowActionsMenu(false); }}
-                      disabled={biometricLoading}
-                      className={`w-full flex items-center gap-2 px-3 py-2.5 text-xs ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'}`}
-                    >
-                      <Fingerprint size={13} />
-                      {biometricActive ? t.biometricDisable : t.biometricEnable}
-                      {biometricActive && (
-                        <span className="ml-auto text-[10px] text-emerald-500">●</span>
-                      )}
-                    </button>
-                  )}
                   {/* Pattern lock toggle */}
                   <button
                     onClick={() => {

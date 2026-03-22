@@ -510,7 +510,7 @@ function App() {
 
       {/* Cloud auth screen — shown when cloud is enabled but user not logged in */}
       {showCloudAuth && !cloudUser && (
-        <div className="fixed inset-0 z-40 animate-fadeIn">
+        <div className="fixed inset-0 z-40 animate-fadeIn overflow-hidden">
           <CloudAuth
             darkMode={darkMode}
             onAuthenticated={handleCloudAuthenticated}

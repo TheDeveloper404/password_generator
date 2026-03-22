@@ -140,14 +140,14 @@ export default function CloudAuth({ darkMode, onAuthenticated, onEnterFreeMode, 
 
   return (
     <>
-      <div className="min-h-screen flex flex-col"
+      <div className="h-full flex flex-col"
         style={{
           background: darkMode
             ? 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)'
             : 'linear-gradient(135deg, #eff6ff 0%, #e0e7ff 50%, #f0fdf4 100%)',
         }}
       >
-        <div className="flex-1 flex items-center justify-center p-4">
+        <div className="flex-1 flex items-center justify-center p-4 overflow-y-auto">
           <div className={`w-full max-w-sm rounded-2xl border shadow-2xl p-6 space-y-5 ${
             darkMode ? 'bg-gray-900/90 border-gray-700/50 backdrop-blur-sm' : 'bg-white/90 border-gray-200 backdrop-blur-sm'
           }`}>
@@ -301,7 +301,7 @@ export default function CloudAuth({ darkMode, onAuthenticated, onEnterFreeMode, 
           </div>
         </div>
 
-        <div className="shrink-0 pb-16 sm:pb-0">
+        <div className="shrink-0 mt-auto pb-16 sm:pb-0">
           <Footer darkMode={darkMode} />
         </div>
       </div>
