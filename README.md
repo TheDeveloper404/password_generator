@@ -1,6 +1,6 @@
 # 🔐 PassGen
 
-A modern, full-featured password manager and generator built with React, TypeScript, and Tailwind CSS. Generate secure passwords, store them in an encrypted vault, sync across devices via Supabase, unlock with biometrics, and more — zero-knowledge architecture, deployable on Vercel.
+A modern, full-featured password manager and generator built with React, TypeScript, and Tailwind CSS. Generate secure passwords, store them in an encrypted vault, sync across devices via Supabase, unlock with biometrics or pattern lock, and more — zero-knowledge architecture, deployable on Vercel.
 
 ## Features
 
@@ -31,10 +31,13 @@ A modern, full-featured password manager and generator built with React, TypeScr
 - **Email Authentication**: Secure login/register with email confirmation
 - **Offline-First**: Works fully offline; cloud features activate only when env vars are configured
 - **Auto-Sync**: Vault changes automatically uploaded to cloud when authenticated
+- **Restricted Offline Mode**: Without an account, only the password generator tab is accessible
 
-### 🔓 Authentication
+### 🔓 Authentication & Security
 - **Master Password**: Minimum 12 characters with complexity requirements
-- **WebAuthn Biometrics**: Fingerprint / Face ID unlock (no server required)
+- **WebAuthn Biometrics**: Fingerprint / Face ID login on the authentication screen
+- **Pattern Lock**: 3×3 grid pattern unlock for the vault (replaces biometric vault unlock)
+- **Terms & Privacy Acceptance**: Post-login modal requires acceptance before first use
 - **Lockout Protection**: Progressive lockout after failed attempts
 - **Factory Reset**: Complete data wipe option if master password is forgotten
 
@@ -71,12 +74,18 @@ A modern, full-featured password manager and generator built with React, TypeScr
 
 ### 📱 Experience
 - **Dark/Light Mode**: Toggle with dark as default, persisted across sessions
-- **Bilingual (RO/EN)**: Full Romanian and English translations (~1,200 lines)
+- **Bilingual (RO/EN)**: Full Romanian and English translations (~1,500 lines)
 - **Keyboard Shortcuts**: `Space` to generate, `Ctrl/Cmd+C` to copy
 - **Privacy Mode**: Disables local history persistence
 - **Welcome Page**: Animated entrance with feature highlights
-- **Responsive Design**: Desktop 3-column layout, mobile-optimized tabs
+- **Responsive Design**: Desktop 3-column layout, mobile fixed bottom navigation bar (icons only for inactive tabs, icon + label for active)
 - **Decorative Panels**: Animated icons on tool pages (WiFi rings, Hash orbits, Brain pulse, Music waves)
+- **Footer**: "Powered by @ACL Smart Software" branding with Privacy Policy and Terms & Conditions links
+
+### ⚖️ Legal & Compliance
+- **Privacy Policy (GDPR)**: Full privacy/GDPR modal with 7 sections (data collection, encryption, storage, user rights, cookies, contact)
+- **Terms & Conditions**: Full terms modal with 8 sections (acceptance, service, account, security, liability, termination, changes, contact)
+- **Terms Acceptance**: Post-login modal with checkbox — must accept before using the app
 
 ## Tech Stack
 
@@ -87,6 +96,7 @@ A modern, full-featured password manager and generator built with React, TypeScr
 | Styling | Tailwind CSS 3.4 |
 | Encryption | Web Crypto API (AES-256-GCM, PBKDF2-SHA256) |
 | Biometrics | WebAuthn API |
+| Pattern Lock | Web Crypto API (SHA-256 + AES-256-GCM) |
 | Local Storage | IndexedDB v2 |
 | Cloud Backend | Supabase (PostgreSQL + Auth + Realtime) |
 | Icons | Lucide React |
@@ -173,14 +183,21 @@ src/
 │   ├── PasswordMap.tsx           # Canvas vault visualization
 │   ├── ImportCsvDialog.tsx       # CSV import dialog
 │   ├── WelcomePage.tsx           # Animated welcome screen
+│   ├── Footer.tsx                # ACL branding + legal page links
 │   ├── auth/
-│   │   ├── CloudAuth.tsx         # Supabase email login/register
+│   │   ├── CloudAuth.tsx         # Supabase login/register + biometric login
 │   │   ├── CloudSyncIndicator.tsx # Header cloud sync status
+│   │   ├── AccountSettings.tsx   # Account management modal
 │   │   ├── MasterPasswordSetup.tsx
-│   │   └── UnlockScreen.tsx      # With biometric unlock button
+│   │   ├── TermsAcceptanceModal.tsx # Post-login terms acceptance
+│   │   └── UnlockScreen.tsx      # Master password + pattern lock unlock
+│   ├── legal/
+│   │   ├── PrivacyPolicy.tsx     # Privacy/GDPR policy modal
+│   │   └── TermsConditions.tsx   # Terms & conditions modal
 │   └── vault/
 │       ├── VaultView.tsx         # Vault list + actions menu
 │       ├── VaultEntryForm.tsx    # Add/edit entry form
+│       ├── PatternLock.tsx       # 3×3 SVG pattern lock UI
 │       └── HealthDashboard.tsx   # Vault health analysis
 ├── services/
 │   ├── authService.ts            # Master password verification
@@ -188,6 +205,7 @@ src/
 │   ├── cloudService.ts           # Supabase vault sync + realtime
 │   ├── exportService.ts          # Encrypted export/import
 │   ├── healthService.ts          # Vault health analysis
+│   ├── patternLockService.ts     # Pattern lock hash + encrypted master pw
 │   ├── sessionService.ts         # Session persistence (XOR-obfuscated)
 │   └── vaultService.ts           # Vault CRUD + encryption
 ├── crypto/
@@ -198,7 +216,7 @@ src/
 ├── lib/
 │   └── supabase.ts               # Supabase client singleton
 ├── utils/
-│   ├── i18n.ts                   # RO/EN translations (~1,200 lines)
+│   ├── i18n.ts                   # RO/EN translations (~1,500 lines)
 │   ├── importCsvUtils.ts         # CSV parser + source detection
 │   ├── passwordUtils.ts          # Password/passphrase generation
 │   ├── policyUtils.ts            # Policy evaluation
@@ -225,9 +243,11 @@ supabase/
 - **Cloud Zero-Knowledge**: Supabase stores only encrypted blobs — server never sees plaintext
 - **Row Level Security**: PostgreSQL RLS policies enforce per-user data isolation
 - **Breach Checks**: HIBP range API with SHA-1 prefix (k-anonymity) — full password never sent
-- **WebAuthn**: Platform authenticator only, no server-side verification needed
+- **WebAuthn**: Platform authenticator for biometric login (fingerprint / Face ID)
+- **Pattern Lock**: SHA-256 hashed pattern + AES-256-GCM encrypted master password for vault unlock
 - **No Telemetry**: No analytics, no tracking, no external calls except optional HIBP check
 - **Session Security**: Master password XOR-obfuscated in sessionStorage, not plaintext
+- **GDPR Compliant**: Privacy policy, terms & conditions, explicit consent required
 
 ## Deployment
 

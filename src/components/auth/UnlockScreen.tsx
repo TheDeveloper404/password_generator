@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Shield, Eye, EyeOff, AlertTriangle, Fingerprint } from 'lucide-react';
+import { Shield, Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import { useTranslation } from '../../contexts/LanguageContext';
 import { isLockedOut, getRemainingLockoutMs, getFailedAttempts } from '../../services/authService';
 import { MAX_UNLOCK_ATTEMPTS } from '../../crypto/constants';
 import {
-  isBiometricAvailable,
-  isBiometricEnrolled,
-  authenticateWithBiometric,
-} from '../../services/biometricService';
+  isPatternEnrolled,
+  verifyPattern,
+} from '../../services/patternLockService';
+import PatternLock from '../vault/PatternLock';
 
 interface UnlockScreenProps {
   darkMode: boolean;
@@ -24,34 +24,29 @@ export default function UnlockScreen({ darkMode, onUnlock, onReset, inline }: Un
   const [error, setError] = useState('');
   const [lockoutRemaining, setLockoutRemaining] = useState(0);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
-  const [biometricReady, setBiometricReady] = useState(false);
-  const [biometricLoading, setBiometricLoading] = useState(false);
+  const [patternReady, setPatternReady] = useState(false);
+  const [patternError, setPatternError] = useState('');
+  const [showPatternUnlock, setShowPatternUnlock] = useState(false);
 
-  // Check biometric availability
+  // Check pattern lock availability
   useEffect(() => {
-    void (async () => {
-      const available = await isBiometricAvailable();
-      if (available) {
-        const enrolled = await isBiometricEnrolled();
-        setBiometricReady(enrolled);
-      }
-    })();
+    setPatternReady(isPatternEnrolled());
   }, []);
 
-  const handleBiometricUnlock = async () => {
-    if (biometricLoading) return;
-    setBiometricLoading(true);
-    setError('');
+  const handlePatternUnlock = async (pattern: number[]) => {
+    setPatternError('');
     try {
-      const mp = await authenticateWithBiometric();
-      const success = await onUnlock(mp);
-      if (!success) {
-        setError(t.biometricError);
+      const mp = await verifyPattern(pattern);
+      if (mp) {
+        const success = await onUnlock(mp);
+        if (!success) {
+          setPatternError(t.patternWrong);
+        }
+      } else {
+        setPatternError(t.patternWrong);
       }
     } catch {
-      setError(t.biometricError);
-    } finally {
-      setBiometricLoading(false);
+      setPatternError(t.patternError);
     }
   };
 
@@ -161,21 +156,40 @@ export default function UnlockScreen({ darkMode, onUnlock, onReset, inline }: Un
             {loading ? t.unlockLoading : t.unlockButton}
           </button>
 
-          {/* Biometric unlock */}
-          {biometricReady && !lockoutRemaining && (
+          {/* Pattern lock unlock */}
+          {patternReady && !lockoutRemaining && !showPatternUnlock && (
             <button
               type="button"
-              onClick={() => void handleBiometricUnlock()}
-              disabled={biometricLoading}
+              onClick={() => setShowPatternUnlock(true)}
               className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm transition-all ${
                 darkMode
                   ? 'bg-gray-700/50 text-gray-300 hover:bg-gray-700 border border-gray-600'
                   : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'
               }`}
             >
-              <Fingerprint size={18} className={biometricLoading ? 'animate-pulse' : ''} />
-              {t.biometricUnlock}
+              <Shield size={18} />
+              {t.patternUnlock}
             </button>
+          )}
+
+          {showPatternUnlock && (
+            <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-900/50 border border-gray-700' : 'bg-gray-50 border border-gray-200'}`}>
+              <PatternLock
+                darkMode={darkMode}
+                onPatternComplete={(p) => void handlePatternUnlock(p)}
+                error={patternError}
+                mode="verify"
+              />
+              <button
+                type="button"
+                onClick={() => { setShowPatternUnlock(false); setPatternError(''); }}
+                className={`w-full mt-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                  darkMode ? 'text-gray-400 hover:bg-gray-800' : 'text-gray-500 hover:bg-gray-100'
+                }`}
+              >
+                {t.patternUsePassword}
+              </button>
+            </div>
           )}
 
           {/* Reset vault link */}

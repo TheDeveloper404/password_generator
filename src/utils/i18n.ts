@@ -6,7 +6,6 @@ export interface Translations {
   placeholderPassword: string;
   placeholderPassphrase: string;
   copiedToClipboard: string;
-  shortcutHint: string;
   switchToEn: string;
   switchToRo: string;
   privacyMode: string;
@@ -15,15 +14,12 @@ export interface Translations {
   historyEmpty: string;
   historyCopied: string;
   historyFavorites: string;
-  historyRecent: string;
   copyToClipboard: string;
   generateNew: string;
   copyAgain: string;
   removeFromCopied: string;
   copy: string;
   removeFavorite: string;
-  toggleFavorite: string;
-  removeFromHistory: string;
   bits: string;
 
   // PasswordOptions
@@ -266,15 +262,9 @@ export interface Translations {
   vaultImportCsv: string;
 
   // Biometric
-  biometricUnlock: string;
   biometricEnable: string;
   biometricDisable: string;
-  biometricNotAvailable: string;
-  biometricEnrolled: string;
-  biometricPrompt: string;
   biometricError: string;
-  biometricRegisterSuccess: string;
-  biometricRemoved: string;
 
   // WiFi QR Code
   wifiTitle: string;
@@ -411,7 +401,6 @@ export interface Translations {
   cloudRegisterButton: string;
   cloudLoading: string;
   cloudOr: string;
-  cloudSkip: string;
   cloudCheckEmail: string;
   cloudAuthError: string;
   cloudPasswordMismatch: string;
@@ -424,10 +413,82 @@ export interface Translations {
   cloudNoVault: string;
   cloudOffline: string;
   cloudOfflineDesc: string;
-  cloudAutoSync: string;
-  cloudLastSync: string;
-  cloudSynced: string;
-  cloudSyncError: string;
+
+  // Footer
+  footerPrivacy: string;
+  footerTerms: string;
+
+  // Privacy Policy
+  privacyTitle: string;
+  privacyLastUpdated: string;
+  privacyIntroTitle: string;
+  privacyIntroText: string;
+  privacyDataTitle: string;
+  privacyDataText: string;
+  privacyDataItem1: string;
+  privacyDataItem2: string;
+  privacyDataItem3: string;
+  privacyDataItem4: string;
+  privacyEncryptionTitle: string;
+  privacyEncryptionText: string;
+  privacyStorageTitle: string;
+  privacyStorageText: string;
+  privacyRightsTitle: string;
+  privacyRightsText: string;
+  privacyRightsItem1: string;
+  privacyRightsItem2: string;
+  privacyRightsItem3: string;
+  privacyRightsItem4: string;
+  privacyCookiesTitle: string;
+  privacyCookiesText: string;
+  privacyContactTitle: string;
+  privacyContactText: string;
+
+  // Terms & Conditions
+  termsTitle: string;
+  termsLastUpdated: string;
+  termsAcceptanceTitle: string;
+  termsAcceptanceText: string;
+  termsServiceTitle: string;
+  termsServiceText: string;
+  termsAccountTitle: string;
+  termsAccountText: string;
+  termsSecurityTitle: string;
+  termsSecurityText: string;
+  termsLiabilityTitle: string;
+  termsLiabilityText: string;
+  termsTerminationTitle: string;
+  termsTerminationText: string;
+  termsChangesTitle: string;
+  termsChangesText: string;
+  termsContactTitle: string;
+  termsContactText: string;
+
+  // Terms Acceptance Modal
+  termsModalTitle: string;
+  termsModalDesc: string;
+  termsModalReadPrivacy: string;
+  termsModalReadTerms: string;
+  termsModalCheckbox: string;
+  termsModalContinue: string;
+
+  // Biometric login
+  biometricLoginButton: string;
+  biometricNeedLogin: string;
+
+  // Pattern Lock
+  patternSetupTitle: string;
+  patternSetup: string;
+  patternDraw: string;
+  patternConfirm: string;
+  patternMismatch: string;
+  patternError: string;
+  patternMinDots: string;
+  patternEnable: string;
+  patternDisable: string;
+  patternUnlock: string;
+  patternWrong: string;
+  patternUsePassword: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -437,7 +498,6 @@ export const translations: Record<Language, Translations> = {
     placeholderPassword: 'Apasă generate pentru a crea o parolă',
     placeholderPassphrase: 'Apasă generate pentru a crea o frază-parolă',
     copiedToClipboard: 'Copiat în clipboard!',
-    shortcutHint: 'Scurtătură: Space generează · Ctrl/Cmd+C copiază',
     switchToEn: 'Switch to English',
     switchToRo: 'Schimbă în Română',
     privacyMode: 'Mod privat',
@@ -446,15 +506,12 @@ export const translations: Record<Language, Translations> = {
     historyEmpty: 'Istoricul va apărea aici după ce generezi și copiezi parole.',
     historyCopied: 'Istoric copiate',
     historyFavorites: 'Favorite',
-    historyRecent: 'Istoric recent',
     copyToClipboard: 'Copiază în clipboard',
     generateNew: 'Generează parolă nouă',
     copyAgain: 'Copiază din nou',
     removeFromCopied: 'Șterge din istoricul copiate',
     copy: 'Copiază',
     removeFavorite: 'Șterge din favorite',
-    toggleFavorite: 'Adaugă/Șterge favorit',
-    removeFromHistory: 'Șterge din istoric',
     bits: 'biți',
 
     // PasswordOptions
@@ -697,15 +754,9 @@ export const translations: Record<Language, Translations> = {
     vaultImportCsv: 'Importă din CSV',
 
     // Biometric
-    biometricUnlock: 'Deblochează cu biometric',
     biometricEnable: 'Activează deblocare biometrică',
     biometricDisable: 'Dezactivează biometric',
-    biometricNotAvailable: 'Autentificarea biometrică nu este disponibilă pe acest dispozitiv.',
-    biometricEnrolled: 'Biometric activat',
-    biometricPrompt: 'Folosește amprenta sau Face ID pentru a debloca seiful.',
     biometricError: 'Autentificarea biometrică a eșuat.',
-    biometricRegisterSuccess: 'Deblocare biometrică activată cu succes!',
-    biometricRemoved: 'Deblocarea biometrică a fost dezactivată.',
 
     // WiFi QR Code
     wifiTitle: 'QR Code WiFi',
@@ -842,7 +893,6 @@ export const translations: Record<Language, Translations> = {
     cloudRegisterButton: 'Creează cont',
     cloudLoading: 'Se procesează...',
     cloudOr: 'sau',
-    cloudSkip: 'Continuă fără cont cloud (mod offline)',
     cloudCheckEmail: 'Verifică email-ul pentru confirmarea contului.',
     cloudAuthError: 'Eroare de autentificare. Verifică datele introduse.',
     cloudPasswordMismatch: 'Parolele nu se potrivesc.',
@@ -855,10 +905,82 @@ export const translations: Record<Language, Translations> = {
     cloudNoVault: 'Nu există un seif salvat în cloud.',
     cloudOffline: 'Offline',
     cloudOfflineDesc: 'Modul offline — datele sunt stocate doar local. Configurează Supabase pentru sincronizare cloud.',
-    cloudAutoSync: 'Sincronizare automată',
-    cloudLastSync: 'Ultima sincronizare',
-    cloudSynced: 'Sincronizat',
-    cloudSyncError: 'Eroare la sincronizare',
+
+    // Footer
+    footerPrivacy: 'Politica de Confidențialitate',
+    footerTerms: 'Termeni și Condiții',
+
+    // Privacy Policy
+    privacyTitle: 'Politica de Confidențialitate (GDPR)',
+    privacyLastUpdated: 'Ultima actualizare: Ianuarie 2025',
+    privacyIntroTitle: '1. Introducere',
+    privacyIntroText: 'PassGen respectă confidențialitatea datelor dumneavoastră. Această politică descrie ce date colectăm, cum le protejăm și drepturile pe care le aveți conform Regulamentului General privind Protecția Datelor (GDPR).',
+    privacyDataTitle: '2. Datele colectate',
+    privacyDataText: 'Colectăm doar datele strict necesare pentru funcționarea serviciului:',
+    privacyDataItem1: 'Adresa de email — pentru autentificarea contului',
+    privacyDataItem2: 'Parole criptate (seiful) — stocate criptat end-to-end, inaccesibile nouă',
+    privacyDataItem3: 'Metadate de sincronizare — timestamp-uri pentru sincronizarea între dispozitive',
+    privacyDataItem4: 'Preferințe locale — limba, tema, setări de sesiune (stocate doar pe dispozitiv)',
+    privacyEncryptionTitle: '3. Criptare și securitate',
+    privacyEncryptionText: 'Toate parolele din seif sunt criptate cu AES-256-GCM pe dispozitivul dumneavoastră, folosind o cheie derivată din parola master prin PBKDF2-SHA256 (600.000 iterații). Noi nu avem niciodată acces la parola master sau la datele decriptate. Aceasta este o arhitectură „zero-knowledge".',
+    privacyStorageTitle: '4. Stocarea datelor',
+    privacyStorageText: 'Datele criptate sunt stocate local în IndexedDB și, opțional, în cloud prin Supabase. Datele cloud sunt stocate în servere securizate din UE/EEA. Puteți oricând șterge contul și toate datele asociate.',
+    privacyRightsTitle: '5. Drepturile dumneavoastră (GDPR)',
+    privacyRightsText: 'Conform GDPR, aveți următoarele drepturi:',
+    privacyRightsItem1: 'Dreptul de acces — puteți exporta toate datele din seif',
+    privacyRightsItem2: 'Dreptul la ștergere — puteți șterge contul și toate datele',
+    privacyRightsItem3: 'Dreptul la portabilitate — puteți exporta datele în format JSON',
+    privacyRightsItem4: 'Dreptul la restricționare — puteți folosi aplicația doar local, fără cloud',
+    privacyCookiesTitle: '6. Cookie-uri și tracking',
+    privacyCookiesText: 'PassGen NU folosește cookie-uri de tracking, analytics sau publicitate. Singurele date stocate local sunt preferințele de aplicație și sesiunea de autentificare.',
+    privacyContactTitle: '7. Contact',
+    privacyContactText: 'Pentru întrebări legate de confidențialitate, contactați-ne la: contact@aclsmartsoftware.com',
+
+    // Terms & Conditions
+    termsTitle: 'Termeni și Condiții',
+    termsLastUpdated: 'Ultima actualizare: Ianuarie 2025',
+    termsAcceptanceTitle: '1. Acceptarea termenilor',
+    termsAcceptanceText: 'Prin utilizarea PassGen, acceptați acești termeni și condiții. Dacă nu sunteți de acord cu acești termeni, vă rugăm să nu utilizați serviciul.',
+    termsServiceTitle: '2. Descrierea serviciului',
+    termsServiceText: 'PassGen este un manager de parole care generează, stochează și gestionează parole în mod securizat. Utilizăm criptare end-to-end pentru a proteja datele dumneavoastră.',
+    termsAccountTitle: '3. Contul de utilizator',
+    termsAccountText: 'Sunteți responsabil pentru securitatea contului dumneavoastră și a parolei master. Nu putem recupera parola master — dacă o pierdeți, datele din seif sunt irecuperabile.',
+    termsSecurityTitle: '4. Securitate',
+    termsSecurityText: 'Deși implementăm măsuri de securitate de nivel înalt (AES-256-GCM, PBKDF2, zero-knowledge), nicio soluție tehnologică nu poate garanta securitate absolută. Utilizați aplicația pe propria responsabilitate.',
+    termsLiabilityTitle: '5. Limitarea răspunderii',
+    termsLiabilityText: 'ACL Smart Software nu poate fi ținută responsabilă pentru pierderea datelor, accesul neautorizat rezultat din neglijența utilizatorului, sau orice daune indirecte derivate din utilizarea serviciului.',
+    termsTerminationTitle: '6. Încetarea',
+    termsTerminationText: 'Puteți înceta utilizarea serviciului oricând prin ștergerea contului. Ne rezervăm dreptul de a suspenda conturile care încalcă acești termeni.',
+    termsChangesTitle: '7. Modificări ale termenilor',
+    termsChangesText: 'Ne rezervăm dreptul de a modifica acești termeni. Modificările vor fi comunicate prin aplicație. Continuarea utilizării după notificare constituie acceptarea noilor termeni.',
+    termsContactTitle: '8. Contact',
+    termsContactText: 'Pentru întrebări legate de acești termeni, contactați-ne la: contact@aclsmartsoftware.com',
+
+    // Terms Acceptance Modal
+    termsModalTitle: 'Bine ați venit!',
+    termsModalDesc: 'Înainte de a continua, vă rugăm să citiți și să acceptați politicile noastre.',
+    termsModalReadPrivacy: 'Citiți politica de confidențialitate',
+    termsModalReadTerms: 'Citiți termenii și condițiile',
+    termsModalCheckbox: 'Am citit și accept Politica de Confidențialitate și Termenii și Condițiile.',
+    termsModalContinue: 'Continuă',
+
+    // Biometric login
+    biometricLoginButton: 'Autentificare cu biometrie',
+    biometricNeedLogin: 'Sesiunea a expirat. Vă rugăm să vă autentificați cu email și parolă.',
+
+    // Pattern Lock
+    patternSetupTitle: 'Configurare blocare cu model',
+    patternSetup: 'Desenați un model (minim 4 puncte)',
+    patternDraw: 'Desenați modelul pentru deblocare',
+    patternConfirm: 'Desenați modelul din nou pentru confirmare',
+    patternMismatch: 'Modelele nu se potrivesc. Încercați din nou.',
+    patternError: 'Eroare la configurarea modelului',
+    patternMinDots: 'Conectați cel puțin 4 puncte',
+    patternEnable: 'Activare blocare cu model',
+    patternDisable: 'Dezactivare blocare cu model',
+    patternUnlock: 'Deblocare cu model',
+    patternWrong: 'Model incorect. Încercați din nou.',
+    patternUsePassword: 'Folosește parola master',
 
   },
 
@@ -868,7 +990,6 @@ export const translations: Record<Language, Translations> = {
     placeholderPassword: 'Click generate to create password',
     placeholderPassphrase: 'Click generate to create passphrase',
     copiedToClipboard: 'Copied to clipboard!',
-    shortcutHint: 'Shortcut: Space generate · Ctrl/Cmd+C copy',
     switchToEn: 'Switch to English',
     switchToRo: 'Schimbă în Română',
     privacyMode: 'Privacy mode',
@@ -877,15 +998,12 @@ export const translations: Record<Language, Translations> = {
     historyEmpty: 'History will appear here after you generate and copy passwords.',
     historyCopied: 'Copied history',
     historyFavorites: 'Favorites',
-    historyRecent: 'Recent history',
     copyToClipboard: 'Copy to clipboard',
     generateNew: 'Generate new password',
     copyAgain: 'Copy again',
     removeFromCopied: 'Remove from copied history',
     copy: 'Copy',
     removeFavorite: 'Remove favorite',
-    toggleFavorite: 'Toggle favorite',
-    removeFromHistory: 'Remove from history',
     bits: 'bits',
 
     // PasswordOptions
@@ -1128,15 +1246,9 @@ export const translations: Record<Language, Translations> = {
     vaultImportCsv: 'Import from CSV',
 
     // Biometric
-    biometricUnlock: 'Unlock with biometrics',
     biometricEnable: 'Enable biometric unlock',
     biometricDisable: 'Disable biometrics',
-    biometricNotAvailable: 'Biometric authentication is not available on this device.',
-    biometricEnrolled: 'Biometrics enabled',
-    biometricPrompt: 'Use your fingerprint or Face ID to unlock the vault.',
     biometricError: 'Biometric authentication failed.',
-    biometricRegisterSuccess: 'Biometric unlock enabled successfully!',
-    biometricRemoved: 'Biometric unlock has been disabled.',
 
     // WiFi QR Code
     wifiTitle: 'WiFi QR Code',
@@ -1273,7 +1385,6 @@ export const translations: Record<Language, Translations> = {
     cloudRegisterButton: 'Create Account',
     cloudLoading: 'Processing...',
     cloudOr: 'or',
-    cloudSkip: 'Continue without cloud (offline mode)',
     cloudCheckEmail: 'Check your email to confirm your account.',
     cloudAuthError: 'Authentication error. Please check your credentials.',
     cloudPasswordMismatch: 'Passwords do not match.',
@@ -1286,10 +1397,82 @@ export const translations: Record<Language, Translations> = {
     cloudNoVault: 'No vault found in the cloud.',
     cloudOffline: 'Offline',
     cloudOfflineDesc: 'Offline mode — data is stored locally only. Configure Supabase for cloud sync.',
-    cloudAutoSync: 'Auto-sync',
-    cloudLastSync: 'Last synced',
-    cloudSynced: 'Synced',
-    cloudSyncError: 'Sync error',
+
+    // Footer
+    footerPrivacy: 'Privacy Policy',
+    footerTerms: 'Terms & Conditions',
+
+    // Privacy Policy
+    privacyTitle: 'Privacy Policy (GDPR)',
+    privacyLastUpdated: 'Last updated: January 2025',
+    privacyIntroTitle: '1. Introduction',
+    privacyIntroText: 'PassGen respects your data privacy. This policy describes what data we collect, how we protect it, and your rights under the General Data Protection Regulation (GDPR).',
+    privacyDataTitle: '2. Data Collected',
+    privacyDataText: 'We only collect data strictly necessary for the service to function:',
+    privacyDataItem1: 'Email address — for account authentication',
+    privacyDataItem2: 'Encrypted passwords (vault) — stored with end-to-end encryption, inaccessible to us',
+    privacyDataItem3: 'Sync metadata — timestamps for cross-device synchronization',
+    privacyDataItem4: 'Local preferences — language, theme, session settings (stored only on device)',
+    privacyEncryptionTitle: '3. Encryption & Security',
+    privacyEncryptionText: 'All vault passwords are encrypted with AES-256-GCM on your device, using a key derived from your master password via PBKDF2-SHA256 (600,000 iterations). We never have access to your master password or decrypted data. This is a "zero-knowledge" architecture.',
+    privacyStorageTitle: '4. Data Storage',
+    privacyStorageText: 'Encrypted data is stored locally in IndexedDB and, optionally, in the cloud via Supabase. Cloud data is stored on secure EU/EEA servers. You can delete your account and all associated data at any time.',
+    privacyRightsTitle: '5. Your Rights (GDPR)',
+    privacyRightsText: 'Under GDPR, you have the following rights:',
+    privacyRightsItem1: 'Right of access — you can export all your vault data',
+    privacyRightsItem2: 'Right to erasure — you can delete your account and all data',
+    privacyRightsItem3: 'Right to portability — you can export data in JSON format',
+    privacyRightsItem4: 'Right to restriction — you can use the app locally only, without cloud',
+    privacyCookiesTitle: '6. Cookies & Tracking',
+    privacyCookiesText: 'PassGen does NOT use tracking cookies, analytics, or advertising. The only locally stored data is app preferences and the authentication session.',
+    privacyContactTitle: '7. Contact',
+    privacyContactText: 'For privacy-related questions, contact us at: contact@aclsmartsoftware.com',
+
+    // Terms & Conditions
+    termsTitle: 'Terms & Conditions',
+    termsLastUpdated: 'Last updated: January 2025',
+    termsAcceptanceTitle: '1. Acceptance of Terms',
+    termsAcceptanceText: 'By using PassGen, you agree to these terms and conditions. If you do not agree with these terms, please do not use the service.',
+    termsServiceTitle: '2. Service Description',
+    termsServiceText: 'PassGen is a password manager that securely generates, stores, and manages passwords. We use end-to-end encryption to protect your data.',
+    termsAccountTitle: '3. User Account',
+    termsAccountText: 'You are responsible for the security of your account and master password. We cannot recover the master password — if you lose it, vault data is irrecoverable.',
+    termsSecurityTitle: '4. Security',
+    termsSecurityText: 'While we implement high-level security measures (AES-256-GCM, PBKDF2, zero-knowledge), no technology solution can guarantee absolute security. Use the app at your own risk.',
+    termsLiabilityTitle: '5. Limitation of Liability',
+    termsLiabilityText: 'ACL Smart Software cannot be held liable for data loss, unauthorized access resulting from user negligence, or any indirect damages arising from the use of the service.',
+    termsTerminationTitle: '6. Termination',
+    termsTerminationText: 'You may stop using the service at any time by deleting your account. We reserve the right to suspend accounts that violate these terms.',
+    termsChangesTitle: '7. Changes to Terms',
+    termsChangesText: 'We reserve the right to modify these terms. Changes will be communicated through the app. Continued use after notification constitutes acceptance of the new terms.',
+    termsContactTitle: '8. Contact',
+    termsContactText: 'For questions about these terms, contact us at: contact@aclsmartsoftware.com',
+
+    // Terms Acceptance Modal
+    termsModalTitle: 'Welcome!',
+    termsModalDesc: 'Before continuing, please read and accept our policies.',
+    termsModalReadPrivacy: 'Read our privacy policy',
+    termsModalReadTerms: 'Read our terms & conditions',
+    termsModalCheckbox: 'I have read and accept the Privacy Policy and Terms & Conditions.',
+    termsModalContinue: 'Continue',
+
+    // Biometric login
+    biometricLoginButton: 'Sign in with biometrics',
+    biometricNeedLogin: 'Session expired. Please sign in with email and password.',
+
+    // Pattern Lock
+    patternSetupTitle: 'Pattern Lock Setup',
+    patternSetup: 'Draw a pattern (minimum 4 dots)',
+    patternDraw: 'Draw your unlock pattern',
+    patternConfirm: 'Draw the pattern again to confirm',
+    patternMismatch: 'Patterns do not match. Try again.',
+    patternError: 'Error setting up pattern lock',
+    patternMinDots: 'Connect at least 4 dots',
+    patternEnable: 'Enable pattern lock',
+    patternDisable: 'Disable pattern lock',
+    patternUnlock: 'Unlock with pattern',
+    patternWrong: 'Wrong pattern. Try again.',
+    patternUsePassword: 'Use master password',
 
   },
 };

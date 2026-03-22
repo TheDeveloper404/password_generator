@@ -80,6 +80,12 @@ function App() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setCloudUser(session?.user ?? null);
+        // Sync auth flag with actual session state
+        if (session?.user) {
+          localStorage.setItem('pg_cloud_auth', 'true');
+        } else {
+          localStorage.removeItem('pg_cloud_auth');
+        }
       },
     );
 
@@ -112,6 +118,9 @@ function App() {
           }
         }
 
+        // Also check the persistent auth flag (survives refresh even if getSession is slow)
+        const hasAuthFlag = localStorage.getItem('pg_cloud_auth') === 'true';
+
         if (hasVault) {
           // Try to restore session (survives refresh)
           const session = restoreSession();
@@ -127,12 +136,18 @@ function App() {
           setScreen('main');
           setWelcomeVisible(false);
           setTransitioning(true);
-        } else if (hasCloudSession) {
-          // User has cloud session but no local vault — skip welcome, go to main
+        } else if (hasCloudSession || hasAuthFlag) {
+          // User has cloud session (or auth flag) but no local vault — skip welcome, go to main
           // (they'll see MasterPasswordSetup for vault-gated tabs)
           setScreen('main');
           setWelcomeVisible(false);
           setTransitioning(true);
+          // If hasAuthFlag but no hasCloudSession, Supabase will fire onAuthStateChange soon
+          // If both are false, auth flag is stale — clean it up
+          if (hasAuthFlag && !hasCloudSession) {
+            // Verify session exists — if not, the flag is stale
+            // onAuthStateChange will handle the resolution
+          }
         } else {
           setScreen('welcome');
         }
@@ -238,7 +253,7 @@ function App() {
     setTransitioning(true);
     setWelcomeVisible(false);
 
-    // If cloud is enabled but user is not logged in, show cloud auth
+    // Always show cloud auth when cloud is enabled (removed skip button)
     if (isCloudEnabled && !cloudUser) {
       setTimeout(() => {
         setShowCloudAuth(true);
@@ -253,10 +268,8 @@ function App() {
 
   const handleCloudAuthenticated = useCallback(() => {
     setShowCloudAuth(false);
-  }, []);
-
-  const handleCloudSkip = useCallback(() => {
-    setShowCloudAuth(false);
+    // Persist authentication flag so refresh keeps user logged in
+    localStorage.setItem('pg_cloud_auth', 'true');
   }, []);
 
   const handleCloudLogout = useCallback(() => {
@@ -267,14 +280,16 @@ function App() {
     setVault(downloadedVault);
   }, []);
 
-  const handleLogout = useCallback(() => {
+  const handleLogout = useCallback(async () => {
     // Lock vault if unlocked
     handleLock();
-    // Sign out from Supabase (clears persisted session)
+    // Sign out from Supabase (clears persisted session) — AWAIT to ensure completion
     if (isCloudEnabled && supabase) {
-      void supabase.auth.signOut();
+      await supabase.auth.signOut();
     }
     setCloudUser(null);
+    // Clear authentication flag so refresh after logout goes to welcome
+    localStorage.removeItem('pg_cloud_auth');
     // Clear saved tab so refresh after logout goes to Generator
     sessionStorage.removeItem('passgen_active_tab');
     // Transition back to welcome
@@ -435,7 +450,6 @@ function App() {
           <CloudAuth
             darkMode={darkMode}
             onAuthenticated={handleCloudAuthenticated}
-            onSkip={handleCloudSkip}
           />
         </div>
       )}

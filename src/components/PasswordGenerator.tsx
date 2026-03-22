@@ -29,6 +29,7 @@ import VaultView from './vault/VaultView';
 import HealthDashboard from './vault/HealthDashboard';
 import MasterPasswordSetup from './auth/MasterPasswordSetup';
 import UnlockScreen from './auth/UnlockScreen';
+import Footer from './Footer';
 import type { VaultData, VaultEntry, MainTab } from '../types/vault';
 
 const STORAGE_KEYS = {
@@ -143,9 +144,19 @@ export default function PasswordGenerator({
     return saved && valid.includes(saved as MainTab) ? (saved as MainTab) : 'generator';
   });
   const setActiveTab = (tab: MainTab) => {
+    // If user has no account, only allow generator tab
+    if (!cloudUser && tab !== 'generator') return;
     sessionStorage.setItem('passgen_active_tab', tab);
     setActiveTabRaw(tab);
   };
+
+  // Reset to generator if on a restricted tab and user is not logged in
+  useEffect(() => {
+    if (!cloudUser && activeTab !== 'generator') {
+      setActiveTabRaw('generator');
+      sessionStorage.setItem('passgen_active_tab', 'generator');
+    }
+  }, [cloudUser, activeTab]);
 
   const { t, lang, setLang } = useTranslation();
 
@@ -354,7 +365,7 @@ export default function PasswordGenerator({
                 { id: 'map' as MainTab, icon: Map, label: t.tabMap },
                 { id: 'vault' as MainTab, icon: KeyRound, label: t.tabVault },
                 { id: 'health' as MainTab, icon: Shield, label: t.tabHealth },
-              ]).map((tab) => (
+              ]).filter(tab => cloudUser || tab.id === 'generator').map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
@@ -428,8 +439,8 @@ export default function PasswordGenerator({
           </div>
         </header>
 
-        {/* Mobile tab navigation */}
-        <nav className={`flex sm:hidden items-center gap-0.5 p-1 rounded-xl mb-4 ${darkMode ? 'bg-gray-800/50' : 'bg-gray-100'}`}>
+        {/* Mobile tab navigation — fixed bottom bar */}
+        <nav className={`fixed bottom-0 left-0 right-0 z-40 flex sm:hidden items-center justify-around px-2 py-1.5 border-t backdrop-blur-lg ${darkMode ? 'bg-gray-950/90 border-gray-800' : 'bg-white/90 border-gray-200'}`}>
           {([
             { id: 'generator' as MainTab, icon: Zap, label: t.tabGenerator },
             { id: 'wifi' as MainTab, icon: Wifi, label: t.tabWifi },
@@ -439,23 +450,28 @@ export default function PasswordGenerator({
             { id: 'map' as MainTab, icon: Map, label: t.tabMap },
             { id: 'vault' as MainTab, icon: KeyRound, label: t.tabVault },
             { id: 'health' as MainTab, icon: Shield, label: t.tabHealth },
-          ]).map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center justify-center gap-1 rounded-lg text-[11px] font-medium transition-all min-w-0 ${
-                activeTab === tab.id
-                  ? 'flex-[1.6] px-2.5 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-sm'
-                  : `flex-1 px-1.5 py-2 ${darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-700'}`
-              }`}
-            >
-              <tab.icon size={14} className="shrink-0" />
-              {activeTab === tab.id && (
-                <span className="truncate">{tab.label}</span>
-              )}
-            </button>
-          ))}
+          ]).filter(tab => cloudUser || tab.id === 'generator').map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex flex-col items-center justify-center rounded-xl transition-all ${
+                  isActive
+                    ? 'px-3 py-1.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25 scale-105'
+                    : `px-2 py-1.5 ${darkMode ? 'text-gray-500 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600'}`
+                }`}
+              >
+                <tab.icon size={isActive ? 18 : 20} className="shrink-0" />
+                {isActive && (
+                  <span className="text-[10px] font-semibold mt-0.5 truncate max-w-[64px]">{tab.label}</span>
+                )}
+              </button>
+            );
+          })}
         </nav>
+        {/* Bottom nav spacer for mobile */}
+        <div className="h-14 sm:hidden" />
 
         {/* Tab Content */}
         {activeTab === 'generator' && (
@@ -829,6 +845,8 @@ export default function PasswordGenerator({
         )}
 
       </div>
+
+      <Footer darkMode={darkMode} />
 
       {/* Account Settings Modal */}
       {showAccount && cloudUser && (
