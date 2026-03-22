@@ -135,21 +135,26 @@ export default function AccountSettings({
       });
       if (verifyError) throw verifyError;
 
-      // Delete cloud vault data first
+      // Delete cloud vault data first (RLS cascade will also handle this, but be explicit)
       await deleteCloudVault();
 
       // Wipe all local data (IndexedDB)
       await wipeAllData();
       clearSession();
 
-      // Delete Supabase user account via RPC (if edge function exists) or sign out
-      // Note: Supabase doesn't allow client-side user deletion by default.
-      // The user record will be marked for deletion; admin can clean up.
-      // For self-deletion, we'd need an edge function. For now, we:
-      // 1. Delete all user data (vault)
-      // 2. Sign out the user
-      // 3. The account remains but is effectively empty
+      // Delete Supabase user account via server-side RPC
+      // This calls a SECURITY DEFINER function that deletes the authenticated user from auth.users
+      const { error: deleteError } = await supabase.rpc('delete_own_account');
+      if (deleteError) {
+        console.warn('RPC delete_own_account failed, signing out instead:', deleteError.message);
+      }
+
+      // Sign out and clean up local state
       await supabase.auth.signOut();
+      localStorage.removeItem('pg_cloud_auth');
+      localStorage.removeItem('pg_free_mode');
+      localStorage.removeItem('pg_free_generates');
+      localStorage.removeItem('pg_terms_accepted');
 
       onAccountDeleted();
     } catch (err) {

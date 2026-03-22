@@ -43,7 +43,7 @@ function getStoredLang(): Language {
     const raw = localStorage.getItem('pg_lang');
     if (raw) return JSON.parse(raw) as Language;
   } catch { /* ignore */ }
-  return 'ro';
+  return 'en';
 }
 
 function getStoredDarkMode(): boolean {
@@ -134,6 +134,7 @@ function App() {
 
         // Also check the persistent auth flag (survives refresh even if getSession is slow)
         const hasAuthFlag = localStorage.getItem('pg_cloud_auth') === 'true';
+        const hasFreeMode = localStorage.getItem('pg_free_mode') === 'true';
 
         if (hasVault) {
           // Try to restore session (survives refresh)
@@ -150,7 +151,7 @@ function App() {
           setScreen('main');
           setWelcomeVisible(false);
           setTransitioning(true);
-        } else if (hasCloudSession || hasAuthFlag) {
+        } else if (hasCloudSession || hasAuthFlag || hasFreeMode) {
           // User has cloud session (or auth flag) but no local vault — skip welcome, go to main
           // (they'll see MasterPasswordSetup for vault-gated tabs)
           setScreen('main');
@@ -284,7 +285,8 @@ function App() {
   // Allow user to enter free/guest mode (generator only, limited to 3 passwords)
   const handleEnterFreeMode = useCallback(() => {
     setShowCloudAuth(false);
-    // Don't set pg_cloud_auth flag — user is in guest mode
+    // Persist free mode so it survives refresh
+    localStorage.setItem('pg_free_mode', 'true');
   }, []);
 
   const handleCloudAuthenticated = useCallback(async () => {
@@ -298,8 +300,9 @@ function App() {
     setShowCloudAuth(false);
     // Persist authentication flag so refresh keeps user logged in
     localStorage.setItem('pg_cloud_auth', 'true');
-    // Clear free mode generate counter
+    // Clear free mode flags
     localStorage.removeItem('pg_free_generates');
+    localStorage.removeItem('pg_free_mode');
   }, []);
 
   const handleCloudLogout = useCallback(() => {
@@ -320,6 +323,8 @@ function App() {
     setCloudUser(null);
     // Clear authentication flag so refresh after logout goes to welcome
     localStorage.removeItem('pg_cloud_auth');
+    localStorage.removeItem('pg_free_mode');
+    localStorage.removeItem('pg_free_generates');
     // Clear saved tab so refresh after logout goes to Generator
     sessionStorage.removeItem('passgen_active_tab');
     // Transition back to welcome

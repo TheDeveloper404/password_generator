@@ -490,9 +490,6 @@ export default function PasswordGenerator({
             );
           })}
         </nav>
-        {/* Bottom nav spacer for mobile */}
-        <div className="h-14 sm:hidden" />
-
         {/* Tab Content */}
         {activeTab === 'generator' && (
           <div className="lg:flex lg:flex-col lg:flex-1 lg:min-h-0">
@@ -864,7 +861,10 @@ export default function PasswordGenerator({
           </div>
         )}
 
-        <Footer darkMode={darkMode} />
+        {/* Footer + bottom nav spacer for mobile */}
+        <div className="mt-auto pt-4 pb-16 sm:pb-0">
+          <Footer darkMode={darkMode} />
+        </div>
       </div>
 
       {/* Signup Prompt Modal (free mode limit) */}

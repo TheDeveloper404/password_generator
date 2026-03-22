@@ -66,3 +66,18 @@ CREATE TRIGGER set_updated_at
 -- subscribed clients so they can pull the latest vault.
 -- ────────────────────────────────────────────────────────
 ALTER PUBLICATION supabase_realtime ADD TABLE public.vaults;
+
+-- ────────────────────────────────────────────────────────
+-- Self-delete account RPC
+-- SECURITY DEFINER so it runs with elevated privileges.
+-- Users can only delete their own account (auth.uid()).
+-- The ON DELETE CASCADE on vaults.user_id auto-cleans vault data.
+-- ────────────────────────────────────────────────────────
+CREATE OR REPLACE FUNCTION public.delete_own_account()
+RETURNS void
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+  DELETE FROM auth.users WHERE id = auth.uid();
+$$;
