@@ -265,6 +265,14 @@ export interface Translations {
   biometricEnable: string;
   biometricDisable: string;
   biometricError: string;
+  biometricSection: string;
+  biometricNotAvailable: string;
+  biometricEnrolled: string;
+  biometricNeedMaster: string;
+  biometricPromptTitle: string;
+  biometricPromptDesc: string;
+  biometricPromptEnable: string;
+  biometricPromptSkip: string;
 
   // WiFi QR Code
   wifiTitle: string;
@@ -762,6 +770,14 @@ export const translations: Record<Language, Translations> = {
     biometricEnable: 'Activează deblocare biometrică',
     biometricDisable: 'Dezactivează biometric',
     biometricError: 'Autentificarea biometrică a eșuat.',
+    biometricSection: 'Face ID / Biometric',
+    biometricNotAvailable: 'Dispozitivul nu suportă autentificare biometrică.',
+    biometricEnrolled: 'Biometria este activă. Poți folosi Face ID sau amprenta la autentificare.',
+    biometricNeedMaster: 'Configurează mai întâi parola master pentru a activa biometria.',
+    biometricPromptTitle: 'Activează Face ID',
+    biometricPromptDesc: 'Dorești să activezi autentificarea cu Face ID sau amprentă pentru logare rapidă?',
+    biometricPromptEnable: 'Activează',
+    biometricPromptSkip: 'Nu acum',
 
     // WiFi QR Code
     wifiTitle: 'QR Code WiFi',
@@ -1259,6 +1275,14 @@ export const translations: Record<Language, Translations> = {
     biometricEnable: 'Enable biometric unlock',
     biometricDisable: 'Disable biometrics',
     biometricError: 'Biometric authentication failed.',
+    biometricSection: 'Face ID / Biometric',
+    biometricNotAvailable: 'This device does not support biometric authentication.',
+    biometricEnrolled: 'Biometrics active. You can use Face ID or fingerprint to log in.',
+    biometricNeedMaster: 'Set up master password first to enable biometrics.',
+    biometricPromptTitle: 'Enable Face ID',
+    biometricPromptDesc: 'Would you like to enable Face ID or fingerprint for faster login?',
+    biometricPromptEnable: 'Enable',
+    biometricPromptSkip: 'Not now',
 
     // WiFi QR Code
     wifiTitle: 'WiFi QR Code',

@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import {
   Plus,
   Search,
@@ -33,12 +33,6 @@ import {
 import VaultEntryForm from './VaultEntryForm';
 import { generatePassword } from '../../utils/passwordUtils';
 import ImportCsvDialog from './ImportCsvDialog';
-import {
-  isPatternEnrolled,
-  registerPattern,
-  removePattern,
-} from '../../services/patternLockService';
-import PatternLock from './PatternLock';
 
 interface VaultViewProps {
   darkMode: boolean;
@@ -78,15 +72,6 @@ export default function VaultView({
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [showActionsMenu, setShowActionsMenu] = useState(false);
   const [showCsvImport, setShowCsvImport] = useState(false);
-  const [patternActive, setPatternActive] = useState(false);
-  const [showPatternSetup, setShowPatternSetup] = useState(false);
-  const [patternError, setPatternError] = useState('');
-  const [pendingPattern, setPendingPattern] = useState<number[] | null>(null);
-
-  // Check pattern lock on mount
-  useEffect(() => {
-    setPatternActive(isPatternEnrolled());
-  }, []);
 
   const filteredEntries = useMemo(() => filterEntries(vault, filter), [vault, filter]);
   const allTags = useMemo(() => getAllTags(vault), [vault]);
@@ -102,40 +87,6 @@ export default function VaultView({
       onAddEntry(entry);
     }
     alert(t.csvImportSuccess(entries.length));
-  };
-
-  const handlePatternSetup = async (pattern: number[]) => {
-    if (!pendingPattern) {
-      // First draw — save and ask to confirm
-      setPendingPattern(pattern);
-      setPatternError('');
-      return;
-    }
-
-    // Second draw — verify match
-    if (pattern.join('-') !== pendingPattern.join('-')) {
-      setPatternError(t.patternMismatch);
-      setPendingPattern(null);
-      return;
-    }
-
-    // Patterns match — register
-    if (masterPassword) {
-      try {
-        await registerPattern(pattern, masterPassword);
-        setPatternActive(true);
-        setShowPatternSetup(false);
-        setPendingPattern(null);
-        setPatternError('');
-      } catch {
-        setPatternError(t.patternError);
-      }
-    }
-  };
-
-  const handleRemovePattern = () => {
-    removePattern();
-    setPatternActive(false);
   };
 
   const toggleReveal = (id: string) => {
@@ -221,31 +172,6 @@ export default function VaultView({
         </div>
 
         <div className="flex items-center gap-1.5">
-          {/* Pattern lock toggle — always visible */}
-          <button
-            onClick={() => {
-              if (patternActive) {
-                handleRemovePattern();
-              } else {
-                setShowPatternSetup(true);
-                setPendingPattern(null);
-                setPatternError('');
-              }
-            }}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border ${
-              patternActive
-                ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
-                : darkMode
-                  ? 'border-gray-700 bg-gray-800/50 text-gray-400 hover:border-blue-500/40 hover:text-blue-400'
-                  : 'border-gray-200 bg-gray-50 text-gray-500 hover:border-blue-400 hover:text-blue-500'
-            }`}
-            title={patternActive ? t.patternDisable : t.patternEnable}
-          >
-            <Shield size={13} />
-            <span className="hidden sm:inline">Pattern</span>
-            {patternActive && <span className="text-[10px] text-emerald-400">✓</span>}
-          </button>
-
           <button
             onClick={() => setShowForm(true)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 transition-all shadow-sm"
@@ -289,27 +215,6 @@ export default function VaultView({
                     className={`w-full flex items-center gap-2 px-3 py-2.5 text-xs ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'}`}
                   >
                     <FileSpreadsheet size={13} /> {t.vaultImportCsv}
-                  </button>
-                  <div className={`h-px ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`} />
-                  {/* Pattern lock toggle */}
-                  <button
-                    onClick={() => {
-                      if (patternActive) {
-                        handleRemovePattern();
-                      } else {
-                        setShowPatternSetup(true);
-                        setPendingPattern(null);
-                        setPatternError('');
-                      }
-                      setShowActionsMenu(false);
-                    }}
-                    className={`w-full flex items-center gap-2 px-3 py-2.5 text-xs ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'}`}
-                  >
-                    <Shield size={13} />
-                    {patternActive ? t.patternDisable : t.patternEnable}
-                    {patternActive && (
-                      <span className="ml-auto text-[10px] text-emerald-500">●</span>
-                    )}
                   </button>
                   <div className={`h-px ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`} />
                   {/* Session timeout selector */}
@@ -533,38 +438,6 @@ export default function VaultView({
           onImport={handleCsvImport}
           onClose={() => setShowCsvImport(false)}
         />
-      )}
-
-      {/* Pattern Lock Setup Modal */}
-      {showPatternSetup && (
-        <div className="fixed inset-0 z-[55] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <div className={`relative w-full max-w-xs rounded-2xl border shadow-2xl p-6 space-y-4 ${
-            darkMode ? 'bg-gray-900 border-gray-700/50' : 'bg-white border-gray-200'
-          }`}>
-            <h3 className={`text-center text-base font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-              {t.patternSetupTitle}
-            </h3>
-            {pendingPattern && (
-              <p className={`text-center text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                {t.patternConfirm}
-              </p>
-            )}
-            <PatternLock
-              darkMode={darkMode}
-              onPatternComplete={(p) => void handlePatternSetup(p)}
-              error={patternError}
-              mode="setup"
-            />
-            <button
-              onClick={() => { setShowPatternSetup(false); setPendingPattern(null); setPatternError(''); }}
-              className={`w-full py-2 rounded-xl text-xs font-medium transition-all ${
-                darkMode ? 'text-gray-400 hover:bg-gray-800' : 'text-gray-500 hover:bg-gray-50'
-              }`}
-            >
-              {t.vaultFormCancel}
-            </button>
-          </div>
-        </div>
       )}
     </div>
   );

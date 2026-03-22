@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Copy, RefreshCw, Sun, Moon, Star, Trash2, Globe, KeyRound, Shield, Zap, Wifi, LogOut, Hash, Brain, Music, Map, UserCircle, Lock } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Copy, RefreshCw, Sun, Moon, Star, Trash2, Globe, KeyRound, Shield, Zap, Wifi, LogOut, Hash, Brain, Music, Map, UserCircle, Lock, Fingerprint } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
 import {
   generatePassphrase,
@@ -30,6 +30,11 @@ import HealthDashboard from '../vault/HealthDashboard';
 import MasterPasswordSetup from '../auth/MasterPasswordSetup';
 import UnlockScreen from '../auth/UnlockScreen';
 import Footer from './Footer';
+import {
+  isBiometricAvailable,
+  isBiometricEnrolled,
+  registerBiometric,
+} from '../../services/biometricService';
 import type { VaultData, VaultEntry, MainTab } from '../../types/vault';
 
 const STORAGE_KEYS = {
@@ -141,6 +146,9 @@ export default function PasswordGenerator({
   const [copied, setCopied] = useState(false);
   const [showAccount, setShowAccount] = useState(false);
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
+  const [showBiometricPrompt, setShowBiometricPrompt] = useState(false);
+  const [biometricPromptLoading, setBiometricPromptLoading] = useState(false);
+  const biometricCheckDone = useRef(false);
   const [freeGenerateCount, setFreeGenerateCount] = useState(() => {
     try {
       return parseInt(localStorage.getItem('pg_free_generates') ?? '0', 10);
@@ -168,6 +176,23 @@ export default function PasswordGenerator({
   }, [cloudUser, activeTab]);
 
   const { t, lang, setLang } = useTranslation();
+
+  // ─── Biometric enrollment prompt after first login ────────────────
+  useEffect(() => {
+    if (!masterPw || !cloudUser || biometricCheckDone.current) return;
+    biometricCheckDone.current = true;
+
+    // Don't show if user already dismissed
+    if (localStorage.getItem('pg_biometric_prompt_dismissed') === 'true') return;
+
+    void (async () => {
+      const available = await isBiometricAvailable();
+      if (!available) return;
+      const enrolled = await isBiometricEnrolled();
+      if (enrolled) return;
+      setShowBiometricPrompt(true);
+    })();
+  }, [masterPw, cloudUser]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.mode, JSON.stringify(mode));
@@ -357,7 +382,7 @@ export default function PasswordGenerator({
   const policyResult = useMemo(() => evaluatePolicy(password, DEFAULT_POLICY, t), [password, t]);
 
   return (
-    <div className={`flex flex-col min-h-screen pb-24 sm:pb-10 lg:h-screen lg:pb-0 lg:overflow-hidden transition-colors duration-300 ${darkMode ? 'dark bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950' : 'bg-gradient-to-br from-slate-50 via-white to-blue-50'}`}>
+    <div className={`flex flex-col min-h-screen pb-32 sm:pb-14 lg:h-screen lg:pb-0 lg:overflow-hidden transition-colors duration-300 ${darkMode ? 'dark bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950' : 'bg-gradient-to-br from-slate-50 via-white to-blue-50'}`}>
 
       {/* Top accent bar */}
       <div className="h-1 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 shrink-0" />
@@ -907,12 +932,60 @@ export default function PasswordGenerator({
         <AccountSettings
           darkMode={darkMode}
           cloudUser={cloudUser}
+          masterPassword={masterPw}
           onAccountDeleted={() => {
             setShowAccount(false);
             onLogout();
           }}
           onClose={() => setShowAccount(false)}
         />
+      )}
+
+      {/* Biometric Enrollment Prompt */}
+      {showBiometricPrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className={`w-full max-w-sm rounded-2xl p-6 shadow-2xl ${darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}>
+            <div className="flex flex-col items-center text-center">
+              <div className="flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 mb-4 shadow-lg shadow-blue-500/30">
+                <Fingerprint size={28} className="text-white" />
+              </div>
+              <h3 className={`text-lg font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                {t.biometricPromptTitle}
+              </h3>
+              <p className={`text-sm mb-6 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                {t.biometricPromptDesc}
+              </p>
+              <button
+                onClick={() => {
+                  if (!masterPw) return;
+                  setBiometricPromptLoading(true);
+                  void registerBiometric(masterPw)
+                    .then(() => {
+                      setShowBiometricPrompt(false);
+                    })
+                    .catch(() => {
+                      // Silently close on error
+                      setShowBiometricPrompt(false);
+                    })
+                    .finally(() => setBiometricPromptLoading(false));
+                }}
+                disabled={biometricPromptLoading}
+                className="w-full py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg shadow-blue-500/25 mb-3 disabled:opacity-50"
+              >
+                {biometricPromptLoading ? '...' : t.biometricPromptEnable}
+              </button>
+              <button
+                onClick={() => {
+                  localStorage.setItem('pg_biometric_prompt_dismissed', 'true');
+                  setShowBiometricPrompt(false);
+                }}
+                className={`w-full py-2.5 rounded-xl text-sm font-medium transition-all ${darkMode ? 'text-gray-400 hover:bg-gray-700/50' : 'text-gray-500 hover:bg-gray-100'}`}
+              >
+                {t.biometricPromptSkip}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
