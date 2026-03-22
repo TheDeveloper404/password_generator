@@ -301,9 +301,9 @@ export default function CloudAuth({ darkMode, onAuthenticated, onEnterFreeMode, 
           </div>
         </div>
 
-        <div className="shrink-0 mt-auto pb-16 sm:pb-0">
+        <footer className="fixed bottom-0 left-0 right-0 z-30">
           <Footer darkMode={darkMode} />
-        </div>
+        </footer>
       </div>
 
       {/* Terms acceptance modal */}
