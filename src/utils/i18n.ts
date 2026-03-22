@@ -402,6 +402,7 @@ export interface Translations {
   cloudLoading: string;
   cloudOr: string;
   cloudCheckEmail: string;
+  cloudEmailConfirmed: string;
   cloudAuthError: string;
   cloudPasswordMismatch: string;
   cloudPasswordTooShort: string;
@@ -879,7 +880,7 @@ export const translations: Record<Language, Translations> = {
     accountDeleteSendCode: 'Trimite cod de verificare',
     accountSendingCode: 'Se trimite codul...',
     accountCodeSent: 'Un cod de verificare a fost trimis la',
-    accountCodePlaceholder: '000000',
+    accountCodePlaceholder: '00000000',
     accountCodeError: 'Nu s-a putut trimite codul. Încearcă din nou.',
     accountDeleteConfirm: 'Confirmă ștergerea',
     accountDeleteError: 'Eroare la ștergere. Încearcă din nou.',
@@ -901,6 +902,7 @@ export const translations: Record<Language, Translations> = {
     cloudLoading: 'Se procesează...',
     cloudOr: 'sau',
     cloudCheckEmail: 'Verifică email-ul pentru confirmarea contului.',
+    cloudEmailConfirmed: 'Email confirmat cu succes! Te poți autentifica acum.',
     cloudAuthError: 'Eroare de autentificare. Verifică datele introduse.',
     cloudPasswordMismatch: 'Parolele nu se potrivesc.',
     cloudPasswordTooShort: 'Parola trebuie să aibă minimum 6 caractere.',
@@ -1378,7 +1380,7 @@ export const translations: Record<Language, Translations> = {
     accountDeleteSendCode: 'Send verification code',
     accountSendingCode: 'Sending code...',
     accountCodeSent: 'A verification code has been sent to',
-    accountCodePlaceholder: '000000',
+    accountCodePlaceholder: '00000000',
     accountCodeError: 'Could not send code. Please try again.',
     accountDeleteConfirm: 'Confirm deletion',
     accountDeleteError: 'Error deleting. Please try again.',
@@ -1400,6 +1402,7 @@ export const translations: Record<Language, Translations> = {
     cloudLoading: 'Processing...',
     cloudOr: 'or',
     cloudCheckEmail: 'Check your email to confirm your account.',
+    cloudEmailConfirmed: 'Email confirmed successfully! You can now sign in.',
     cloudAuthError: 'Authentication error. Please check your credentials.',
     cloudPasswordMismatch: 'Passwords do not match.',
     cloudPasswordTooShort: 'Password must be at least 6 characters.',

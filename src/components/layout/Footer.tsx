@@ -19,11 +19,11 @@ export default function Footer({ darkMode }: FooterProps) {
           ? 'border-gray-800 text-gray-500 bg-gray-950/50'
           : 'border-gray-200 text-gray-400 bg-gray-50/50'
       }`}>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-3">
+        <div className="flex flex-col items-center justify-center gap-1 sm:flex-row sm:gap-3">
           <span>
             Powered by{' '}
             <a
-              href="https://aclsmartsoftware.com"
+              href="https://acl-smartsoftware.ro"
               target="_blank"
               rel="noopener noreferrer"
               className={`font-semibold transition-colors ${

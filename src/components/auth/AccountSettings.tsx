@@ -401,8 +401,8 @@ export default function AccountSettings({
                     value={deleteCode}
                     onChange={(e) => setDeleteCode(e.target.value)}
                     placeholder={t.accountCodePlaceholder}
-                    maxLength={6}
-                    className={`${inputClass} text-center tracking-[0.5em] font-mono text-lg`}
+                    maxLength={8}
+                    className={`${inputClass} text-center tracking-[0.3em] font-mono text-lg`}
                     autoFocus
                   />
 

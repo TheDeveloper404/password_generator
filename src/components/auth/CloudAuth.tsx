@@ -23,9 +23,10 @@ interface CloudAuthProps {
   darkMode: boolean;
   onAuthenticated: () => void;
   onEnterFreeMode?: () => void;
+  initialSuccess?: string;
 }
 
-export default function CloudAuth({ darkMode, onAuthenticated, onEnterFreeMode }: CloudAuthProps) {
+export default function CloudAuth({ darkMode, onAuthenticated, onEnterFreeMode, initialSuccess }: CloudAuthProps) {
   const [mode, setMode] = useState<AuthMode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,7 +34,7 @@ export default function CloudAuth({ darkMode, onAuthenticated, onEnterFreeMode }
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [success, setSuccess] = useState(initialSuccess ?? '');
   const [biometricReady, setBiometricReady] = useState(false);
   const [biometricLoading, setBiometricLoading] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
@@ -300,7 +301,9 @@ export default function CloudAuth({ darkMode, onAuthenticated, onEnterFreeMode }
           </div>
         </div>
 
-        <Footer darkMode={darkMode} />
+        <div className="shrink-0 pb-16 sm:pb-0">
+          <Footer darkMode={darkMode} />
+        </div>
       </div>
 
       {/* Terms acceptance modal */}

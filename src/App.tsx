@@ -68,12 +68,29 @@ function App() {
   const [cloudUser, setCloudUser] = useState<User | null>(null);
   const [showCloudAuth, setShowCloudAuth] = useState(false);
   const [showTermsAtAppLevel, setShowTermsAtAppLevel] = useState(false);
+  const [emailJustConfirmed, setEmailJustConfirmed] = useState(false);
+  const [cloudAuthInitialSuccess, setCloudAuthInitialSuccess] = useState('');
   const autoLockTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isRemoteSync = useRef(false);
   const showCloudAuthRef = useRef(showCloudAuth);
   useEffect(() => { showCloudAuthRef.current = showCloudAuth; }, [showCloudAuth]);
 
   const t = translations[lang];
+
+  // ─── Detect email confirmation redirect (type=signup in URL) ────────
+  const emailConfirmDetectedRef = useRef(false);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'));
+    const type = params.get('type') || hashParams.get('type');
+    if (type === 'signup' || type === 'email') {
+      emailConfirmDetectedRef.current = true;
+      setEmailJustConfirmed(true);
+      // Clean up the URL so it doesn't re-trigger on refresh
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, '', cleanUrl);
+    }
+  }, []);
 
   // ─── Supabase Auth Listener ─────────────────────────────────────────
   useEffect(() => {
@@ -83,11 +100,23 @@ function App() {
     // Initial session is resolved in the vault mount effect above
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        // If this SIGNED_IN is from an email confirmation, sign out and show login
+        if (event === 'SIGNED_IN' && emailConfirmDetectedRef.current) {
+          emailConfirmDetectedRef.current = false;
+          // Sign out — user must manually log in after email confirmation
+          void supabase.auth.signOut();
+          setCloudUser(null);
+          localStorage.removeItem('pg_cloud_auth');
+          setCloudAuthInitialSuccess(t.cloudEmailConfirmed);
+          setShowCloudAuth(true);
+          return;
+        }
+
         setCloudUser(session?.user ?? null);
         // Sync auth flag with actual session state
         if (session?.user) {
           localStorage.setItem('pg_cloud_auth', 'true');
-          // If user just confirmed email / was auto-signed-in while on cloud auth screen
+          // If user just signed in while on cloud auth screen
           if (event === 'SIGNED_IN' && showCloudAuthRef.current) {
             const termsAccepted = localStorage.getItem('pg_terms_accepted') === 'true';
             if (!termsAccepted) {
@@ -124,7 +153,7 @@ function App() {
 
         // Check if Supabase has an active session
         let hasCloudSession = false;
-        if (isCloudEnabled && supabase) {
+        if (isCloudEnabled && supabase && !emailConfirmDetectedRef.current) {
           const { data: { session } } = await supabase.auth.getSession();
           if (session?.user) {
             setCloudUser(session.user);
@@ -486,6 +515,7 @@ function App() {
             darkMode={darkMode}
             onAuthenticated={handleCloudAuthenticated}
             onEnterFreeMode={handleEnterFreeMode}
+            initialSuccess={cloudAuthInitialSuccess}
           />
         </div>
       )}
