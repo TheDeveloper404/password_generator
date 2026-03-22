@@ -377,15 +377,11 @@ export interface Translations {
   accountDeleteDesc: string;
   accountDeleteButton: string;
   accountDeleteWarning: string;
-  accountDeleteSendCode: string;
-  accountSendingCode: string;
-  accountCodeSent: string;
-  accountCodePlaceholder: string;
-  accountCodeError: string;
+  accountDeleteEnterPassword: string;
+  accountDeletePasswordPlaceholder: string;
+  accountDeletePasswordError: string;
   accountDeleteConfirm: string;
   accountDeleteError: string;
-  accountNoAccessEmail: string;
-  accountContactSupport: string;
   accountDeleting: string;
   accountButton: string;
 
@@ -877,15 +873,11 @@ export const translations: Record<Language, Translations> = {
     accountDeleteDesc: 'Ștergerea contului este permanentă. Toate datele din seif și cloud vor fi șterse definitiv.',
     accountDeleteButton: 'Șterge contul permanent',
     accountDeleteWarning: 'Ești sigur? Aceasta va șterge permanent contul, seiful din cloud și toate datele asociate. Acțiunea nu poate fi anulată.',
-    accountDeleteSendCode: 'Trimite cod de verificare',
-    accountSendingCode: 'Se trimite codul...',
-    accountCodeSent: 'Un cod de verificare a fost trimis la',
-    accountCodePlaceholder: '00000000',
-    accountCodeError: 'Nu s-a putut trimite codul. Încearcă din nou.',
+    accountDeleteEnterPassword: 'Introdu parola contului pentru a confirma ștergerea:',
+    accountDeletePasswordPlaceholder: 'Parola contului cloud',
+    accountDeletePasswordError: 'Parola incorectă. Încearcă din nou.',
     accountDeleteConfirm: 'Confirmă ștergerea',
     accountDeleteError: 'Eroare la ștergere. Încearcă din nou.',
-    accountNoAccessEmail: 'Nu ai acces la email?',
-    accountContactSupport: 'Dacă nu mai ai acces la email-ul asociat contului, contactează-ne la',
     accountDeleting: 'Se șterge contul...',
     accountButton: 'Cont',
 
@@ -1377,15 +1369,11 @@ export const translations: Record<Language, Translations> = {
     accountDeleteDesc: 'Account deletion is permanent. All vault and cloud data will be permanently erased.',
     accountDeleteButton: 'Delete account permanently',
     accountDeleteWarning: 'Are you sure? This will permanently delete your account, cloud vault, and all associated data. This action cannot be undone.',
-    accountDeleteSendCode: 'Send verification code',
-    accountSendingCode: 'Sending code...',
-    accountCodeSent: 'A verification code has been sent to',
-    accountCodePlaceholder: '00000000',
-    accountCodeError: 'Could not send code. Please try again.',
+    accountDeleteEnterPassword: 'Enter your account password to confirm deletion:',
+    accountDeletePasswordPlaceholder: 'Cloud account password',
+    accountDeletePasswordError: 'Incorrect password. Please try again.',
     accountDeleteConfirm: 'Confirm deletion',
     accountDeleteError: 'Error deleting. Please try again.',
-    accountNoAccessEmail: 'Can\'t access your email?',
-    accountContactSupport: 'If you no longer have access to the email associated with your account, contact us at',
     accountDeleting: 'Deleting account...',
     accountButton: 'Account',
 

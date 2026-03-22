@@ -1,8 +1,8 @@
 /**
  * Account Settings component.
  * Shows the logged-in user's profile info with editable display name.
- * Provides permanent account deletion with email verification code.
- * Email is read-only. If user has no access to email → contact support@passgen.com.
+ * Provides permanent account deletion with password confirmation.
+ * Email is read-only.
  */
 
 import { useState, useCallback, useEffect } from 'react';
@@ -15,10 +15,10 @@ import {
   CheckCircle,
   X,
   Loader2,
-  HelpCircle,
   KeyRound,
   Clock,
   Save,
+  Lock,
 } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '../../config/supabase';
@@ -34,7 +34,7 @@ interface AccountSettingsProps {
   onClose: () => void;
 }
 
-type DeleteStep = 'idle' | 'confirm' | 'code-sent' | 'verifying' | 'deleting';
+type DeleteStep = 'idle' | 'confirm' | 'deleting';
 
 export default function AccountSettings({
   darkMode,
@@ -54,9 +54,8 @@ export default function AccountSettings({
 
   // Account deletion
   const [deleteStep, setDeleteStep] = useState<DeleteStep>('idle');
-  const [deleteCode, setDeleteCode] = useState('');
+  const [deletePassword, setDeletePassword] = useState('');
   const [deleteError, setDeleteError] = useState('');
-  const [showSupport, setShowSupport] = useState(false);
 
   // Member since
   const memberSince = cloudUser.created_at
@@ -89,53 +88,33 @@ export default function AccountSettings({
     }
   }, [displayName, t]);
 
-  // Step 1: Show confirmation dialog
+  // Step 1: Show confirmation dialog with password input
   const handleDeleteInit = useCallback(() => {
     setDeleteStep('confirm');
     setDeleteError('');
-    setDeleteCode('');
+    setDeletePassword('');
   }, []);
 
-  // Step 2: Send OTP code to user's email (Supabase passwordless sign-in)
-  const handleSendCode = useCallback(async () => {
-    if (!supabase) return;
-
-    setDeleteStep('verifying');
-    setDeleteError('');
-
-    try {
-      // Use Supabase OTP (magic link email) as verification code
-      const { error } = await supabase.auth.signInWithOtp({
-        email: cloudUser.email!,
-        options: {
-          shouldCreateUser: false,
-        },
-      });
-      if (error) throw error;
-      setDeleteStep('code-sent');
-    } catch (err) {
-      setDeleteError(err instanceof Error ? err.message : t.accountCodeError);
-      setDeleteStep('confirm');
-    }
-  }, [cloudUser.email, t]);
-
-  // Step 3: Verify code and delete account
-  const handleVerifyAndDelete = useCallback(async () => {
-    if (!supabase || !deleteCode.trim()) return;
+  // Step 2: Verify password and delete account
+  const handleConfirmDelete = useCallback(async () => {
+    if (!supabase || !deletePassword.trim() || !cloudUser.email) return;
 
     setDeleteStep('deleting');
     setDeleteError('');
 
     try {
-      // Verify the OTP code
-      const { error: verifyError } = await supabase.auth.verifyOtp({
-        email: cloudUser.email!,
-        token: deleteCode.trim(),
-        type: 'email',
+      // Re-authenticate with password to confirm identity
+      const { error: authError } = await supabase.auth.signInWithPassword({
+        email: cloudUser.email,
+        password: deletePassword,
       });
-      if (verifyError) throw verifyError;
+      if (authError) {
+        setDeleteError(t.accountDeletePasswordError);
+        setDeleteStep('confirm');
+        return;
+      }
 
-      // Delete cloud vault data first (RLS cascade will also handle this, but be explicit)
+      // Delete cloud vault data first
       await deleteCloudVault();
 
       // Wipe all local data (IndexedDB)
@@ -143,7 +122,6 @@ export default function AccountSettings({
       clearSession();
 
       // Delete Supabase user account via server-side RPC
-      // This calls a SECURITY DEFINER function that deletes the authenticated user from auth.users
       const { error: deleteError } = await supabase.rpc('delete_own_account');
       if (deleteError) {
         console.warn('RPC delete_own_account failed, signing out instead:', deleteError.message);
@@ -159,9 +137,9 @@ export default function AccountSettings({
       onAccountDeleted();
     } catch (err) {
       setDeleteError(err instanceof Error ? err.message : t.accountDeleteError);
-      setDeleteStep('code-sent');
+      setDeleteStep('confirm');
     }
-  }, [deleteCode, cloudUser.email, onAccountDeleted, t]);
+  }, [deletePassword, cloudUser.email, onAccountDeleted, t]);
 
   // Clear saved animation
   useEffect(() => {
@@ -352,59 +330,29 @@ export default function AccountSettings({
               )}
 
               {deleteStep === 'confirm' && (
-                <>
+                <div className="space-y-3">
                   <div className="flex items-start gap-2">
                     <AlertTriangle size={16} className="text-red-500 mt-0.5 shrink-0" />
                     <p className={`text-xs ${darkMode ? 'text-red-400' : 'text-red-600'}`}>
                       {t.accountDeleteWarning}
                     </p>
                   </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => void handleSendCode()}
-                      className="flex-1 py-2.5 rounded-xl text-xs font-semibold text-white bg-red-600 hover:bg-red-700 transition-all"
-                    >
-                      {t.accountDeleteSendCode}
-                    </button>
-                    <button
-                      onClick={() => setDeleteStep('idle')}
-                      className={`px-4 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                        darkMode ? 'text-gray-400 hover:bg-gray-800' : 'text-gray-500 hover:bg-gray-100'
-                      }`}
-                    >
-                      {t.unlockResetCancel}
-                    </button>
+
+                  <p className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    {t.accountDeleteEnterPassword}
+                  </p>
+
+                  <div className="relative">
+                    <Lock size={14} className={`absolute left-3 top-3 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`} />
+                    <input
+                      type="password"
+                      value={deletePassword}
+                      onChange={(e) => { setDeletePassword(e.target.value); setDeleteError(''); }}
+                      placeholder={t.accountDeletePasswordPlaceholder}
+                      className={`${inputClass} pl-9`}
+                      autoFocus
+                    />
                   </div>
-                </>
-              )}
-
-              {deleteStep === 'verifying' && (
-                <div className="flex items-center justify-center py-4">
-                  <Loader2 size={20} className="text-red-500 animate-spin" />
-                  <span className={`ml-2 text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    {t.accountSendingCode}
-                  </span>
-                </div>
-              )}
-
-              {deleteStep === 'code-sent' && (
-                <div className="space-y-3">
-                  <div className="flex items-start gap-2">
-                    <Mail size={16} className="text-blue-500 mt-0.5 shrink-0" />
-                    <p className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                      {t.accountCodeSent} <strong>{cloudUser.email}</strong>
-                    </p>
-                  </div>
-
-                  <input
-                    type="text"
-                    value={deleteCode}
-                    onChange={(e) => setDeleteCode(e.target.value)}
-                    placeholder={t.accountCodePlaceholder}
-                    maxLength={8}
-                    className={`${inputClass} text-center tracking-[0.3em] font-mono text-lg`}
-                    autoFocus
-                  />
 
                   {deleteError && (
                     <p className="text-xs text-red-500">{deleteError}</p>
@@ -412,14 +360,14 @@ export default function AccountSettings({
 
                   <div className="flex gap-2">
                     <button
-                      onClick={() => void handleVerifyAndDelete()}
-                      disabled={deleteCode.trim().length < 6}
+                      onClick={() => void handleConfirmDelete()}
+                      disabled={!deletePassword.trim()}
                       className="flex-1 py-2.5 rounded-xl text-xs font-semibold text-white bg-red-600 hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                     >
                       {t.accountDeleteConfirm}
                     </button>
                     <button
-                      onClick={() => { setDeleteStep('idle'); setDeleteCode(''); }}
+                      onClick={() => { setDeleteStep('idle'); setDeletePassword(''); setDeleteError(''); }}
                       className={`px-4 py-2.5 rounded-xl text-xs font-medium transition-all ${
                         darkMode ? 'text-gray-400 hover:bg-gray-800' : 'text-gray-500 hover:bg-gray-100'
                       }`}
@@ -427,31 +375,6 @@ export default function AccountSettings({
                       {t.unlockResetCancel}
                     </button>
                   </div>
-
-                  {/* Can't access email? */}
-                  <button
-                    onClick={() => setShowSupport(!showSupport)}
-                    className={`flex items-center gap-1 text-[10px] ${
-                      darkMode ? 'text-gray-500 hover:text-gray-400' : 'text-gray-400 hover:text-gray-500'
-                    }`}
-                  >
-                    <HelpCircle size={10} />
-                    {t.accountNoAccessEmail}
-                  </button>
-
-                  {showSupport && (
-                    <div className={`rounded-lg p-3 text-[11px] ${
-                      darkMode ? 'bg-gray-800/50 text-gray-400' : 'bg-gray-100 text-gray-500'
-                    }`}>
-                      {t.accountContactSupport}{' '}
-                      <a
-                        href="mailto:support@passgen.com"
-                        className="font-medium text-blue-500 hover:underline"
-                      >
-                        support@passgen.com
-                      </a>
-                    </div>
-                  )}
                 </div>
               )}
 
