@@ -257,6 +257,49 @@ export default function VaultView({
         </div>
 
         <div className="flex items-center gap-1.5">
+          {/* Security toggles — always visible */}
+          {biometricAvailable && (
+            <button
+              onClick={() => { void handleToggleBiometric(); }}
+              disabled={biometricLoading}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border ${
+                biometricActive
+                  ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
+                  : darkMode
+                    ? 'border-gray-700 bg-gray-800/50 text-gray-400 hover:border-blue-500/40 hover:text-blue-400'
+                    : 'border-gray-200 bg-gray-50 text-gray-500 hover:border-blue-400 hover:text-blue-500'
+              }`}
+              title={biometricActive ? t.biometricDisable : t.biometricEnable}
+            >
+              <Fingerprint size={13} />
+              <span className="hidden sm:inline">{biometricActive ? 'Face ID' : 'Face ID'}</span>
+              {biometricActive && <span className="text-[10px] text-emerald-400">✓</span>}
+            </button>
+          )}
+          <button
+            onClick={() => {
+              if (patternActive) {
+                handleRemovePattern();
+              } else {
+                setShowPatternSetup(true);
+                setPendingPattern(null);
+                setPatternError('');
+              }
+            }}
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border ${
+              patternActive
+                ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
+                : darkMode
+                  ? 'border-gray-700 bg-gray-800/50 text-gray-400 hover:border-blue-500/40 hover:text-blue-400'
+                  : 'border-gray-200 bg-gray-50 text-gray-500 hover:border-blue-400 hover:text-blue-500'
+            }`}
+            title={patternActive ? t.patternDisable : t.patternEnable}
+          >
+            <Shield size={13} />
+            <span className="hidden sm:inline">Pattern</span>
+            {patternActive && <span className="text-[10px] text-emerald-400">✓</span>}
+          </button>
+
           <button
             onClick={() => setShowForm(true)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 transition-all shadow-sm"

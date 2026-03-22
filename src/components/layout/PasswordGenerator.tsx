@@ -357,12 +357,12 @@ export default function PasswordGenerator({
   const policyResult = useMemo(() => evaluatePolicy(password, DEFAULT_POLICY, t), [password, t]);
 
   return (
-    <div className={`min-h-screen lg:h-screen lg:overflow-hidden transition-colors duration-300 ${darkMode ? 'dark bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950' : 'bg-gradient-to-br from-slate-50 via-white to-blue-50'}`}>
+    <div className={`flex flex-col min-h-screen lg:h-screen lg:overflow-hidden transition-colors duration-300 ${darkMode ? 'dark bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950' : 'bg-gradient-to-br from-slate-50 via-white to-blue-50'}`}>
 
       {/* Top accent bar */}
-      <div className="h-1 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+      <div className="h-1 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 shrink-0" />
 
-      <div className="mx-auto max-w-[1680px] px-4 py-3 lg:h-[calc(100%-4px)] lg:px-6 lg:py-4 lg:flex lg:flex-col">
+      <div className="flex-1 mx-auto max-w-[1680px] w-full px-4 py-3 lg:h-[calc(100%-4px)] lg:px-6 lg:py-4 lg:flex lg:flex-col">
 
         {/* Header */}
         <header className="flex items-center justify-between mb-4">
@@ -861,10 +861,11 @@ export default function PasswordGenerator({
           </div>
         )}
 
-        {/* Footer + bottom nav spacer for mobile */}
-        <div className="mt-auto pt-4 pb-16 sm:pb-0">
-          <Footer darkMode={darkMode} />
-        </div>
+      </div>
+
+      {/* Footer — always at page bottom */}
+      <div className="shrink-0 pb-16 sm:pb-0">
+        <Footer darkMode={darkMode} />
       </div>
 
       {/* Signup Prompt Modal (free mode limit) */}
