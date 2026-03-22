@@ -202,6 +202,7 @@ export interface Translations {
   vaultFormSave: string;
   vaultFormUpdate: string;
   vaultFormCancel: string;
+  vaultFormUrlPlaceholder: string;
 
   // HealthDashboard
   healthTitle: string;
@@ -227,6 +228,9 @@ export interface Translations {
   sessionHour: string;
   sessionActive: string;
   sessionExpires: string;
+  sessionOff: string;
+  sessionOneHourShort: string;
+  sessionMinutesShort: (n: number) => string;
 
   // Hash Generator
   tabHash: string;
@@ -305,6 +309,7 @@ export interface Translations {
   mapLength: string;
   mapChars: string;
   mapUser: string;
+  mapUrl: string;
   mapHint: string;
 
   // AI Password Analyzer
@@ -365,6 +370,34 @@ export interface Translations {
   audioVolume: string;
   audioVisualizer: string;
   audioExplain: string;
+
+  // Account Settings
+  accountTitle: string;
+  accountProfile: string;
+  accountEmail: string;
+  accountEmailReadonly: string;
+  accountDisplayName: string;
+  accountDisplayNamePlaceholder: string;
+  accountSaveError: string;
+  accountInfo: string;
+  accountMemberSince: string;
+  accountLastLogin: string;
+  accountEncryption: string;
+  accountDangerZone: string;
+  accountDeleteDesc: string;
+  accountDeleteButton: string;
+  accountDeleteWarning: string;
+  accountDeleteSendCode: string;
+  accountSendingCode: string;
+  accountCodeSent: string;
+  accountCodePlaceholder: string;
+  accountCodeError: string;
+  accountDeleteConfirm: string;
+  accountDeleteError: string;
+  accountNoAccessEmail: string;
+  accountContactSupport: string;
+  accountDeleting: string;
+  accountButton: string;
 
   // Cloud Auth & Sync
   cloudTitle: string;
@@ -600,6 +633,7 @@ export const translations: Record<Language, Translations> = {
     vaultFormSave: 'Salvează',
     vaultFormUpdate: 'Actualizează',
     vaultFormCancel: 'Anulează',
+    vaultFormUrlPlaceholder: 'https://exemplu.com',
 
     // HealthDashboard
     healthTitle: 'Sănătatea Seifului',
@@ -625,6 +659,9 @@ export const translations: Record<Language, Translations> = {
     sessionHour: '1 oră',
     sessionActive: 'Sesiune activă',
     sessionExpires: 'Expiră la',
+    sessionOff: 'Oprit',
+    sessionOneHourShort: '1h',
+    sessionMinutesShort: (n: number) => `${n}m`,
 
     // Hash Generator
     tabHash: 'Hash',
@@ -703,6 +740,7 @@ export const translations: Record<Language, Translations> = {
     mapLength: 'Lungime',
     mapChars: 'caractere',
     mapUser: 'Utilizator',
+    mapUrl: 'URL',
     mapHint: 'Click pe un cerc pentru detalii. Cercurile mari = parole puternice.',
 
     // AI Password Analyzer
@@ -763,6 +801,34 @@ export const translations: Record<Language, Translations> = {
     audioVolume: 'Volum',
     audioVisualizer: 'Vizualizator',
     audioExplain: 'Fiecare caracter produce o notă unică bazată pe codul ASCII. O parolă diversă generează o melodie variată, în timp ce una simplă sună repetitiv și monoton.',
+
+    // Account Settings
+    accountTitle: 'Contul Meu',
+    accountProfile: 'Profil',
+    accountEmail: 'Adresă email',
+    accountEmailReadonly: 'Email-ul nu poate fi modificat.',
+    accountDisplayName: 'Nume afișat',
+    accountDisplayNamePlaceholder: 'Introdu un nume...',
+    accountSaveError: 'Eroare la salvare. Încearcă din nou.',
+    accountInfo: 'Informații cont',
+    accountMemberSince: 'Membru din',
+    accountLastLogin: 'Ultima autentificare',
+    accountEncryption: 'Criptare',
+    accountDangerZone: 'Zonă periculoasă',
+    accountDeleteDesc: 'Ștergerea contului este permanentă. Toate datele din seif și cloud vor fi șterse definitiv.',
+    accountDeleteButton: 'Șterge contul permanent',
+    accountDeleteWarning: 'Ești sigur? Aceasta va șterge permanent contul, seiful din cloud și toate datele asociate. Acțiunea nu poate fi anulată.',
+    accountDeleteSendCode: 'Trimite cod de verificare',
+    accountSendingCode: 'Se trimite codul...',
+    accountCodeSent: 'Un cod de verificare a fost trimis la',
+    accountCodePlaceholder: '000000',
+    accountCodeError: 'Nu s-a putut trimite codul. Încearcă din nou.',
+    accountDeleteConfirm: 'Confirmă ștergerea',
+    accountDeleteError: 'Eroare la ștergere. Încearcă din nou.',
+    accountNoAccessEmail: 'Nu ai acces la email?',
+    accountContactSupport: 'Dacă nu mai ai acces la email-ul asociat contului, contactează-ne la',
+    accountDeleting: 'Se șterge contul...',
+    accountButton: 'Cont',
 
     // Cloud Auth & Sync
     cloudTitle: 'PassGen Cloud',
@@ -998,6 +1064,7 @@ export const translations: Record<Language, Translations> = {
     vaultFormSave: 'Save',
     vaultFormUpdate: 'Update',
     vaultFormCancel: 'Cancel',
+    vaultFormUrlPlaceholder: 'https://example.com',
 
     // HealthDashboard
     healthTitle: 'Vault Health',
@@ -1023,6 +1090,9 @@ export const translations: Record<Language, Translations> = {
     sessionHour: '1 hour',
     sessionActive: 'Session active',
     sessionExpires: 'Expires at',
+    sessionOff: 'Off',
+    sessionOneHourShort: '1h',
+    sessionMinutesShort: (n: number) => `${n}m`,
 
     // Hash Generator
     tabHash: 'Hash',
@@ -1101,6 +1171,7 @@ export const translations: Record<Language, Translations> = {
     mapLength: 'Length',
     mapChars: 'chars',
     mapUser: 'Username',
+    mapUrl: 'URL',
     mapHint: 'Click a circle for details. Larger circles = stronger passwords.',
 
     // AI Password Analyzer
@@ -1161,6 +1232,34 @@ export const translations: Record<Language, Translations> = {
     audioVolume: 'Volume',
     audioVisualizer: 'Visualizer',
     audioExplain: 'Each character produces a unique note based on its ASCII code. A diverse password generates a varied melody, while a simple one sounds repetitive and monotone.',
+
+    // Account Settings
+    accountTitle: 'My Account',
+    accountProfile: 'Profile',
+    accountEmail: 'Email address',
+    accountEmailReadonly: 'Email cannot be changed.',
+    accountDisplayName: 'Display name',
+    accountDisplayNamePlaceholder: 'Enter a name...',
+    accountSaveError: 'Error saving. Please try again.',
+    accountInfo: 'Account info',
+    accountMemberSince: 'Member since',
+    accountLastLogin: 'Last login',
+    accountEncryption: 'Encryption',
+    accountDangerZone: 'Danger zone',
+    accountDeleteDesc: 'Account deletion is permanent. All vault and cloud data will be permanently erased.',
+    accountDeleteButton: 'Delete account permanently',
+    accountDeleteWarning: 'Are you sure? This will permanently delete your account, cloud vault, and all associated data. This action cannot be undone.',
+    accountDeleteSendCode: 'Send verification code',
+    accountSendingCode: 'Sending code...',
+    accountCodeSent: 'A verification code has been sent to',
+    accountCodePlaceholder: '000000',
+    accountCodeError: 'Could not send code. Please try again.',
+    accountDeleteConfirm: 'Confirm deletion',
+    accountDeleteError: 'Error deleting. Please try again.',
+    accountNoAccessEmail: 'Can\'t access your email?',
+    accountContactSupport: 'If you no longer have access to the email associated with your account, contact us at',
+    accountDeleting: 'Deleting account...',
+    accountButton: 'Account',
 
     // Cloud Auth & Sync
     cloudTitle: 'PassGen Cloud',

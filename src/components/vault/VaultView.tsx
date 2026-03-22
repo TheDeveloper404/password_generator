@@ -534,7 +534,7 @@ function SessionTimeoutSelector({ darkMode }: { darkMode: boolean }) {
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            {opt === 0 ? 'Off' : opt === 60 ? '1h' : `${opt}m`}
+            {opt === 0 ? t.sessionOff : opt === 60 ? t.sessionOneHourShort : t.sessionMinutesShort(opt)}
           </button>
         ))}
       </div>

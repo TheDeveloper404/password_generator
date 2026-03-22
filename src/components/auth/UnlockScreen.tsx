@@ -103,7 +103,7 @@ export default function UnlockScreen({ darkMode, onUnlock, onReset, inline }: Un
             <Shield size={32} className="text-white" />
           </div>
           <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mt-2">
-            PassGen
+            {t.appTitle}
           </h1>
           <p className={`mt-2 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
             {t.unlockSubtitle}

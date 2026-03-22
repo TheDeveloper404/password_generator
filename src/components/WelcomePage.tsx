@@ -48,7 +48,7 @@ export default function WelcomePage({ onEnter }: WelcomePageProps) {
         {/* Title */}
         <div className={`space-y-3 transition-all duration-1000 delay-300 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <h1 className="text-6xl font-black tracking-tight text-transparent sm:text-7xl bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
-            PassGen
+            {t.appTitle}
           </h1>
           <p className="max-w-md text-lg font-light text-gray-400 sm:text-xl">
             {t.welcomeSubtitle}

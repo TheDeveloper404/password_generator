@@ -94,14 +94,33 @@ export default function AudioPassphrase({ darkMode, generatedPassword = '' }: Au
     cancelRef.current = false;
     setIsPlaying(true);
 
-    const ctx = new AudioContext();
+    // Create AudioContext with low-latency hint for mobile
+    const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)({ latencyHint: 'interactive' });
     audioCtxRef.current = ctx;
+
+    // Mobile browsers (iOS Safari, Chrome Android) require explicit resume()
+    // within a user gesture handler. Also play a silent buffer to "unlock" audio.
+    if (ctx.state === 'suspended') {
+      await ctx.resume();
+    }
+
+    // Play a silent buffer to fully unlock audio on iOS Safari
+    const silentBuffer = ctx.createBuffer(1, 1, ctx.sampleRate);
+    const silentSource = ctx.createBufferSource();
+    silentSource.buffer = silentBuffer;
+    silentSource.connect(ctx.destination);
+    silentSource.start(0);
 
     const noteDuration = 60 / tempo; // seconds per beat
     const scaleNotes = SCALES[scale];
 
     for (let i = 0; i < input.length; i++) {
       if (cancelRef.current) break;
+
+      // Re-check suspended state (can happen on iOS when tab goes background)
+      if (ctx.state === 'suspended') {
+        await ctx.resume();
+      }
 
       const char = input[i];
       const freq = charToFrequency(char, scaleNotes);

@@ -104,7 +104,7 @@ export default function VaultEntryForm({
           value={siteUrl}
           onChange={(e) => setSiteUrl(e.target.value)}
           className={inputClasses}
-          placeholder="https://example.com"
+          placeholder={t.vaultFormUrlPlaceholder}
         />
       </div>
 

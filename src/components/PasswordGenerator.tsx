@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Copy, RefreshCw, Sun, Moon, Star, Trash2, Globe, KeyRound, Shield, Zap, Wifi, LogOut, Hash, Brain, Music, Map } from 'lucide-react';
+import { Copy, RefreshCw, Sun, Moon, Star, Trash2, Globe, KeyRound, Shield, Zap, Wifi, LogOut, Hash, Brain, Music, Map, UserCircle } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
 import {
   generatePassphrase,
@@ -24,6 +24,7 @@ import PasswordAnalyzer from './PasswordAnalyzer';
 import AudioPassphrase from './AudioPassphrase';
 import PasswordMap from './PasswordMap';
 import CloudSyncIndicator, { OfflineIndicator } from './auth/CloudSyncIndicator';
+import AccountSettings from './auth/AccountSettings';
 import VaultView from './vault/VaultView';
 import HealthDashboard from './vault/HealthDashboard';
 import MasterPasswordSetup from './auth/MasterPasswordSetup';
@@ -135,6 +136,7 @@ export default function PasswordGenerator({
     getStoredValue<string[]>(STORAGE_KEYS.favorites, [])
   );
   const [copied, setCopied] = useState(false);
+  const [showAccount, setShowAccount] = useState(false);
   const [activeTab, setActiveTabRaw] = useState<MainTab>(() => {
     const saved = sessionStorage.getItem('passgen_active_tab');
     const valid: MainTab[] = ['generator', 'wifi', 'hash', 'analyzer', 'audio', 'map', 'vault', 'health'];
@@ -405,6 +407,16 @@ export default function PasswordGenerator({
               onCloudLogout={onCloudLogout}
             />
             <OfflineIndicator darkMode={darkMode} />
+            {cloudUser && (
+              <button
+                onClick={() => setShowAccount(true)}
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${darkMode ? 'hover:bg-white/5 text-gray-400' : 'hover:bg-gray-100 text-gray-500'}`}
+                title={t.accountButton}
+              >
+                <UserCircle size={14} />
+                <span className="hidden md:inline">{t.accountButton}</span>
+              </button>
+            )}
             <button
               onClick={() => { sessionStorage.removeItem('passgen_active_tab'); onLogout(); }}
               className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${darkMode ? 'hover:bg-red-500/10 text-gray-400 hover:text-red-400' : 'hover:bg-red-50 text-gray-500 hover:text-red-500'}`}
@@ -817,6 +829,19 @@ export default function PasswordGenerator({
         )}
 
       </div>
+
+      {/* Account Settings Modal */}
+      {showAccount && cloudUser && (
+        <AccountSettings
+          darkMode={darkMode}
+          cloudUser={cloudUser}
+          onAccountDeleted={() => {
+            setShowAccount(false);
+            onLogout();
+          }}
+          onClose={() => setShowAccount(false)}
+        />
+      )}
     </div>
   );
 }

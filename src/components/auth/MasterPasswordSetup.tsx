@@ -53,7 +53,7 @@ export default function MasterPasswordSetup({ darkMode, onSetup, inline }: Maste
             <Shield size={32} className="text-white" />
           </div>
           <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
-            PassGen
+            {t.appTitle}
           </h1>
           <p className={`mt-2 text-sm text-center ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
             {t.setupSubtitle}

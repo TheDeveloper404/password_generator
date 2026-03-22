@@ -75,12 +75,8 @@ function App() {
   useEffect(() => {
     if (!isCloudEnabled || !supabase) return;
 
-    // Check initial session
-    void supabase.auth.getSession().then(({ data: { session } }) => {
-      setCloudUser(session?.user ?? null);
-    });
-
     // Listen for auth changes (login, logout, token refresh)
+    // Initial session is resolved in the vault mount effect above
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setCloudUser(session?.user ?? null);
@@ -105,6 +101,17 @@ function App() {
       try {
         const hasVault = await isVaultSetUp();
         setVaultConfigured(hasVault);
+
+        // Check if Supabase has an active session
+        let hasCloudSession = false;
+        if (isCloudEnabled && supabase) {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user) {
+            setCloudUser(session.user);
+            hasCloudSession = true;
+          }
+        }
+
         if (hasVault) {
           // Try to restore session (survives refresh)
           const session = restoreSession();
@@ -117,6 +124,12 @@ function App() {
             }
           }
           // Skip welcome, go straight to main
+          setScreen('main');
+          setWelcomeVisible(false);
+          setTransitioning(true);
+        } else if (hasCloudSession) {
+          // User has cloud session but no local vault — skip welcome, go to main
+          // (they'll see MasterPasswordSetup for vault-gated tabs)
           setScreen('main');
           setWelcomeVisible(false);
           setTransitioning(true);

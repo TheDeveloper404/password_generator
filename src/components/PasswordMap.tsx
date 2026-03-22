@@ -397,7 +397,7 @@ export default function PasswordMap({ darkMode, vault }: PasswordMapProps) {
             </div>
             {selectedEntry.siteUrl && (
               <div>
-                <p className={`text-[10px] uppercase tracking-wider ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>URL</p>
+                <p className={`text-[10px] uppercase tracking-wider ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>{t.mapUrl}</p>
                 <p className={`text-xs mt-1 truncate ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{selectedEntry.siteUrl}</p>
               </div>
             )}
