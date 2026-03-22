@@ -4,8 +4,8 @@ import {
   GeneratorPreset,
   PassphraseOptions,
   PasswordCharacterOptions,
-} from '../utils/passwordUtils';
-import { useTranslation } from '../contexts/LanguageContext';
+} from '../../utils/passwordUtils';
+import { useTranslation } from '../../contexts/LanguageContext';
 
 interface PasswordOptionsProps {
   mode: GeneratorMode;

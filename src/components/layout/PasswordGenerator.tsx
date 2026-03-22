@@ -8,29 +8,29 @@ import {
   PASSWORD_PRESETS,
   PassphraseOptions,
   PasswordCharacterOptions,
-} from '../utils/passwordUtils';
-import { calculateStrength } from '../utils/strengthUtils';
-import { DEFAULT_POLICY, evaluatePolicy } from '../utils/policyUtils';
-import { useTranslation } from '../contexts/LanguageContext';
-import StrengthIndicator from './StrengthIndicator';
-import PasswordOptions from './PasswordOptions';
-import PolicyIndicator from './PolicyIndicator';
-import UsernameGenerator from './UsernameGenerator';
-import PasswordHealthCheck from './PasswordHealthCheck';
-import SecurityTips from './SecurityTips';
-import WiFiQrCode from './WiFiQrCode';
-import HashGenerator from './HashGenerator';
-import PasswordAnalyzer from './PasswordAnalyzer';
-import AudioPassphrase from './AudioPassphrase';
-import PasswordMap from './PasswordMap';
-import CloudSyncIndicator, { OfflineIndicator } from './auth/CloudSyncIndicator';
-import AccountSettings from './auth/AccountSettings';
-import VaultView from './vault/VaultView';
-import HealthDashboard from './vault/HealthDashboard';
-import MasterPasswordSetup from './auth/MasterPasswordSetup';
-import UnlockScreen from './auth/UnlockScreen';
+} from '../../utils/passwordUtils';
+import { calculateStrength } from '../../utils/strengthUtils';
+import { DEFAULT_POLICY, evaluatePolicy } from '../../utils/policyUtils';
+import { useTranslation } from '../../contexts/LanguageContext';
+import StrengthIndicator from '../generator/StrengthIndicator';
+import PasswordOptions from '../generator/PasswordOptions';
+import PolicyIndicator from '../generator/PolicyIndicator';
+import UsernameGenerator from '../generator/UsernameGenerator';
+import PasswordHealthCheck from '../generator/PasswordHealthCheck';
+import SecurityTips from '../generator/SecurityTips';
+import WiFiQrCode from '../tools/WiFiQrCode';
+import HashGenerator from '../tools/HashGenerator';
+import PasswordAnalyzer from '../tools/PasswordAnalyzer';
+import AudioPassphrase from '../tools/AudioPassphrase';
+import PasswordMap from '../tools/PasswordMap';
+import CloudSyncIndicator, { OfflineIndicator } from '../auth/CloudSyncIndicator';
+import AccountSettings from '../auth/AccountSettings';
+import VaultView from '../vault/VaultView';
+import HealthDashboard from '../vault/HealthDashboard';
+import MasterPasswordSetup from '../auth/MasterPasswordSetup';
+import UnlockScreen from '../auth/UnlockScreen';
 import Footer from './Footer';
-import type { VaultData, VaultEntry, MainTab } from '../types/vault';
+import type { VaultData, VaultEntry, MainTab } from '../../types/vault';
 
 const STORAGE_KEYS = {
   privacyMode: 'pg_privacy_mode',

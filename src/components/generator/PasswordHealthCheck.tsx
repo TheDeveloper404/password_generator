@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { ShieldCheck, ShieldAlert, Loader2, Search } from 'lucide-react';
-import { calculateStrength } from '../utils/strengthUtils';
-import { DEFAULT_POLICY, evaluatePolicy } from '../utils/policyUtils';
-import { useTranslation } from '../contexts/LanguageContext';
+import { calculateStrength } from '../../utils/strengthUtils';
+import { DEFAULT_POLICY, evaluatePolicy } from '../../utils/policyUtils';
+import { useTranslation } from '../../contexts/LanguageContext';
 
 interface PasswordHealthCheckProps {
   darkMode: boolean;

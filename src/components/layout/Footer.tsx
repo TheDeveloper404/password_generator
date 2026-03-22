@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useTranslation } from '../contexts/LanguageContext';
-import PrivacyPolicy from './legal/PrivacyPolicy';
-import TermsConditions from './legal/TermsConditions';
+import { useTranslation } from '../../contexts/LanguageContext';
+import PrivacyPolicy from '../legal/PrivacyPolicy';
+import TermsConditions from '../legal/TermsConditions';
 
 interface FooterProps {
   darkMode: boolean;

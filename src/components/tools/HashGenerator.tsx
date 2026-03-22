@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { Copy, Hash, Check } from 'lucide-react';
-import { useTranslation } from '../contexts/LanguageContext';
+import { useTranslation } from '../../contexts/LanguageContext';
 
 interface HashGeneratorProps {
   darkMode: boolean;

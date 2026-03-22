@@ -21,7 +21,7 @@ import {
   Save,
 } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../../config/supabase';
 import { deleteCloudVault } from '../../services/cloudService';
 import { wipeAllData } from '../../db/indexedDB';
 import { clearSession } from '../../services/sessionService';

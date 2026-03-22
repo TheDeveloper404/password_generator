@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { LanguageContext } from '../contexts/LanguageContext';
 import { translations } from '../utils/i18n';
-import AudioPassphrase from '../components/AudioPassphrase';
+import AudioPassphrase from '../components/tools/AudioPassphrase';
 
 // Mock Web Audio API
 const mockOscillator = {

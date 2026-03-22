@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { LanguageContext } from '../contexts/LanguageContext';
 import { translations } from '../utils/i18n';
-import PasswordMap from '../components/PasswordMap';
+import PasswordMap from '../components/tools/PasswordMap';
 import type { VaultData, VaultEntry } from '../types/vault';
 
 // Mock Canvas API – canvas.getContext returns null in jsdom

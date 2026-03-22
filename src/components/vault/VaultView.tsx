@@ -33,7 +33,7 @@ import {
 } from '../../services/sessionService';
 import VaultEntryForm from './VaultEntryForm';
 import { generatePassword } from '../../utils/passwordUtils';
-import ImportCsvDialog from '../ImportCsvDialog';
+import ImportCsvDialog from './ImportCsvDialog';
 import {
   isBiometricAvailable,
   isBiometricEnrolled,

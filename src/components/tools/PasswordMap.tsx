@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Shield, Lock, AlertTriangle, CheckCircle, X } from 'lucide-react';
-import { useTranslation } from '../contexts/LanguageContext';
-import type { VaultData, VaultEntry } from '../types/vault';
+import { useTranslation } from '../../contexts/LanguageContext';
+import type { VaultData, VaultEntry } from '../../types/vault';
 
 interface PasswordMapProps {
   darkMode: boolean;

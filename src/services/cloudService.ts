@@ -6,7 +6,7 @@
  * Supabase only stores base64-encoded AES-256-GCM ciphertext + IV + salt.
  */
 
-import { supabase, isCloudEnabled } from '../lib/supabase';
+import { supabase, isCloudEnabled } from '../config/supabase';
 import {
   arrayBufferToBase64,
   base64ToArrayBuffer,

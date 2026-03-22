@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { Brain, Copy, AlertTriangle, CheckCircle, Info, ShieldAlert, Clock, Keyboard, Hash } from 'lucide-react';
-import { useTranslation } from '../contexts/LanguageContext';
+import { useTranslation } from '../../contexts/LanguageContext';
 
 interface PasswordAnalyzerProps {
   darkMode: boolean;

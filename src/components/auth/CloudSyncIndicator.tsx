@@ -5,7 +5,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { Cloud, CloudOff, RefreshCw, LogOut, Upload, Download, Check, AlertCircle } from 'lucide-react';
-import { supabase, isCloudEnabled } from '../../lib/supabase';
+import { supabase, isCloudEnabled } from '../../config/supabase';
 import { uploadVault, downloadVault } from '../../services/cloudService';
 import { useTranslation } from '../../contexts/LanguageContext';
 import type { VaultData } from '../../types/vault';

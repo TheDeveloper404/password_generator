@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { LanguageContext } from '../contexts/LanguageContext';
 import { translations } from '../utils/i18n';
-import PasswordAnalyzer from '../components/PasswordAnalyzer';
+import PasswordAnalyzer from '../components/tools/PasswordAnalyzer';
 
 function renderWithLanguage(ui: React.ReactElement, lang: 'ro' | 'en' = 'en') {
   return render(

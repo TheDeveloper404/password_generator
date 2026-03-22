@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
 import { Upload, FileText, AlertCircle, CheckCircle, ChevronDown } from 'lucide-react';
-import { useTranslation } from '../contexts/LanguageContext';
-import { importCSV, getImportSources, type ImportSource, type ImportResult } from '../utils/importCsvUtils';
-import type { VaultEntry } from '../types/vault';
+import { useTranslation } from '../../contexts/LanguageContext';
+import { importCSV, getImportSources, type ImportSource, type ImportResult } from '../../utils/importCsvUtils';
+import type { VaultEntry } from '../../types/vault';
 
 interface ImportCsvDialogProps {
   darkMode: boolean;

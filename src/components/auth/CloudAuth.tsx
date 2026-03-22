@@ -7,7 +7,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { Mail, Lock, LogIn, UserPlus, Eye, EyeOff, Cloud, AlertCircle, Fingerprint } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../../config/supabase';
 import { useTranslation } from '../../contexts/LanguageContext';
 import {
   isBiometricAvailable,
@@ -15,7 +15,7 @@ import {
   authenticateWithBiometric,
 } from '../../services/biometricService';
 import TermsAcceptanceModal from './TermsAcceptanceModal';
-import Footer from '../Footer';
+import Footer from '../layout/Footer';
 
 type AuthMode = 'login' | 'register';
 

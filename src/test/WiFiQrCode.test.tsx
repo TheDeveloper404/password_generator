@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { LanguageContext } from '../contexts/LanguageContext';
 import { translations } from '../utils/i18n';
-import WiFiQrCode from '../components/WiFiQrCode';
+import WiFiQrCode from '../components/tools/WiFiQrCode';
 
 // Helper to render with LanguageContext
 function renderWithLanguage(ui: React.ReactElement, lang: 'ro' | 'en' = 'en') {

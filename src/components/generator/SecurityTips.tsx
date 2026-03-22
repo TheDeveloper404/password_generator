@@ -1,5 +1,5 @@
 import { Lightbulb, ShieldAlert, Lock, Key, Eye, Fingerprint } from 'lucide-react';
-import { useTranslation } from '../contexts/LanguageContext';
+import { useTranslation } from '../../contexts/LanguageContext';
 
 interface SecurityTipsProps {
   darkMode: boolean;

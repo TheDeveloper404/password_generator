@@ -1,5 +1,5 @@
-import { PolicyResult } from '../utils/policyUtils';
-import { useTranslation } from '../contexts/LanguageContext';
+import { PolicyResult } from '../../utils/policyUtils';
+import { useTranslation } from '../../contexts/LanguageContext';
 
 interface PolicyIndicatorProps {
   result: PolicyResult;

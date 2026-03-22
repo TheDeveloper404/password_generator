@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, useRef } from 'react';
-import PasswordGenerator from './components/PasswordGenerator';
-import WelcomePage from './components/WelcomePage';
+import PasswordGenerator from './components/layout/PasswordGenerator';
+import WelcomePage from './components/common/WelcomePage';
 import CloudAuth from './components/auth/CloudAuth';
 import TermsAcceptanceModal from './components/auth/TermsAcceptanceModal';
 import type { AppScreen, VaultData } from './types/vault';
@@ -25,7 +25,7 @@ import {
   readFileAsText,
 } from './services/exportService';
 import { uploadVault, downloadVault, subscribeToVaultChanges } from './services/cloudService';
-import { supabase, isCloudEnabled } from './lib/supabase';
+import { supabase, isCloudEnabled } from './config/supabase';
 import { wipeAllData } from './db/indexedDB';
 import { AUTO_LOCK_TIMEOUT_MS } from './crypto/constants';
 import { Language, translations } from './utils/i18n';

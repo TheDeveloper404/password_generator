@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Shield, ArrowRight, Lock, Key, Fingerprint } from 'lucide-react';
-import { useTranslation } from '../contexts/LanguageContext';
+import { useTranslation } from '../../contexts/LanguageContext';
 
 interface WelcomePageProps {
   onEnter: () => void;

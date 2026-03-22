@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Wifi, Download, Copy, Check, RefreshCw } from 'lucide-react';
 import QRCode from 'qrcode';
-import { useTranslation } from '../contexts/LanguageContext';
+import { useTranslation } from '../../contexts/LanguageContext';
 
 type EncryptionType = 'WPA' | 'WEP' | 'nopass';
 

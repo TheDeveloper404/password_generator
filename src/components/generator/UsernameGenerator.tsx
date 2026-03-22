@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Copy, RefreshCw, User } from 'lucide-react';
-import { generateUsernames } from '../utils/usernameUtils';
-import { useTranslation } from '../contexts/LanguageContext';
+import { generateUsernames } from '../../utils/usernameUtils';
+import { useTranslation } from '../../contexts/LanguageContext';
 
 interface UsernameGeneratorProps {
   darkMode: boolean;

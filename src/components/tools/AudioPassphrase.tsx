@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Volume2, VolumeX, Play, Square, Music } from 'lucide-react';
-import { useTranslation } from '../contexts/LanguageContext';
+import { useTranslation } from '../../contexts/LanguageContext';
 
 interface AudioPassphraseProps {
   darkMode: boolean;
