@@ -489,6 +489,13 @@ export interface Translations {
   patternUnlock: string;
   patternWrong: string;
   patternUsePassword: string;
+
+  // Free mode
+  freeModeButton: string;
+  freeLimitTitle: string;
+  freeLimitDesc: string;
+  freeLimitSignup: string;
+  close: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -982,6 +989,13 @@ export const translations: Record<Language, Translations> = {
     patternWrong: 'Model incorect. Încercați din nou.',
     patternUsePassword: 'Folosește parola master',
 
+    // Free mode
+    freeModeButton: 'Încearcă fără cont',
+    freeLimitTitle: 'Limită atinsă',
+    freeLimitDesc: 'Ai generat 3 parole gratuite. Creează un cont gratuit pentru acces nelimitat la toate funcțiile.',
+    freeLimitSignup: 'Creează cont gratuit',
+    close: 'Închide',
+
   },
 
   en: {
@@ -1473,6 +1487,13 @@ export const translations: Record<Language, Translations> = {
     patternUnlock: 'Unlock with pattern',
     patternWrong: 'Wrong pattern. Try again.',
     patternUsePassword: 'Use master password',
+
+    // Free mode
+    freeModeButton: 'Try without account',
+    freeLimitTitle: 'Limit reached',
+    freeLimitDesc: 'You\'ve generated 3 free passwords. Create a free account for unlimited access to all features.',
+    freeLimitSignup: 'Create free account',
+    close: 'Close',
 
   },
 };

@@ -22,9 +22,10 @@ type AuthMode = 'login' | 'register';
 interface CloudAuthProps {
   darkMode: boolean;
   onAuthenticated: () => void;
+  onEnterFreeMode?: () => void;
 }
 
-export default function CloudAuth({ darkMode, onAuthenticated }: CloudAuthProps) {
+export default function CloudAuth({ darkMode, onAuthenticated, onEnterFreeMode }: CloudAuthProps) {
   const [mode, setMode] = useState<AuthMode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -282,6 +283,20 @@ export default function CloudAuth({ darkMode, onAuthenticated }: CloudAuthProps)
             <p className={`text-[10px] text-center leading-relaxed ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
               {t.cloudZeroKnowledge}
             </p>
+
+            {/* Free mode button */}
+            {onEnterFreeMode && (
+              <button
+                onClick={onEnterFreeMode}
+                className={`w-full py-2.5 rounded-xl text-xs font-medium transition-all border ${
+                  darkMode
+                    ? 'border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-600 hover:bg-gray-800/50'
+                    : 'border-gray-200 text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                {t.freeModeButton}
+              </button>
+            )}
           </div>
         </div>
 

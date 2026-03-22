@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, useRef } from 'react';
 import PasswordGenerator from './components/PasswordGenerator';
 import WelcomePage from './components/WelcomePage';
 import CloudAuth from './components/auth/CloudAuth';
+import TermsAcceptanceModal from './components/auth/TermsAcceptanceModal';
 import type { AppScreen, VaultData } from './types/vault';
 import {
   setupMasterPassword,
@@ -66,8 +67,11 @@ function App() {
   const [darkMode, setDarkMode] = useState(getStoredDarkMode);
   const [cloudUser, setCloudUser] = useState<User | null>(null);
   const [showCloudAuth, setShowCloudAuth] = useState(false);
+  const [showTermsAtAppLevel, setShowTermsAtAppLevel] = useState(false);
   const autoLockTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isRemoteSync = useRef(false);
+  const showCloudAuthRef = useRef(showCloudAuth);
+  useEffect(() => { showCloudAuthRef.current = showCloudAuth; }, [showCloudAuth]);
 
   const t = translations[lang];
 
@@ -78,11 +82,21 @@ function App() {
     // Listen for auth changes (login, logout, token refresh)
     // Initial session is resolved in the vault mount effect above
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      (event, session) => {
         setCloudUser(session?.user ?? null);
         // Sync auth flag with actual session state
         if (session?.user) {
           localStorage.setItem('pg_cloud_auth', 'true');
+          // If user just confirmed email / was auto-signed-in while on cloud auth screen
+          if (event === 'SIGNED_IN' && showCloudAuthRef.current) {
+            const termsAccepted = localStorage.getItem('pg_terms_accepted') === 'true';
+            if (!termsAccepted) {
+              // Show terms at app level (CloudAuth is being unmounted since cloudUser is now set)
+              setShowTermsAtAppLevel(true);
+            }
+            // Dismiss cloud auth — user is now authenticated
+            setShowCloudAuth(false);
+          }
         } else {
           localStorage.removeItem('pg_cloud_auth');
         }
@@ -254,6 +268,7 @@ function App() {
     setWelcomeVisible(false);
 
     // Always show cloud auth when cloud is enabled (removed skip button)
+    // But user can still use generator in free mode if they dismiss later
     if (isCloudEnabled && !cloudUser) {
       setTimeout(() => {
         setShowCloudAuth(true);
@@ -266,10 +281,25 @@ function App() {
     }
   }, [cloudUser]);
 
-  const handleCloudAuthenticated = useCallback(() => {
+  // Allow user to enter free/guest mode (generator only, limited to 3 passwords)
+  const handleEnterFreeMode = useCallback(() => {
+    setShowCloudAuth(false);
+    // Don't set pg_cloud_auth flag — user is in guest mode
+  }, []);
+
+  const handleCloudAuthenticated = useCallback(async () => {
+    // Fetch the current Supabase user immediately so cloudUser is set before showCloudAuth is cleared
+    if (isCloudEnabled && supabase) {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setCloudUser(session.user);
+      }
+    }
     setShowCloudAuth(false);
     // Persist authentication flag so refresh keeps user logged in
     localStorage.setItem('pg_cloud_auth', 'true');
+    // Clear free mode generate counter
+    localStorage.removeItem('pg_free_generates');
   }, []);
 
   const handleCloudLogout = useCallback(() => {
@@ -450,12 +480,13 @@ function App() {
           <CloudAuth
             darkMode={darkMode}
             onAuthenticated={handleCloudAuthenticated}
+            onEnterFreeMode={handleEnterFreeMode}
           />
         </div>
       )}
 
-      {/* Main app — always rendered when screen is 'main' */}
-      {screen === 'main' && !showCloudAuth && (
+      {/* Main app — rendered when screen is 'main' AND either cloud auth is done OR user is in free mode */}
+      {screen === 'main' && (!showCloudAuth || cloudUser) && (
         <div className="animate-fadeIn">
           <PasswordGenerator
             vault={vault}
@@ -478,8 +509,17 @@ function App() {
             onUnlock={handleUnlock}
             onReset={() => void handleReset()}
             onLogout={handleLogout}
+            onSignupRedirect={() => setShowCloudAuth(true)}
           />
         </div>
+      )}
+
+      {/* App-level terms acceptance modal (for email confirmation auto-sign-in) */}
+      {showTermsAtAppLevel && (
+        <TermsAcceptanceModal
+          darkMode={darkMode}
+          onAccepted={() => setShowTermsAtAppLevel(false)}
+        />
       )}
     </LanguageContext.Provider>
   );
