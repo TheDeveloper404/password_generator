@@ -400,6 +400,7 @@ export interface Translations {
   cloudCheckEmail: string;
   cloudEmailConfirmed: string;
   cloudAuthError: string;
+  cloudRateLimitError: string;
   cloudPasswordMismatch: string;
   cloudPasswordTooShort: string;
   cloudZeroKnowledge: string;
@@ -896,6 +897,7 @@ export const translations: Record<Language, Translations> = {
     cloudCheckEmail: 'Verifică email-ul pentru confirmarea contului.',
     cloudEmailConfirmed: 'Email confirmat cu succes! Te poți autentifica acum.',
     cloudAuthError: 'Eroare de autentificare. Verifică datele introduse.',
+    cloudRateLimitError: 'Prea multe încercări. Te rugăm să aștepți câteva minute înainte de a încerca din nou.',
     cloudPasswordMismatch: 'Parolele nu se potrivesc.',
     cloudPasswordTooShort: 'Parola trebuie să aibă minimum 6 caractere.',
     cloudZeroKnowledge: 'Criptare end-to-end: toate parolele sunt criptate local cu AES-256-GCM înainte de a fi trimise în cloud. Serverul stochează doar blob-uri criptate.',
@@ -1392,6 +1394,7 @@ export const translations: Record<Language, Translations> = {
     cloudCheckEmail: 'Check your email to confirm your account.',
     cloudEmailConfirmed: 'Email confirmed successfully! You can now sign in.',
     cloudAuthError: 'Authentication error. Please check your credentials.',
+    cloudRateLimitError: 'Too many attempts. Please wait a few minutes before trying again.',
     cloudPasswordMismatch: 'Passwords do not match.',
     cloudPasswordTooShort: 'Password must be at least 6 characters.',
     cloudZeroKnowledge: 'End-to-end encryption: all passwords are encrypted locally with AES-256-GCM before being sent to the cloud. The server only stores encrypted blobs.',

@@ -121,7 +121,12 @@ export default function CloudAuth({ darkMode, onAuthenticated, onEnterFreeMode, 
         setSuccess(t.cloudCheckEmail);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : t.cloudAuthError);
+      const msg = err instanceof Error ? err.message : '';
+      if (msg.toLowerCase().includes('rate limit')) {
+        setError(t.cloudRateLimitError);
+      } else {
+        setError(msg || t.cloudAuthError);
+      }
     } finally {
       setLoading(false);
     }
