@@ -19,14 +19,7 @@ import {
   Clock,
   Save,
   Lock,
-  Fingerprint,
 } from 'lucide-react';
-import {
-  isBiometricAvailable,
-  isBiometricEnrolled,
-  registerBiometric,
-  removeBiometric,
-} from '../../services/biometricService';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '../../config/supabase';
 import { deleteCloudVault } from '../../services/cloudService';
@@ -37,7 +30,6 @@ import { useTranslation } from '../../contexts/LanguageContext';
 interface AccountSettingsProps {
   darkMode: boolean;
   cloudUser: User;
-  masterPassword?: string;
   onAccountDeleted: () => void;
   onClose: () => void;
 }
@@ -47,7 +39,6 @@ type DeleteStep = 'idle' | 'confirm' | 'deleting';
 export default function AccountSettings({
   darkMode,
   cloudUser,
-  masterPassword,
   onAccountDeleted,
   onClose,
 }: AccountSettingsProps) {
@@ -65,42 +56,6 @@ export default function AccountSettings({
   const [deleteStep, setDeleteStep] = useState<DeleteStep>('idle');
   const [deletePassword, setDeletePassword] = useState('');
   const [deleteError, setDeleteError] = useState('');
-
-  // Biometric
-  const [biometricAvailable, setBiometricAvailable] = useState(false);
-  const [biometricActive, setBiometricActive] = useState(false);
-  const [biometricLoading, setBiometricLoading] = useState(false);
-  const [biometricError, setBiometricError] = useState('');
-
-  useEffect(() => {
-    void (async () => {
-      const available = await isBiometricAvailable();
-      setBiometricAvailable(available);
-      if (available) {
-        const enrolled = await isBiometricEnrolled();
-        setBiometricActive(enrolled);
-      }
-    })();
-  }, []);
-
-  const handleToggleBiometric = useCallback(async () => {
-    if (!masterPassword) return;
-    setBiometricLoading(true);
-    setBiometricError('');
-    try {
-      if (biometricActive) {
-        await removeBiometric();
-        setBiometricActive(false);
-      } else {
-        await registerBiometric(masterPassword);
-        setBiometricActive(true);
-      }
-    } catch (err) {
-      setBiometricError(err instanceof Error ? err.message : t.biometricError);
-    } finally {
-      setBiometricLoading(false);
-    }
-  }, [masterPassword, biometricActive, t]);
 
   // Member since
   const memberSince = cloudUser.created_at
@@ -345,60 +300,6 @@ export default function AccountSettings({
                   AES-256-GCM
                 </span>
               </div>
-            </div>
-          </section>
-
-          {/* Biometric Section */}
-          <section className="space-y-3">
-            <h3 className={`text-xs font-semibold uppercase tracking-wider ${
-              darkMode ? 'text-gray-400' : 'text-gray-500'
-            }`}>
-              {t.biometricSection}
-            </h3>
-
-            <div className={`rounded-xl border p-4 space-y-3 ${
-              darkMode ? 'bg-gray-800/30 border-gray-700/50' : 'bg-gray-50 border-gray-200'
-            }`}>
-              {!biometricAvailable ? (
-                <p className={`text-xs flex items-center gap-2 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
-                  <Fingerprint size={14} />
-                  {t.biometricNotAvailable}
-                </p>
-              ) : !masterPassword ? (
-                <p className={`text-xs flex items-center gap-2 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
-                  <Fingerprint size={14} />
-                  {t.biometricNeedMaster}
-                </p>
-              ) : (
-                <>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Fingerprint size={14} className={biometricActive ? 'text-emerald-500' : (darkMode ? 'text-gray-400' : 'text-gray-500')} />
-                      <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        {biometricActive ? t.biometricEnrolled : t.biometricEnable}
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => void handleToggleBiometric()}
-                      disabled={biometricLoading}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none ${
-                        biometricActive
-                          ? 'bg-emerald-500'
-                          : darkMode ? 'bg-gray-600' : 'bg-gray-300'
-                      } ${biometricLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-                    >
-                      <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-200 ${
-                          biometricActive ? 'translate-x-6' : 'translate-x-1'
-                        }`}
-                      />
-                    </button>
-                  </div>
-                  {biometricError && (
-                    <p className="text-xs text-red-500">{biometricError}</p>
-                  )}
-                </>
-              )}
             </div>
           </section>
 

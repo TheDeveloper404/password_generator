@@ -13,6 +13,7 @@ import {
   isBiometricAvailable,
   isBiometricEnrolled,
   authenticateWithBiometric,
+  registerBiometric,
 } from '../../services/biometricService';
 import TermsAcceptanceModal from './TermsAcceptanceModal';
 import Footer from '../layout/Footer';
@@ -38,6 +39,9 @@ export default function CloudAuth({ darkMode, onAuthenticated, onEnterFreeMode, 
   const [biometricReady, setBiometricReady] = useState(false);
   const [biometricLoading, setBiometricLoading] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showBiometricPrompt, setShowBiometricPrompt] = useState(false);
+  const [biometricPromptLoading, setBiometricPromptLoading] = useState(false);
+  const [loginPasswordForBiometric, setLoginPasswordForBiometric] = useState('');
   const { t } = useTranslation();
 
   // Check if biometric login is available
@@ -50,6 +54,16 @@ export default function CloudAuth({ darkMode, onAuthenticated, onEnterFreeMode, 
       }
     })();
   }, []);
+
+  // Proceed after login (after optional biometric prompt)
+  const proceedAfterLogin = useCallback(() => {
+    const termsAccepted = localStorage.getItem('pg_terms_accepted') === 'true';
+    if (!termsAccepted) {
+      setShowTermsModal(true);
+    } else {
+      onAuthenticated();
+    }
+  }, [onAuthenticated]);
 
   const handleBiometricLogin = useCallback(async () => {
     if (!supabase || biometricLoading) return;
@@ -64,12 +78,7 @@ export default function CloudAuth({ darkMode, onAuthenticated, onEnterFreeMode, 
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
         // Session exists — biometric verified, proceed
-        const termsAccepted = localStorage.getItem('pg_terms_accepted') === 'true';
-        if (!termsAccepted) {
-          setShowTermsModal(true);
-        } else {
-          onAuthenticated();
-        }
+        proceedAfterLogin();
       } else {
         // No active session — need email/password login first
         setError(t.biometricNeedLogin);
@@ -79,7 +88,27 @@ export default function CloudAuth({ darkMode, onAuthenticated, onEnterFreeMode, 
     } finally {
       setBiometricLoading(false);
     }
-  }, [biometricLoading, onAuthenticated, t]);
+  }, [biometricLoading, proceedAfterLogin, t]);
+
+  // Check if biometric prompt should be shown after login
+  const checkBiometricPrompt = useCallback(async (loginPassword: string) => {
+    // Don't show if user already dismissed or already enrolled
+    if (localStorage.getItem('pg_biometric_prompt_dismissed') === 'true') {
+      proceedAfterLogin();
+      return;
+    }
+    try {
+      const available = await isBiometricAvailable();
+      if (!available) { proceedAfterLogin(); return; }
+      const enrolled = await isBiometricEnrolled();
+      if (enrolled) { proceedAfterLogin(); return; }
+      // Show prompt
+      setLoginPasswordForBiometric(loginPassword);
+      setShowBiometricPrompt(true);
+    } catch {
+      proceedAfterLogin();
+    }
+  }, [proceedAfterLogin]);
 
   const handleEmailAuth = useCallback(async () => {
     if (!supabase || !email || !password) return;
@@ -105,17 +134,15 @@ export default function CloudAuth({ darkMode, onAuthenticated, onEnterFreeMode, 
           password,
         });
         if (authError) throw authError;
-        // Check if terms were already accepted
-        const termsAccepted = localStorage.getItem('pg_terms_accepted') === 'true';
-        if (!termsAccepted) {
-          setShowTermsModal(true);
-        } else {
-          onAuthenticated();
-        }
+        // Check biometric prompt (will proceed to terms/auth after)
+        await checkBiometricPrompt(password);
       } else {
         const { error: authError } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            emailRedirectTo: window.location.origin,
+          },
         });
         if (authError) throw authError;
         setSuccess(t.cloudCheckEmail);
@@ -130,7 +157,7 @@ export default function CloudAuth({ darkMode, onAuthenticated, onEnterFreeMode, 
     } finally {
       setLoading(false);
     }
-  }, [email, password, confirmPassword, mode, onAuthenticated, t]);
+  }, [email, password, confirmPassword, mode, checkBiometricPrompt, t]);
 
   const handleTermsAccepted = useCallback(() => {
     setShowTermsModal(false);
@@ -312,6 +339,58 @@ export default function CloudAuth({ darkMode, onAuthenticated, onEnterFreeMode, 
           <Footer darkMode={darkMode} />
         </div>
       </div>
+
+      {/* Biometric enrollment prompt — shown after first login */}
+      {showBiometricPrompt && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className={`w-full max-w-sm rounded-2xl p-6 shadow-2xl ${darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}>
+            <div className="flex flex-col items-center text-center">
+              <div className="flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 mb-4 shadow-lg shadow-blue-500/30">
+                <Fingerprint size={28} className="text-white" />
+              </div>
+              <h3 className={`text-lg font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                {t.biometricPromptTitle}
+              </h3>
+              <p className={`text-sm mb-6 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                {t.biometricPromptDesc}
+              </p>
+              <button
+                onClick={() => {
+                  if (!loginPasswordForBiometric) return;
+                  setBiometricPromptLoading(true);
+                  void registerBiometric(loginPasswordForBiometric)
+                    .then(() => {
+                      setShowBiometricPrompt(false);
+                      setLoginPasswordForBiometric('');
+                      proceedAfterLogin();
+                    })
+                    .catch(() => {
+                      setShowBiometricPrompt(false);
+                      setLoginPasswordForBiometric('');
+                      proceedAfterLogin();
+                    })
+                    .finally(() => setBiometricPromptLoading(false));
+                }}
+                disabled={biometricPromptLoading}
+                className="w-full py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg shadow-blue-500/25 mb-3 disabled:opacity-50"
+              >
+                {biometricPromptLoading ? '...' : t.biometricPromptEnable}
+              </button>
+              <button
+                onClick={() => {
+                  localStorage.setItem('pg_biometric_prompt_dismissed', 'true');
+                  setShowBiometricPrompt(false);
+                  setLoginPasswordForBiometric('');
+                  proceedAfterLogin();
+                }}
+                className={`w-full py-2.5 rounded-xl text-sm font-medium transition-all ${darkMode ? 'text-gray-400 hover:bg-gray-700/50' : 'text-gray-500 hover:bg-gray-100'}`}
+              >
+                {t.biometricPromptSkip}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Terms acceptance modal */}
       {showTermsModal && (
