@@ -316,7 +316,7 @@ export default function PasswordGenerator({
   const policyResult = useMemo(() => evaluatePolicy(password, DEFAULT_POLICY, t), [password, t]);
 
   return (
-    <div className={`flex flex-col min-h-screen pb-32 sm:pb-14 lg:h-screen lg:pb-0 lg:overflow-hidden transition-colors duration-300 ${darkMode ? 'dark bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950' : 'bg-gradient-to-br from-slate-50 via-white to-blue-50'}`}>
+    <div className={`flex flex-col min-h-screen pb-14 sm:pb-0 lg:h-screen lg:overflow-hidden transition-colors duration-300 ${darkMode ? 'dark bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950' : 'bg-gradient-to-br from-slate-50 via-white to-blue-50'}`}>
 
       {/* Top accent bar */}
       <div className="h-1 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 shrink-0" />
@@ -794,10 +794,10 @@ export default function PasswordGenerator({
 
       </div>
 
-      {/* Footer — fixed at page bottom, above mobile nav bar */}
-      <footer className="fixed bottom-12 sm:bottom-0 left-0 right-0 z-30">
+      {/* Footer — in document flow, sticks to bottom via flex layout */}
+      <div className="shrink-0">
         <Footer darkMode={darkMode} />
-      </footer>
+      </div>
 
     </div>
   );
