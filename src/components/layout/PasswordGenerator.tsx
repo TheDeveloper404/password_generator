@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Copy, RefreshCw, Sun, Moon, Star, Trash2, Globe, KeyRound, Shield, Zap, Wifi, LogOut, Hash, Brain, Music, Map, UserCircle, Lock } from 'lucide-react';
-import type { User } from '@supabase/supabase-js';
+import { Copy, RefreshCw, Sun, Moon, Star, Trash2, Globe, KeyRound, Shield, Zap, Wifi, Hash, Brain, Music, Map, Lock } from 'lucide-react';
 import {
   generatePassphrase,
   generatePassword,
@@ -23,8 +22,7 @@ import HashGenerator from '../tools/HashGenerator';
 import PasswordAnalyzer from '../tools/PasswordAnalyzer';
 import AudioPassphrase from '../tools/AudioPassphrase';
 import PasswordMap from '../tools/PasswordMap';
-import CloudSyncIndicator, { OfflineIndicator } from '../auth/CloudSyncIndicator';
-import AccountSettings from '../auth/AccountSettings';
+
 import VaultView from '../vault/VaultView';
 import HealthDashboard from '../vault/HealthDashboard';
 import MasterPasswordSetup from '../auth/MasterPasswordSetup';
@@ -76,9 +74,6 @@ interface PasswordGeneratorProps {
   masterPassword: string;
   darkMode: boolean;
   setDarkMode: (v: boolean | ((prev: boolean) => boolean)) => void;
-  cloudUser: User | null;
-  onCloudLogout: () => void;
-  onVaultDownloaded: (vault: VaultData) => void;
   onAddEntry: (entry: Partial<VaultEntry>) => void;
   onUpdateEntry: (id: string, updates: Partial<VaultEntry>) => void;
   onDeleteEntry: (id: string) => void;
@@ -90,8 +85,6 @@ interface PasswordGeneratorProps {
   onSetup: (password: string) => Promise<void>;
   onUnlock: (password: string) => Promise<boolean>;
   onReset: () => void;
-  onLogout: () => void;
-  onSignupRedirect?: () => void;
 }
 
 export default function PasswordGenerator({
@@ -100,9 +93,6 @@ export default function PasswordGenerator({
   masterPassword: masterPw,
   darkMode,
   setDarkMode,
-  cloudUser,
-  onCloudLogout,
-  onVaultDownloaded,
   onAddEntry,
   onUpdateEntry,
   onDeleteEntry,
@@ -114,8 +104,6 @@ export default function PasswordGenerator({
   onSetup,
   onUnlock,
   onReset,
-  onLogout,
-  onSignupRedirect,
 }: PasswordGeneratorProps) {
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState<GeneratorMode>(() =>
@@ -139,33 +127,15 @@ export default function PasswordGenerator({
     getStoredValue<string[]>(STORAGE_KEYS.favorites, [])
   );
   const [copied, setCopied] = useState(false);
-  const [showAccount, setShowAccount] = useState(false);
-  const [showSignupPrompt, setShowSignupPrompt] = useState(false);
-  const [freeGenerateCount, setFreeGenerateCount] = useState(() => {
-    try {
-      return parseInt(localStorage.getItem('pg_free_generates') ?? '0', 10);
-    } catch { return 0; }
-  });
-  const FREE_LIMIT = 3;
   const [activeTab, setActiveTabRaw] = useState<MainTab>(() => {
     const saved = sessionStorage.getItem('passgen_active_tab');
     const valid: MainTab[] = ['generator', 'wifi', 'hash', 'analyzer', 'audio', 'map', 'vault', 'health'];
     return saved && valid.includes(saved as MainTab) ? (saved as MainTab) : 'generator';
   });
   const setActiveTab = (tab: MainTab) => {
-    // If user has no account, only allow generator tab
-    if (!cloudUser && tab !== 'generator') return;
     sessionStorage.setItem('passgen_active_tab', tab);
     setActiveTabRaw(tab);
   };
-
-  // Reset to generator if on a restricted tab and user is not logged in
-  useEffect(() => {
-    if (!cloudUser && activeTab !== 'generator') {
-      setActiveTabRaw('generator');
-      sessionStorage.setItem('passgen_active_tab', 'generator');
-    }
-  }, [cloudUser, activeTab]);
 
   const { t, lang, setLang } = useTranslation();
 
@@ -223,17 +193,6 @@ export default function PasswordGenerator({
   }, [privacyMode]);
 
   const handleGenerate = useCallback(() => {
-    // Free mode limit: 3 generates without account
-    if (!cloudUser) {
-      if (freeGenerateCount >= FREE_LIMIT) {
-        setShowSignupPrompt(true);
-        return;
-      }
-      const newCount = freeGenerateCount + 1;
-      setFreeGenerateCount(newCount);
-      localStorage.setItem('pg_free_generates', String(newCount));
-    }
-
     const generatorStrengthOptions =
       mode === 'password'
         ? options
@@ -268,7 +227,7 @@ export default function PasswordGenerator({
 
     setPassword(newPassword);
     setCopied(false);
-  }, [length, minEntropy, mode, options, passphraseOptions, cloudUser, freeGenerateCount]);
+  }, [length, minEntropy, mode, options, passphraseOptions]);
 
   const handleCopy = useCallback(async (value = password) => {
     if (!value) {
@@ -385,7 +344,7 @@ export default function PasswordGenerator({
                 { id: 'map' as MainTab, icon: Map, label: t.tabMap },
                 { id: 'vault' as MainTab, icon: KeyRound, label: t.tabVault },
                 { id: 'health' as MainTab, icon: Shield, label: t.tabHealth },
-              ]).filter(tab => cloudUser || tab.id === 'generator').map((tab) => (
+              ]).map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
@@ -428,34 +387,6 @@ export default function PasswordGenerator({
             >
               {darkMode ? <Sun size={16} /> : <Moon size={16} />}
             </button>
-            <div className={`h-5 w-px mx-0.5 hidden sm:block ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`} />
-            <CloudSyncIndicator
-              darkMode={darkMode}
-              vault={vault}
-              masterPassword={masterPw}
-              cloudUser={cloudUser}
-              onVaultDownloaded={onVaultDownloaded}
-              onCloudLogout={onCloudLogout}
-            />
-            <OfflineIndicator darkMode={darkMode} />
-            {cloudUser && (
-              <button
-                onClick={() => setShowAccount(true)}
-                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${darkMode ? 'hover:bg-white/5 text-gray-400' : 'hover:bg-gray-100 text-gray-500'}`}
-                title={t.accountButton}
-              >
-                <UserCircle size={14} />
-                <span className="hidden md:inline">{t.accountButton}</span>
-              </button>
-            )}
-            <button
-              onClick={() => { sessionStorage.removeItem('passgen_active_tab'); onLogout(); }}
-              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${darkMode ? 'hover:bg-red-500/10 text-gray-400 hover:text-red-400' : 'hover:bg-red-50 text-gray-500 hover:text-red-500'}`}
-              title={t.logout}
-            >
-              <LogOut size={14} />
-              <span className="hidden md:inline">{t.logout}</span>
-            </button>
           </div>
         </header>
 
@@ -470,7 +401,7 @@ export default function PasswordGenerator({
             { id: 'map' as MainTab, icon: Map, label: t.tabMap },
             { id: 'vault' as MainTab, icon: KeyRound, label: t.tabVault },
             { id: 'health' as MainTab, icon: Shield, label: t.tabHealth },
-          ]).filter(tab => cloudUser || tab.id === 'generator').map((tab) => {
+          ]).map((tab) => {
             const isActive = activeTab === tab.id;
             return (
               <button
@@ -868,52 +799,6 @@ export default function PasswordGenerator({
         <Footer darkMode={darkMode} />
       </footer>
 
-      {/* Signup Prompt Modal (free mode limit) */}
-      {showSignupPrompt && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className={`w-full max-w-sm rounded-2xl p-6 shadow-2xl ${darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}>
-            <div className="flex flex-col items-center text-center">
-              <div className="flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-orange-400 to-red-500 mb-4 shadow-lg shadow-orange-500/30">
-                <Lock size={24} className="text-white" />
-              </div>
-              <h3 className={`text-lg font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                {t.freeLimitTitle}
-              </h3>
-              <p className={`text-sm mb-6 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                {t.freeLimitDesc}
-              </p>
-              <button
-                onClick={() => {
-                  setShowSignupPrompt(false);
-                  onSignupRedirect?.();
-                }}
-                className="w-full py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all shadow-lg shadow-blue-500/25 mb-3"
-              >
-                {t.freeLimitSignup}
-              </button>
-              <button
-                onClick={() => setShowSignupPrompt(false)}
-                className={`w-full py-2.5 rounded-xl text-sm font-medium transition-all ${darkMode ? 'text-gray-400 hover:bg-gray-700/50' : 'text-gray-500 hover:bg-gray-100'}`}
-              >
-                {t.close}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Account Settings Modal */}
-      {showAccount && cloudUser && (
-        <AccountSettings
-          darkMode={darkMode}
-          cloudUser={cloudUser}
-          onAccountDeleted={() => {
-            setShowAccount(false);
-            onLogout();
-          }}
-          onClose={() => setShowAccount(false)}
-        />
-      )}
     </div>
   );
 }

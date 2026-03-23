@@ -3,11 +3,6 @@ import { Shield, Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import { useTranslation } from '../../contexts/LanguageContext';
 import { isLockedOut, getRemainingLockoutMs, getFailedAttempts } from '../../services/authService';
 import { MAX_UNLOCK_ATTEMPTS } from '../../crypto/constants';
-import {
-  isPatternEnrolled,
-  verifyPattern,
-} from '../../services/patternLockService';
-import PatternLock from '../vault/PatternLock';
 
 interface UnlockScreenProps {
   darkMode: boolean;
@@ -24,31 +19,6 @@ export default function UnlockScreen({ darkMode, onUnlock, onReset, inline }: Un
   const [error, setError] = useState('');
   const [lockoutRemaining, setLockoutRemaining] = useState(0);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
-  const [patternReady, setPatternReady] = useState(false);
-  const [patternError, setPatternError] = useState('');
-  const [showPatternUnlock, setShowPatternUnlock] = useState(false);
-
-  // Check pattern lock availability
-  useEffect(() => {
-    setPatternReady(isPatternEnrolled());
-  }, []);
-
-  const handlePatternUnlock = async (pattern: number[]) => {
-    setPatternError('');
-    try {
-      const mp = await verifyPattern(pattern);
-      if (mp) {
-        const success = await onUnlock(mp);
-        if (!success) {
-          setPatternError(t.patternWrong);
-        }
-      } else {
-        setPatternError(t.patternWrong);
-      }
-    } catch {
-      setPatternError(t.patternError);
-    }
-  };
 
   // Update lockout timer
   useEffect(() => {
@@ -155,42 +125,6 @@ export default function UnlockScreen({ darkMode, onUnlock, onReset, inline }: Un
           >
             {loading ? t.unlockLoading : t.unlockButton}
           </button>
-
-          {/* Pattern lock unlock */}
-          {patternReady && !lockoutRemaining && !showPatternUnlock && (
-            <button
-              type="button"
-              onClick={() => setShowPatternUnlock(true)}
-              className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-medium text-sm transition-all ${
-                darkMode
-                  ? 'bg-gray-700/50 text-gray-300 hover:bg-gray-700 border border-gray-600'
-                  : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'
-              }`}
-            >
-              <Shield size={18} />
-              {t.patternUnlock}
-            </button>
-          )}
-
-          {showPatternUnlock && (
-            <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-900/50 border border-gray-700' : 'bg-gray-50 border border-gray-200'}`}>
-              <PatternLock
-                darkMode={darkMode}
-                onPatternComplete={(p) => void handlePatternUnlock(p)}
-                error={patternError}
-                mode="verify"
-              />
-              <button
-                type="button"
-                onClick={() => { setShowPatternUnlock(false); setPatternError(''); }}
-                className={`w-full mt-3 py-2 rounded-lg text-xs font-medium transition-all ${
-                  darkMode ? 'text-gray-400 hover:bg-gray-800' : 'text-gray-500 hover:bg-gray-100'
-                }`}
-              >
-                {t.patternUsePassword}
-              </button>
-            </div>
-          )}
 
           {/* Reset vault link */}
           <div className="text-center pt-2">

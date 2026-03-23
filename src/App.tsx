@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState, useRef } from 'react';
 import PasswordGenerator from './components/layout/PasswordGenerator';
 import WelcomePage from './components/common/WelcomePage';
-import CloudAuth from './components/auth/CloudAuth';
-import TermsAcceptanceModal from './components/auth/TermsAcceptanceModal';
 import type { AppScreen, VaultData } from './types/vault';
 import {
   setupMasterPassword,
@@ -24,8 +22,6 @@ import {
   downloadExport,
   readFileAsText,
 } from './services/exportService';
-import { uploadVault, downloadVault, subscribeToVaultChanges } from './services/cloudService';
-import { supabase, isCloudEnabled } from './config/supabase';
 import { wipeAllData } from './db/indexedDB';
 import { AUTO_LOCK_TIMEOUT_MS } from './crypto/constants';
 import { Language, translations } from './utils/i18n';
@@ -36,7 +32,6 @@ import {
   clearSession,
   refreshSession,
 } from './services/sessionService';
-import type { User } from '@supabase/supabase-js';
 
 function getStoredLang(): Language {
   try {
@@ -65,75 +60,9 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [lang, setLang] = useState<Language>(getStoredLang);
   const [darkMode, setDarkMode] = useState(getStoredDarkMode);
-  const [cloudUser, setCloudUser] = useState<User | null>(null);
-  const [showCloudAuth, setShowCloudAuth] = useState(false);
-  const [showTermsAtAppLevel, setShowTermsAtAppLevel] = useState(false);
-  const [emailJustConfirmed, setEmailJustConfirmed] = useState(false);
-  const [cloudAuthInitialSuccess, setCloudAuthInitialSuccess] = useState('');
   const autoLockTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isRemoteSync = useRef(false);
-  const showCloudAuthRef = useRef(showCloudAuth);
-  useEffect(() => { showCloudAuthRef.current = showCloudAuth; }, [showCloudAuth]);
 
   const t = translations[lang];
-
-  // ─── Detect email confirmation redirect (type=signup in URL) ────────
-  const emailConfirmDetectedRef = useRef(false);
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'));
-    const type = params.get('type') || hashParams.get('type');
-    if (type === 'signup' || type === 'email') {
-      emailConfirmDetectedRef.current = true;
-      setEmailJustConfirmed(true);
-      // Clean up the URL so it doesn't re-trigger on refresh
-      const cleanUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState({}, '', cleanUrl);
-    }
-  }, []);
-
-  // ─── Supabase Auth Listener ─────────────────────────────────────────
-  useEffect(() => {
-    if (!isCloudEnabled || !supabase) return;
-
-    // Listen for auth changes (login, logout, token refresh)
-    // Initial session is resolved in the vault mount effect above
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        // If this SIGNED_IN is from an email confirmation, sign out and show login
-        if (event === 'SIGNED_IN' && emailConfirmDetectedRef.current) {
-          emailConfirmDetectedRef.current = false;
-          // Sign out — user must manually log in after email confirmation
-          void supabase.auth.signOut();
-          setCloudUser(null);
-          localStorage.removeItem('pg_cloud_auth');
-          setCloudAuthInitialSuccess(t.cloudEmailConfirmed);
-          setShowCloudAuth(true);
-          return;
-        }
-
-        setCloudUser(session?.user ?? null);
-        // Sync auth flag with actual session state
-        if (session?.user) {
-          localStorage.setItem('pg_cloud_auth', 'true');
-          // If user just signed in while on cloud auth screen
-          if (event === 'SIGNED_IN' && showCloudAuthRef.current) {
-            const termsAccepted = localStorage.getItem('pg_terms_accepted') === 'true';
-            if (!termsAccepted) {
-              // Show terms at app level (CloudAuth is being unmounted since cloudUser is now set)
-              setShowTermsAtAppLevel(true);
-            }
-            // Dismiss cloud auth — user is now authenticated
-            setShowCloudAuth(false);
-          }
-        } else {
-          localStorage.removeItem('pg_cloud_auth');
-        }
-      },
-    );
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   // Persist lang & darkMode to localStorage
   useEffect(() => {
@@ -151,19 +80,7 @@ function App() {
         const hasVault = await isVaultSetUp();
         setVaultConfigured(hasVault);
 
-        // Check if Supabase has an active session
-        let hasCloudSession = false;
-        if (isCloudEnabled && supabase && !emailConfirmDetectedRef.current) {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (session?.user) {
-            setCloudUser(session.user);
-            hasCloudSession = true;
-          }
-        }
-
-        // Also check the persistent auth flag (survives refresh even if getSession is slow)
-        const hasAuthFlag = localStorage.getItem('pg_cloud_auth') === 'true';
-        const hasFreeMode = localStorage.getItem('pg_free_mode') === 'true';
+        const hasEntered = localStorage.getItem('pg_entered') === 'true';
 
         if (hasVault) {
           // Try to restore session (survives refresh)
@@ -180,18 +97,11 @@ function App() {
           setScreen('main');
           setWelcomeVisible(false);
           setTransitioning(true);
-        } else if (hasCloudSession || hasAuthFlag || hasFreeMode) {
-          // User has cloud session (or auth flag) but no local vault — skip welcome, go to main
-          // (they'll see MasterPasswordSetup for vault-gated tabs)
+        } else if (hasEntered) {
+          // User has entered before but no vault yet — skip welcome
           setScreen('main');
           setWelcomeVisible(false);
           setTransitioning(true);
-          // If hasAuthFlag but no hasCloudSession, Supabase will fire onAuthStateChange soon
-          // If both are false, auth flag is stale — clean it up
-          if (hasAuthFlag && !hasCloudSession) {
-            // Verify session exists — if not, the flag is stale
-            // onAuthStateChange will handle the resolution
-          }
         } else {
           setScreen('welcome');
         }
@@ -246,128 +156,35 @@ function App() {
     };
   }, [vault, resetAutoLock]);
 
-  // Persist vault whenever it changes (local + cloud)
+  // Persist vault whenever it changes (local only)
   useEffect(() => {
     if (vault && masterPassword && vaultSalt) {
       void encryptAndSaveVault(vault, masterPassword, vaultSalt);
-
-      // Auto-sync to cloud if authenticated (skip if this was a remote sync)
-      if (isCloudEnabled && cloudUser && !isRemoteSync.current) {
-        void uploadVault(vault, masterPassword).catch(() => {
-          // Silent fail — cloud sync is best-effort
-        });
-      }
-      isRemoteSync.current = false;
     }
-  }, [vault, masterPassword, vaultSalt, cloudUser]);
-
-  // ─── Realtime Sync — listen for vault changes from other devices ───
-  useEffect(() => {
-    if (!isCloudEnabled || !cloudUser || !masterPassword) return;
-
-    const unsubscribe = subscribeToVaultChanges(cloudUser.id, () => {
-      // Another device updated the vault — download and merge
-      void downloadVault(masterPassword).then((remoteVault) => {
-        if (!remoteVault) return;
-
-        setVault((currentVault) => {
-          // If no local vault or remote is newer, use remote
-          if (!currentVault || remoteVault.lastModified > currentVault.lastModified) {
-            isRemoteSync.current = true;
-            return remoteVault;
-          }
-          // If local is newer or same, keep local
-          return currentVault;
-        });
-      }).catch(() => {
-        // Silent fail — will retry on next change
-      });
-    });
-
-    return unsubscribe;
-  }, [cloudUser, masterPassword]);
+  }, [vault, masterPassword, vaultSalt]);
 
   // ─── Screen Transitions ────────────────────────────────────────────
 
-  const handleWelcomeEnter = useCallback(async () => {
+  const handleWelcomeEnter = useCallback(() => {
     // Welcome page is always dark-themed, so ensure main app starts in dark mode
     setDarkMode(true);
     // Sync dark class immediately (don't wait for useEffect)
     document.documentElement.classList.add('dark');
     setTransitioning(true);
     setWelcomeVisible(false);
+    // Persist so we skip welcome on refresh
+    localStorage.setItem('pg_entered', 'true');
 
-    // Always show cloud auth when cloud is enabled (removed skip button)
-    // But user can still use generator in free mode if they dismiss later
-    if (isCloudEnabled && !cloudUser) {
-      setTimeout(() => {
-        setShowCloudAuth(true);
-        setScreen('main');
-      }, 700);
-    } else {
-      setTimeout(() => {
-        setScreen('main');
-      }, 700);
-    }
-  }, [cloudUser]);
-
-  // Allow user to enter free/guest mode (generator only, limited to 3 passwords)
-  const handleEnterFreeMode = useCallback(() => {
-    setShowCloudAuth(false);
-    // Persist free mode so it survives refresh
-    localStorage.setItem('pg_free_mode', 'true');
+    setTimeout(() => {
+      setScreen('main');
+    }, 700);
   }, []);
-
-  const handleCloudAuthenticated = useCallback(async () => {
-    // Fetch the current Supabase user immediately so cloudUser is set before showCloudAuth is cleared
-    if (isCloudEnabled && supabase) {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        setCloudUser(session.user);
-      }
-    }
-    setShowCloudAuth(false);
-    // Persist authentication flag so refresh keeps user logged in
-    localStorage.setItem('pg_cloud_auth', 'true');
-    // Clear free mode flags
-    localStorage.removeItem('pg_free_generates');
-    localStorage.removeItem('pg_free_mode');
-  }, []);
-
-  const handleCloudLogout = useCallback(() => {
-    setCloudUser(null);
-  }, []);
-
-  const handleVaultDownloaded = useCallback((downloadedVault: VaultData) => {
-    setVault(downloadedVault);
-  }, []);
-
-  const handleLogout = useCallback(async () => {
-    // Lock vault if unlocked
-    handleLock();
-    // Sign out from Supabase (clears persisted session) — AWAIT to ensure completion
-    if (isCloudEnabled && supabase) {
-      await supabase.auth.signOut();
-    }
-    setCloudUser(null);
-    // Clear authentication flag so refresh after logout goes to welcome
-    localStorage.removeItem('pg_cloud_auth');
-    localStorage.removeItem('pg_free_mode');
-    localStorage.removeItem('pg_free_generates');
-    // Clear saved tab so refresh after logout goes to Generator
-    sessionStorage.removeItem('passgen_active_tab');
-    // Transition back to welcome
-    setWelcomeVisible(true);
-    setTransitioning(false);
-    setScreen('welcome');
-    setShowCloudAuth(false);
-  }, [handleLock]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (screen === 'welcome' && e.key === 'Enter') {
         e.preventDefault();
-        void handleWelcomeEnter();
+        handleWelcomeEnter();
       }
     };
     window.addEventListener('keydown', onKeyDown);
@@ -504,24 +321,12 @@ function App() {
             welcomeVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
           }`}
         >
-          <WelcomePage onEnter={() => void handleWelcomeEnter()} />
+          <WelcomePage onEnter={() => handleWelcomeEnter()} />
         </div>
       )}
 
-      {/* Cloud auth screen — shown when cloud is enabled but user not logged in */}
-      {showCloudAuth && !cloudUser && (
-        <div className="fixed inset-0 z-40 animate-fadeIn overflow-hidden">
-          <CloudAuth
-            darkMode={darkMode}
-            onAuthenticated={handleCloudAuthenticated}
-            onEnterFreeMode={handleEnterFreeMode}
-            initialSuccess={cloudAuthInitialSuccess}
-          />
-        </div>
-      )}
-
-      {/* Main app — rendered when screen is 'main' AND either cloud auth is done OR user is in free mode */}
-      {screen === 'main' && (!showCloudAuth || cloudUser) && (
+      {/* Main app */}
+      {screen === 'main' && (
         <div className="animate-fadeIn">
           <PasswordGenerator
             vault={vault}
@@ -529,9 +334,6 @@ function App() {
             masterPassword={masterPassword}
             darkMode={darkMode}
             setDarkMode={setDarkMode}
-            cloudUser={cloudUser}
-            onCloudLogout={handleCloudLogout}
-            onVaultDownloaded={handleVaultDownloaded}
             onAddEntry={handleAddEntry}
             onUpdateEntry={handleUpdateEntry}
             onDeleteEntry={handleDeleteEntry}
@@ -543,18 +345,8 @@ function App() {
             onSetup={(pw) => handleSetup(pw)}
             onUnlock={handleUnlock}
             onReset={() => void handleReset()}
-            onLogout={handleLogout}
-            onSignupRedirect={() => setShowCloudAuth(true)}
           />
         </div>
-      )}
-
-      {/* App-level terms acceptance modal (for email confirmation auto-sign-in) */}
-      {showTermsAtAppLevel && (
-        <TermsAcceptanceModal
-          darkMode={darkMode}
-          onAccepted={() => setShowTermsAtAppLevel(false)}
-        />
       )}
     </LanguageContext.Provider>
   );
